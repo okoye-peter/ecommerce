@@ -1,0 +1,27 @@
+div.row.justify-content-center.align-content-center{
+    width: 100% !important;
+}
+
+#heading{
+    border-bottom: 0.4px solid silver;
+}
+
+div.product img{
+    width: 120px;
+    height: 70px;
+}
+
+form div.col-2.py-3 div.form-group.input-group-sm a{
+    color: gray;
+}
+
+i.fa.fa-caret-up{
+    position: relative;
+    top: -7px;
+}
+
+i.fa.fa-caret-down{
+    position: relative;
+    left: -12px;
+    top: 4px;
+}

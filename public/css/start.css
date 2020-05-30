@@ -1,0 +1,33 @@
+
+.wow{
+    width:  fit-content;
+}
+
+#grid{
+    width: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+}
+
+#grid .grids .card{
+    border-radius: 0px;
+    width: 15em;
+}
+
+#grid .grids .card .card-body{
+    padding: 3px;
+    height: 20em;
+}
+
+#grid .grids .card .card-body a img{
+    width: 100%;
+    height: 11em;
+}
+
+.btn.btn-success{
+    position: absolute;
+    top: 20em;
+    left: 12em;
+}

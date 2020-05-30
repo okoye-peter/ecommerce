@@ -1,0 +1,170 @@
+*{
+    box-sizing: border-box !important;
+}
+
+.row{
+    width: 100%;
+}
+
+#sidebar{
+    border: 0px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    vertical-align: bottom;
+    color: #000;
+    max-width: 16.6666666667% !important;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+}
+
+#sidebar a.navbar-brand{
+    color: lightgray;
+    text-decoration: none;
+    background-color: transparent;
+    position: relative !important;
+    left: 100px !important;
+    width: fit-content;
+}
+
+.accordion{
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none !important;
+    font-size: x-small;
+    font-weight: bold;
+    font-family: sans-serif;
+    transition: 0.4s;
+}
+
+.panel .list-group{
+    font-size: x-small;
+    font-weight: 600;
+    font-family: sans-serif;
+    border: 0 !important;
+}
+
+.panel .list-group .list-group-item{
+    border: 0 !important;
+
+}
+
+.panel .list-group .list-group-item a{
+    color: inherit !important;
+    position: relative;
+    transition: all 0.5s;
+
+}
+
+.panel .list-group .list-group-item a:hover{
+    text-decoration: none;
+    color: green !important;
+    margin-left: 10px;
+}
+
+.panel .list-group .list-group-item a:before{
+    /* content: "\f105"; */
+    padding: 0px !important;
+    font-weight: 900;
+    font-size: 12px;
+    color: #868e96;
+}
+
+
+
+.actives, .accordion:hover {
+    background-color: #ccc;
+}
+
+.accordion:after {
+    content: '\002B';
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.actives{
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    border: 0 !important;
+}
+
+.actives:after {
+    content: "\2212";
+}
+
+.panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+#sidebar a.navbar-brand img.header-logo{
+    height: 30px;
+}
+
+#sidebar h6.text-muted{
+    font-size: x-small;
+    line-height: 15px;
+    letter-spacing: 15px;
+}
+
+nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow{
+    box-shadow: 0px 0.1px 1px gray;
+    width: 100%;
+    position: absolute;
+    z-index: 1;
+}
+
+nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow a{
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow .form-inline .search-element  .form-control{
+    font-weight: 500 !important;
+    background-color: #f0f3ff;
+}
+
+nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow #cart{
+    width: 40px;
+    font-size: 20px;
+    color: gray !important;
+}
+
+
+nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow #cart .badge{
+    font-size: xx-small !important;
+    position: relative;
+    border-radius: 10px !important;
+    top: -45px;
+    display: inline-block;
+    left: 17px;
+}
+
+a#navbarDropdown{
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-decoration: uppercase;
+}
+
+a#navbarDropdown img{
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+}
+
+main{
+    padding-top: 7em;
+    padding-left: 2em;
+    padding-right: 2em;
+}

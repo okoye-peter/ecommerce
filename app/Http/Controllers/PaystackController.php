@@ -96,4 +96,8 @@ class PaystackController extends Controller
             echo "<h2>Thank you for making a purchase. Your file has bee sent your email.</h2>";
         }
     }
+
+    public function transaction(){
+        return view('transaction');
+    }
 }

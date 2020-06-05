@@ -11,17 +11,13 @@ div.product img{
     height: 70px;
 }
 
-form div.col-2.py-3 div.form-group.input-group-sm a{
+form div.col-lg-2.py-3 div.form-group.input-group-sm a{
     color: gray;
 }
 
-i.fa.fa-caret-up{
-    position: relative;
-    top: -7px;
-}
-
-i.fa.fa-caret-down{
-    position: relative;
-    left: -12px;
-    top: 4px;
+form.removeForm button{
+    border: 0px;
+    background: transparent;
+    outline: none;
+    margin-right: 4em;
 }

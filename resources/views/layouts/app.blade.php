@@ -29,129 +29,125 @@
     <link rel="stylesheet" href="{{ asset('css/wow.css') }}">
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
     @yield('css')
 </head>
 <body>
     <div id="app">
-        <div class="row m-0">
-            <div class="col-2 p-0">
-                <div id="sidebar" class="card shadow">
-                    <a class="navbar-brand mb-5" href="{{ url('/') }}">
-                        <img alt="image" src="{{ asset('image/logo.png') }}" class="header-logo"> <span class="logo-name">Otika</span>
-                    </a>
+        <aside id="sidebar">
+            <a class="navbar-brand mb-5" href="{{ url('/') }}">
+                <img alt="image" src="{{ asset('image/logo.png') }}" class="header-logo"> <span class="logo-name">Otika</span>
+            </a>
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav(this)">&times;</a>
+            <h6 class="text-muted text-center mb-3">main</h6>
 
-                    <h6 class="text-muted text-center mb-3">main</h6>
+            <ul class="list-group list-group-flush">
+                @php
+                    $list =  \App\Http\Controllers\ProductController::index();
 
-                    <ul class="list-group list-group-flush">
-                        @php
-                            $list =  \App\Http\Controllers\ProductController::index();
+                @endphp
+                @foreach ($list->groupBy('category') as $category => $subcategory)
+                    <li class="list-group-item accordion" onclick="dropDown(this)">
+                        {{ $category }}
+                    </li>
+                    <div class="panel">
+                        <ul class="list-group list-group-flush">
+                            @foreach ($subcategory as $cat => $sub)
+                                <li class="list-group-item">
+                                    <a href="{{ route('subcategory.products',[$category, $sub->subcategory]) }}" id=""><i class="fa fa-angle-right"></i> {{ $sub->subcategory }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endforeach
+            </ul>
+        </aside>
+        <div class="content">
+            <nav class="navbar navbar-expand-md navbar-light shadow-sm bg-white">
+                <div class="container-fluid mx-1">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-                        @endphp
-                        @foreach ($list->groupBy('category') as $category => $subcategory)
-                            <li class="list-group-item accordion" onclick="dropDown(this)">
-                                {{ $category }}
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-3">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('home') }}">Home</a>
                             </li>
-                            <div class="panel">
-                                <ul class="list-group list-group-flush">
-                                    @foreach ($subcategory as $cat => $sub)
-                                        <li class="list-group-item">
-                                            <a href="{{ route('subcategory.products',[$category, $sub->subcategory]) }}" id=""><i class="fa fa-angle-right"></i> {{ $sub->subcategory }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endforeach
-                    </ul>
-                </div>
+                        </ul>
 
-            </div>
-            <div class="col-10 p-0 m-0">
-                <div class="row m-0">
-                    <nav class="navbar navbar-expand-md navbar-light bg-white shadow">
-                        <div class="container-fluid mx-1">
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
+                        <form class="form-inline mr-auto form-horizontal" method="GET" action="{{ route('search') }}">
+                            <div class="input-group search-element">
+                                <input type="text" class="form-control" name="key" placeholder="Search">
+                                <div class="input-group-append">
+                                  <button class="btn btn-primary" type="submit">
+                                      <i class="fa fa-search"></i>
+                                  </button>
+                                </div>
+                              </div>
+                        </form>
+                        <!-- Left Side Of Navbar -->
+                        <ul class="navbar-nav mr-2 w-75  justify-content-center">
 
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul class="navbar-nav mr-3">
+                        </ul>
+
+                        <!-- Right Side Of Navbar -->
+                        <ul class="navbar-nav ml-auto" style="display: flex;align-items: baseline;">
+                            <!-- Authentication Links -->
+                            @guest
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                </li>
+                                @if (Route::has('register'))
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('home') }}">Home</a>
+                                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                     </li>
-                                </ul>
+                                @endif
+                            @else
+                                <li class="nav-item">
+                                    <a href="{{ route('transaction') }}" class="nav-link">Transaction</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('cart',auth()->user()->id) }}" class="nav-link">
+                                        <span class="mr-4 d-flex align-content-center" id="cart">
+                                            <i class="fa fa-shopping-cart" style="font-size: 1.2rem"></i><sup class="badge" id="vue-cart-products-count"> {{ count(auth()->user()->orderQueue) }}</sup>
+                                        </span>
+                                    </a>
+                                </li>
 
-                                <form class="form-inline mr-auto form-horizontal" method="GET" action="{{ route('search') }}">
-                                    <div class="input-group search-element">
-                                        <input type="text" class="form-control" name="key" placeholder="Search">
-                                        <div class="input-group-append">
-                                          <button class="btn btn-primary" type="submit">
-                                              <i class="fa fa-search"></i>
-                                          </button>
-                                        </div>
-                                      </div>
-                                      @csrf
-                                </form>
-                                <!-- Left Side Of Navbar -->
-                                <ul class="navbar-nav mr-2 w-75  justify-content-center">
+                                <li class="nav-item dropdown">
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <img alt="image" src='@if(Auth::user()->image) {{asset(Auth::user()->image) }} @else {{ asset("image/user.png") }} @endif' class="user-img-radious-style">
+                                        {{ Auth::user()->name }} <span class="caret"></span>
+                                    </a>
 
-                                </ul>
-
-                                <!-- Right Side Of Navbar -->
-                                <ul class="navbar-nav ml-auto">
-                                    <!-- Authentication Links -->
-                                    @guest
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                        </li>
-                                        @if (Route::has('register'))
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                            </li>
-                                        @endif
-                                    @else
-                                        <a href="{{ route('cart',auth()->user()->id) }}">
-                                            <span class="mr-4 d-inline align-content-center " id="cart">
-                                                <i class="fa fa-shopping-cart"></i><sup class="badge badge-danger" id="vue-cart-products-count"> {{ count(auth()->user()->orderQueue) }}</sup>
-                                            </span>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                           onclick="event.preventDefault();
+                                                         document.getElementById('logout-form').submit();">
+                                            {{ __('Logout') }}
                                         </a>
 
-                                        <li class="nav-item dropdown">
-                                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                                <img alt="image" src="@if(Auth::user()->image) {{asset(Auth::user()->image) }} @else {{ asset('image/user.png') }} @endif" class="user-img-radious-style">
-                                                {{ Auth::user()->name }} <span class="caret"></span>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                                   onclick="event.preventDefault();
-                                                                 document.getElementById('logout-form').submit();">
-                                                    {{ __('Logout') }}
-                                                </a>
-
-                                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                </form>
-                                            </div>
-                                        </li>
-                                    @endguest
-                                </ul>
-                            </div>
-                        </div>
-                    </nav>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                            @csrf
+                                        </form>
+                                    </div>
+                                </li>
+                            @endguest
+                        </ul>
+                    </div>
                 </div>
-                <div class="row m-0">
-                    <main class="w-100">
-                        @yield('content')
-                    </main>
-                </div>
-            </div>
+            </nav>
+            <main class="w-100">
+                @yield('content')
+            </main>
         </div>
-    </div>
-
+    </div>    
+    <button id="sidebarToggle" type="button" onclick="sidebarTooggle()">
+        <i class="fa fa-bars"></i>
+    </button>
+    
     <script src="{{ asset('js/nav.js') }}"></script>
     <script>
-
         wow = new WOW(
             {
                 animateClass: 'animated',

@@ -23,8 +23,5 @@
         </div>
       </div>
     @endforeach
-    <div class="w-100 d-flex justify-content-center">
-      {{ $products->links() }}
-    </div>
   </div>
 @endsection

@@ -8,7 +8,7 @@
   <div class="row mx-auto">
     <div id="grid">
       @foreach ($products as $product)
-        <div class="grids mb-4">
+        <div class="grids mb-4 wow bounceInDown">
           <div class="card mr-0 shadow">
             <div class="card-body">
               <a href="{{ route('display.product',$product->id) }}"><img src='{{ asset("$product->image") }}' alt="" class="rounded"></a>

@@ -31,3 +31,9 @@
     top: 20em;
     left: 12em;
 }
+
+@media screen and (max-width:1024px){
+    #grid{
+        padding: 0em 0.8em;
+    }
+}

@@ -6,25 +6,36 @@
     width: 100%;
 }
 
-#sidebar{
+aside#sidebar{
+    position: fixed;
+    width: 15em;
+    height: 100%;
+    background: white;
+    transition: all 0.5s;
     border: 0px;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 3px;
     vertical-align: bottom;
     color: #000;
-    max-width: 16.6666666667% !important;
-    width: 100%;
-    height: 100%;
-    position: fixed;
+    z-index: 3;
+}
+
+#sidebar a.closebtn{
+    display: none;
+    position: absolute;
+    right: 0;
+    font-size: 1.5em;
+    margin-right: 0.5em;
+    color: seagreen;
+    text-decoration: none;
 }
 
 #sidebar a.navbar-brand{
     color: lightgray;
     text-decoration: none;
     background-color: transparent;
-    position: relative !important;
-    left: 100px !important;
+    margin-left: 1em;
     width: fit-content;
 }
 
@@ -68,7 +79,6 @@
 }
 
 .panel .list-group .list-group-item a:before{
-    /* content: "\f105"; */
     padding: 0px !important;
     font-weight: 900;
     font-size: 12px;
@@ -123,11 +133,13 @@ nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow{
     z-index: 1;
 }
 
-nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow a{
-    font-size: 12px;
+.navbar-light .navbar-nav .nav-link{
+    color: rgba(0, 0, 0, 0.7);
     font-weight: 600;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+.navbar-light .navbar-nav .nav-link:hover{
+    color: rgba(0, 0, 0, 1);
 }
 
 nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow .form-inline .search-element  .form-control{
@@ -141,14 +153,15 @@ nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow #cart{
     color: gray !important;
 }
 
-
-nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow #cart .badge{
-    font-size: xx-small !important;
+#vue-cart-products-count{
+    background-color: brown;
+    color: white;
+    height: fit-content;
+    border-radius: 20px;
+    font-size: 9px;
     position: relative;
-    border-radius: 10px !important;
-    top: -45px;
-    display: inline-block;
-    left: 17px;
+    top: -8px;
+    left: -5px;
 }
 
 a#navbarDropdown{
@@ -164,7 +177,57 @@ a#navbarDropdown img{
 }
 
 main{
-    padding-top: 7em;
+    padding-top: 1em;
     padding-left: 2em;
     padding-right: 2em;
+}
+
+#sidebarToggle{
+    outline: none;
+    display: none;
+    z-index: 2;
+    padding: 0.4rem 0.75rem;
+    font-size: 1.125rem;
+    line-height: 1;
+    background-color: transparent;
+    border: 1px solid rgba(0,0,0,0.4);
+    border-radius: 0.25rem;
+    position: fixed;
+    bottom: 0px;
+}
+
+#sidebarToggle .fa-bars{
+    font-size: 20px;
+    color: rgba(0,0,0,.6);
+}
+
+div.content{
+    padding-left: 15em;
+    background: rgba(0,0,0,0.02);
+}
+
+@media screen and (max-width: 1024px){
+    div.content {
+        padding-left: 15em;
+    }    
+}
+
+/* tablet */
+@media screen and (max-width: 768px){
+    aside#sidebar{
+        height: 100%;
+        width: 0px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-x: hidden;
+    }
+
+    div.content{
+        padding-left: 0em;
+    }
+
+    #sidebarToggle{
+        display: inline;
+    }
 }

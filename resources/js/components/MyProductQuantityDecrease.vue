@@ -1,13 +1,13 @@
 <template>
-  <a :href="dec" @click.prevent="decrease_order_quantity" :id="id">
-    <i class="fa fa-caret-down"></i>
-  </a>
+  <form :action="action" @submit.prevent="decrease_order_quantity" :id="id">
+    <button type="submit"><i class="fa fa-caret-down"></i></button>
+  </form>
 </template>
 
 <script>
 export default {
   props:{
-    dec:{
+    action:{
         type: String,
         required: true
       },
@@ -20,12 +20,12 @@ export default {
   methods: {
     decrease_order_quantity: function() {
       axios
-        .post(this.dec, {})
+        .patch(this.action, {})
         .then(response => {
           var ele = document.getElementsByClassName(this.id);
-          ele[0].firstElementChild.innerHTML = response.data.price.toFixed(2);
-          ele[0].children[1].value = response.data.price.toFixed(2);
+          ele[0].innerHTML = response.data.price.toFixed(2);
           ele[1].innerHTML = response.data.quantity;
+          ele[2].value = response.data.price.toFixed(2) * 100;
         })
         .catch(error => {
           if (error) {
@@ -36,3 +36,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  button{
+    border: 10px;
+    background: transparent;
+    outline: none;
+    position: relative;
+    left: -23.5px;
+    top: 6px;
+  }
+
+  form{
+    display: inline;
+  }
+</style>

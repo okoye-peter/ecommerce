@@ -23,7 +23,7 @@ Route::middleware('auth')->prefix('/user')->group(function(){
     Route::patch('/cart/{product}/increase', 'VueAddToCartController@increaseProductOrderQuantity')->name('increase.quantity');
     Route::patch('/cart/{product}/decrease', 'VueAddToCartController@decreaseProductOrderQuantity')->name('decrease.quantity');
     Route::delete('/carts/{order}', 'CartController@removeFromCart')->name('remove.from.cart');
-    Route::post('/pay/{id}', "PaystackController@pay")->name('checkout');
+    Route::post('/pay/{id}', "PaystackController@pay")->middleware('password.confirm')->name('checkout');
     Route::post('/payment_success', "PaystackController@paymentSuccess")->name('payment.status');
     Route::get('/transaction', 'PaystackController@transaction')->name('transaction');
 });

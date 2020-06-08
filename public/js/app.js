@@ -1920,7 +1920,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['action'],
+  props: {
+    'action': {
+      type: String,
+      required: true
+    }
+  },
   methods: {
     add_to_cart: function add_to_cart() {
       axios.post(this.action, {}).then(function (response) {

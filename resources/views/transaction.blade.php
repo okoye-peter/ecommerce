@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ asset('css/transaction.css') }}">
 @endsection
 @section('content')
-    <div class="row">
+    <div class="wrapper">
         <div class="container-fluid">
             <div class="card card-info shadow-sm">
                 <div class="card-head">

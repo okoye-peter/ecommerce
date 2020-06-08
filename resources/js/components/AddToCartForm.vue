@@ -11,7 +11,12 @@
 
 <script>
 export default {
-  props:['action'],
+  props:{
+      action: {
+        type: String,
+        required: true
+      }
+    },
 
   methods: {
     add_to_cart() {

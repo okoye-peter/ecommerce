@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\OrderQueue;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class VueAddToCartController extends Controller
 {
@@ -15,6 +15,12 @@ class VueAddToCartController extends Controller
         $this->middleware('auth');
     }
 
+    protected function validateProduct($product){
+        return Validator::make($product, [
+            'id' => 'exists:products,id'
+        ]);
+    }
+
     /**
      * @param Product
      * 
@@ -22,26 +28,27 @@ class VueAddToCartController extends Controller
      */
     public function addToCart(Product $product)
     {
-        $status = false;
-        $a = auth()->user();
+        if ($product->id) {
+            $status = false;
+            $a = auth()->user();
 
-        foreach ($a->orderQueue as $key => $value) {
-            if ($value->product_id == $product->id) {
-                $status = true;
+            foreach ($a->orderQueue as $key => $value) {
+                if ($value->product_id == $product->id) {
+                    $status = true;
+                }
+            }
+
+            if (!$status) {
+                $a->orderQueue()->create([
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'image' => $product->image,
+                    'product_id' => $product->id
+                ]);
+                return count($a->orderQueue) + 1;
             }
         }
-
-        if (!$status) {
-            OrderQueue::create([
-                'name' => $product->name,
-                'price' => $product->price,
-                'image' => $product->image,
-                'user_id' => auth()->user()->id,
-                'product_id' => $product->id
-            ]);
-        }
-
-        return count($a->orderQueue);
+        
     }
 
     /**
@@ -51,12 +58,14 @@ class VueAddToCartController extends Controller
      */
     public function increaseProductOrderQuantity(Product $product)
     {
-        $orders = auth()->user()->orderQueue->where('product_id', $product->id)->first();
-        $quantity = ++$orders->quantity;
-        $price = $product->price * $quantity;
-        $data = ["quantity" => $quantity, "price" => $price];
-        $orders->update($data);
-        return $data;
+        if ($product->id) {
+            $orders = auth()->user()->orderQueue->where('product_id', $product->id)->first();
+            $quantity = ++$orders->quantity;
+            $price = $product->price * $quantity;
+            $data = ["quantity" => $quantity, "price" => $price];
+            $orders->update($data);
+            return $data;
+        }
     }
 
     /**
@@ -66,15 +75,18 @@ class VueAddToCartController extends Controller
      */
     public function decreaseProductOrderQuantity(Product $product)
     {
-        $orders = auth()->user()->orderQueue->where('product_id', $product->id)->first();
-        if ($orders->quantity > 1) {
-            $quantity = --$orders->quantity;
-            $price = $product->price * $quantity;
-            $data = ["quantity" => $quantity, "price" => $price];
-            $orders->update($data);
+
+        if ($product->id) {
+            $orders = auth()->user()->orderQueue->where('product_id', $product->id)->first();
+            if ($orders->quantity > 1) {
+                $quantity = --$orders->quantity;
+                $price = $product->price * $quantity;
+                $data = ["quantity" => $quantity, "price" => $price];
+                $orders->update($data);
+                return $data;
+            }
+            $data = ["quantity" => $orders->quantity, "price" => $orders->price];
             return $data;
         }
-        $data = ["quantity" => $orders->quantity, "price" => $orders->price];
-        return $data;
     }
 }

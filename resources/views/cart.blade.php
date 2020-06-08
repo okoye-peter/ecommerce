@@ -43,7 +43,8 @@
                 <form action="{{ route('remove.from.cart', $item['product_id']) }}" class="mr-5 removeForm" method="POST" style="display: inline">
                     @method('DELETE')
                     @csrf
-                    <button type="submit"><img src="{{ asset('css/remove-from-cart.svg') }}" style="height:20px; width:20px;"></button>
+                    <button type="submit"><i class="fa fa-trash" style="font-size: 20px"></i></button>
+                    
                 </form>
             </span>
             <span>

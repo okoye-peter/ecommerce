@@ -6,12 +6,14 @@
 
 @section('content')
   <div class="row mx-auto">
-    <div id="grid">
+    <div class="grid-wrapper">
       @foreach ($products as $product)
-        <div class="grids mb-4 wow bounceInDown">
+        <div class="grid mb-4 wow bounceInDown">
           <div class="card mr-0 shadow">
             <div class="card-body">
-              <a href="{{ route('display.product',$product->id) }}"><img src='{{ asset("$product->image") }}' alt="" class="rounded"></a>
+              <a href="{{ route('display.product',$product->id) }}">
+                <img src='{{ asset("$product->image") }}' alt="" class="rounded">
+              </a>
               <div class="mb-2">
                 <p >
                   <strong class="text-muted">name: </strong> <i style="font-size: 14px">{{ $product->name }}</i> <br>

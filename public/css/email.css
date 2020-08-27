@@ -1,0 +1,23 @@
+*{
+    box-sizing: border-box;
+}
+
+.shadow{
+    width: 70%;
+}
+
+form{
+    font-family: cursive;   
+}
+
+.img-thumbnail{
+    border-radius: 4em;
+    padding: 2em;
+}
+
+small{
+    display: block;
+    margin-top: inherit;
+    text-align: center;
+    color: burlywood;
+}

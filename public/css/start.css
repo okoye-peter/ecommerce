@@ -1,39 +1,36 @@
-
-.wow{
-    width:  fit-content;
+.wow {
+    width: fit-content;
 }
 
-#grid{
+.grid-wrapper {
     width: inherit;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
 }
 
-#grid .grids .card{
+.grid-wrapper .grids .card {
     border-radius: 0px;
     width: 15em;
 }
 
-#grid .grids .card .card-body{
+.grid-wrapper .grids .card .card-body {
     padding: 3px;
     height: 20em;
 }
 
-#grid .grids .card .card-body a img{
+#grid .grids .card .card-body a img {
     width: 100%;
     height: 11em;
 }
 
-.btn.btn-success{
+.btn.btn-success {
     position: absolute;
     top: 20em;
     left: 12em;
 }
 
-@media screen and (max-width:1024px){
-    #grid{
+@media screen and (max-width:1024px) {
+    #grid {
         padding: 0em 0.8em;
     }
 }

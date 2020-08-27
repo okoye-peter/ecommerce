@@ -11,7 +11,7 @@
       <div class="grids mb-4">
         <div class="card mr-0 shadow">
           <div class="card-body">
-            <a href="{{ route('display.product',$product->id) }}"><img src='{{ asset("$product->image") }}' alt="" class="rounded"></a>
+            <a href="{{ route('display.product',$product->id) }}"><img src='{{ url("$product->image") }}' alt="" class="rounded"></a>
             <div class="mb-2">
               <p >
                 <strong class="text-muted">name: </strong> <i style="font-size: 14px">{{ $product->name }}</i> <br>

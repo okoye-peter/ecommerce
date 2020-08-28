@@ -5,6 +5,12 @@
 @endsection
 @section('content')
 <div class="container">
+    @if (session()->has('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Success!</strong> {{session('success')}}
+        </div>
+    @endif
     <div class="row justify-content-center align-content-center">
         <div class="col-md-8 pl-5 ml-5 mt-5 pt-3">
             <div class="card">

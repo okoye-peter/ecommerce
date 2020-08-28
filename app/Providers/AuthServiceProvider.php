@@ -24,6 +24,11 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        // select who can access websockets dashboard
+        // Gate::define('viewWebSocketsDashboard', function($user = null)
+        // {
+        //     return in_array([],$user->email);
+        // });
 
         //
     }

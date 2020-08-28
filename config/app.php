@@ -176,6 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         Ixudra\Curl\CurlServiceProvider::class,
+        JD\Cloudder\CloudderServiceProvider::class
     ],
 
     /*
@@ -228,6 +229,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Curl' => Ixudra\Curl\Facades\Curl::class,
+        'Cloudder' => JD\Cloudder\Facades\Cloudder::class
     ],
 
 ];

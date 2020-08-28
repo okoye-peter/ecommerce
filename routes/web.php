@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Http;
 
 Route::get('/', 'HomeController@index')->name('start');
 
-Auth::routes(); 
+Auth::routes(['verify' => true]);
 
 // users route
-Route::middleware('auth')->prefix('/user')->group(function(){
+Route::middleware(['auth', 'verified'])->prefix('/user')->group(function(){
     Route::get('/cart/{user}', 'CartController@view')->name('cart');
     Route::post('/cart/{product}', 'VueAddToCartController@addToCart')->name('add.to.cart');
     Route::patch('/cart/{product}/increase', 'VueAddToCartController@increaseProductOrderQuantity')->name('increase.quantity');

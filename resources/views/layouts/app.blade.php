@@ -9,9 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
@@ -29,6 +26,9 @@
     <link rel="stylesheet" href="{{ asset('css/wow.css') }}">
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
     @yield('css')
 </head>
 <body>
@@ -37,22 +37,22 @@
             <a class="navbar-brand mb-5" href="{{ url('/') }}">
                 <img alt="image" src="{{ asset('image/logo.png') }}" class="header-logo"> <span class="logo-name">Otika</span>
             </a>
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav(this)">&times;</a>
-            <h6 class="text-muted text-center mb-3">main</h6>
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav(this)"><i class="fa fa-arrow-left"></i></a>
+            <h6 class="text-center mb-3">MAIN</h6>
 
-            <ul class="list-group list-group-flush">
+            <ul class="list-group list-group-flush category_wrapper">
                 @php
                     $list =  \App\Http\Controllers\ProductController::index();
 
                 @endphp
                 @foreach ($list->groupBy('category') as $category => $subcategory)
-                    <li class="list-group-item accordion" onclick="dropDown(this)">
+                    <li class="list-group-item accordion " onclick="dropDown(this)">
                         {{ $category }}
                     </li>
-                    <div class="panel">
-                        <ul class="list-group list-group-flush">
+                    <div class="panel px-0">
+                        <ul class="list-group subcat list-group-flush">
                             @foreach ($subcategory as $cat => $sub)
-                                <li class="list-group-item">
+                                <li class="list-group-item subcat-item p-0">
                                     <a href="{{ route('subcategory.products',[$category, $sub->subcategory]) }}" id=""><i class="fa fa-angle-right"></i> {{ $sub->subcategory }}</a>
                                 </li>
                             @endforeach
@@ -62,7 +62,7 @@
             </ul>
         </aside>
         <div class="content">
-            <nav class="navbar navbar-expand-md navbar-light shadow-sm bg-white">
+            <nav class="navbar navbar-expand-md navbar-light shadow-sm navigation">
                 <div class="container-fluid mx-1">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                         <span class="navbar-toggler-icon"></span>
@@ -159,6 +159,7 @@
         );
         wow.init();
     </script>
+
     @yield('script')
 </body>
 </html>

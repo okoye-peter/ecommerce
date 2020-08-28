@@ -7,9 +7,9 @@ shopping platform, we have the best exciting offers for you. <br>
 You are welcome <strong>{{ $user->name }}</strong> to explore <span style="font-size: 25px;">&#128526;</span> .....
 </p>
 
-{{-- @component('mail::button', ['url' => ''])
-Button Text
-@endcomponent --}}
+@component('mail::button', ['url' => "http://127.0.0.1:8000/verify?code=".$user->verificationtoken])
+Verify Email.
+@endcomponent
 
 Thanks,<br>
 {{ config('app.name') }}

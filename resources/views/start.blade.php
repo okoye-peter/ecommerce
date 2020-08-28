@@ -8,7 +8,7 @@
   <div class="row mx-auto">
     <div class="grid-wrapper">
       @foreach ($products as $product)
-        <div class="grid mb-4 wow bounceInDown">
+        <div class="grid wow bounceInDown">
           <div class="card mr-0 shadow">
             <div class="card-body">
               <a href="{{ route('display.product',$product->id) }}">
@@ -16,7 +16,7 @@
               </a>
               <div class="mb-2">
                 <p >
-                  <strong class="text-muted">name: </strong> <i style="font-size: 14px">{{ $product->name }}</i> <br>
+                  <strong class="text-muted">name: </strong> <i>{{ $product->name }}</i> <br>
                   <strong class="text-muted">price: </strong> <i>${{ $product->price }}</i>
                 </p>
               </div>

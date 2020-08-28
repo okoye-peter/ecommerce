@@ -2,11 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Events\NewUserHasRegisteredEvent;
+use Illuminate\Support\Str;
 use App\Mail\WelcomeNewUserMail;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Events\NewUserHasRegisteredEvent;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class WelcomeNewUserListener
 {
@@ -25,8 +26,6 @@ class WelcomeNewUserListener
         //     $message->to($to_email)
         //     ->subject("Laravel Mail Subject");
         // });
-        
-
         Mail::to($event->user->email)->send(new WelcomeNewUserMail($event->user));
     }
 }

@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\PictureUpload;
-use App\Events\NewUserHasRegisteredEvent;
-use App\Providers\RouteServiceProvider;
 use App\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\PictureUpload;
+use App\Providers\RouteServiceProvider;
+use App\Events\NewUserHasRegisteredEvent;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -59,9 +62,9 @@ class RegisterController extends Controller
         # code...
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'avatar' => ['file', 'image', "max:10000"],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'avatar' => "sometimes|file|image|max:10000"
         ]);
     }
 
@@ -74,17 +77,28 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $image_url = request()->hasFile('avatar') ? PictureUpload::uploadImages($data) : null;
 
         $user =  User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'image' => PictureUpload::upload($data),
+            'image' => $image_url,
+            'verification_token' => Str::random(45),
             'password' => Hash::make($data['password']),
         ]);
         
-        event(new NewUserHasRegisteredEvent($user));
-
+        // event(new NewUserHasRegisteredEvent($user));
         return $user;
+    }
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        event(new NewUserHasRegisteredEvent($user = $this->create($request->all())));
+        if ($user != null) {
+            return back()->with('success', 'please check your email from verification mail');
+        }
+        return back()->withErrors(['error' => 'sorry something went wrong']);
     }
 
     public function redirectTo()

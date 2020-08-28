@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use JD\Cloudder\Facades\Cloudder;
 
 class PictureUpload extends Controller
 {
@@ -12,12 +13,11 @@ class PictureUpload extends Controller
      * @param file $data
      * @return string image full path
      */
-    static public function upload($data)
+    public static function uploadImages($data)
     {
-        if (isset($data['avatar'])) {
-            # code...
-            return 'storage/'.$data['avatar']->store('userProfilePics', 'public');
-        }
-        return null;
+        Cloudder::upload($data['avatar']);
+        $cloundary_upload = Cloudder::getResult();
+
+        return $cloundary_upload['url'];
     }
 }

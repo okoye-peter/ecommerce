@@ -39,4 +39,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function orderQueue(){
         return $this->hasMany(OrderQueue::class);
     }
+
+    public function chats(){
+        return $this->hasMany(Chat::class);
+    }
+
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
 }

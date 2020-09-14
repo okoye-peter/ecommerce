@@ -26,6 +26,6 @@ class WelcomeNewUserListener
         //     $message->to($to_email)
         //     ->subject("Laravel Mail Subject");
         // });
-        Mail::to($event->user->email)->send(new WelcomeNewUserMail($event->user));
+        Mail::to($event->user->email)->send(new WelcomeNewUserMail($event->user, $event->token));
     }
 }

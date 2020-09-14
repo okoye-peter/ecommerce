@@ -38,8 +38,8 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function redirectTo(){
-        $this->middleware('verified');
-        return "/";
-    }
+    // public function redirectTo(){
+    //     $this->middleware('verified');
+    //     return "/";
+    // }
 }

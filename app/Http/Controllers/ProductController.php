@@ -13,7 +13,15 @@ class ProductController extends Controller
      *
      * @return array
      */
-    static public function index()
+
+    public function index()
+    {
+        // broadcast(new apiWebSocketsTestEvent('welcome'));
+        $products = Product::where("quantity", '>', 0)->inRandomOrder()->paginate(20);
+        return view('start', compact('products'));
+    }
+
+    static public function category()
     {
         $products = \DB::table("products")->select('category','subcategory')->where('quantity', '>=', 1)->distinct('subcategory')->orderBy('category', "ASC")->get();
         return $products;

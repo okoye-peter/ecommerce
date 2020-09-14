@@ -6,7 +6,24 @@
 
 @section('content')
 
-<div class="row m-0 justify-content-center">
+<div class="row m-0 justify-content-center mt-4">
+    @if (session()->has('success'))
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="alert alert-success alert-dismissible fade show">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {{session('success')}}
+        </div>
+      </div>
+    @endif
+    @error('error')
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="alert alert-danger alert-dismissible fade show">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {{$message}}
+        </div>
+      </div>
+    @enderror
+
     <div class="card card-primary shadow mx-auto">
       <div class="card-header text-center">
         <h4>{{ __('Login') }}</h4>

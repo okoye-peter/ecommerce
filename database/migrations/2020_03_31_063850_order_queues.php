@@ -15,10 +15,8 @@ class OrderQueues extends Migration
     {
         Schema::create('order_queues', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->float('price', 12, 2);
             $table->integer('quantity')->default(1);
-            $table->string('image');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('product_id');
             $table->timestamps();

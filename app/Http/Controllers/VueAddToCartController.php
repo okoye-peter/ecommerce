@@ -40,9 +40,7 @@ class VueAddToCartController extends Controller
 
             if (!$status) {
                 $a->orderQueue()->create([
-                    'name' => $product->name,
                     'price' => $product->price,
-                    'image' => $product->image,
                     'product_id' => $product->id
                 ]);
                 return count($a->orderQueue) + 1;

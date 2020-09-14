@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\NewUserHasRegisteredEvent;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+use Illuminate\Support\Facades\DB;
 
 class VerificationController extends Controller
 {
@@ -38,5 +44,28 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+
+    /**
+     * Resend the email verification notification.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function resend(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return $request->wantsJson()
+                ? new Response('', 204)
+                : redirect($this->redirectPath());
+        }
+        $request->user()->update([
+            'verification_token' => Str::random(65)
+        ]);
+        $user = auth()->user();
+        $token = bin2hex($user->verification_token);
+        event(new NewUserHasRegisteredEvent($user, $token));
+        Auth::logout();
+        return redirect('/login')->with('success', 'check your email for email verification mail');
     }
 }

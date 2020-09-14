@@ -22,8 +22,7 @@ class CartController extends Controller
      */
     public function view(User $user)
     {
-        $orders = $user->orderQueue->toArray();
-        rsort($orders);
+        $orders = $user->orderQueue()->with('product')->latest()->get();
         return view('cart', compact('orders','user'));
     }
 

@@ -23,14 +23,19 @@ Route::middleware(['auth', 'verified'])->prefix('/user')->group(function(){
     Route::patch('/cart/{product}/increase', 'VueAddToCartController@increaseProductOrderQuantity')->name('increase.quantity');
     Route::patch('/cart/{product}/decrease', 'VueAddToCartController@decreaseProductOrderQuantity')->name('decrease.quantity');
     Route::delete('/carts/{order}', 'CartController@removeFromCart')->name('remove.from.cart');
-    Route::post('/pay/{id}', "PaystackController@pay")->middleware('password.confirm')->name('checkout');
-    Route::post('/payment_success', "PaystackController@paymentSuccess")->name('payment.status');
+    Route::post('/pay/{order}', "PaystackController@pay")->middleware('password.confirm')->name('checkout');
+    Route::post('{id}/payment_success', "PaystackController@paymentSuccess")->name('payment.status');
     Route::get('/transaction', 'PaystackController@transaction')->name('transaction');
 });
+// email verification
+Route::get('/verify', 'EmailVerifiedController@verify')->name('email.verify');
 
-Route::get('/chat', 'ComplaintController@fbkResponse')->name('chat');
-
-Route::get('/home', 'HomeController@index')->name('home');
+// product routes
+Route::middleware(['auth', 'verified'])->get('/home', 'ProductController@index')->name('home');
 Route::get('/products/{product}', 'ProductController@show')->name('display.product');
 Route::get('/products/{category}/{subcategory}', 'ProductController@fetchSubcategoryProducts')->name('subcategory.products');
 Route::get('/search', 'ProductController@search')->name('search');
+
+// live chat route
+Route::post('/chats/create', 'ChatsController@sendMessage')->name('chats.create');
+Route::get('/chats', 'ChatsController@fetchChats');

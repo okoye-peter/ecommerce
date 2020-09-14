@@ -75,7 +75,7 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `category`, `subcategory`, `price`, `quantity`, `image`, `created_at`, `updated_at`) VALUES
-(1, 'LCD TV 32-inched', 'Electronic', 'television', 450.99, 12, 'storage/products/BjxZoS-B4Xs.jpg', '2020-03-28 06:36:51', '2020-03-28 06:36:51'),
+(1, 'LCD TV 32-inched', 'Electronic', 'television', 450.99, 12, 'storage/products/BjxZoS-B 4Xs.jpg', '2020-03-28 06:36:51', '2020-03-28 06:36:51'),
 (2, 'PS4', 'Games', 'Play Station', 120.99, 12, 'storage/products/BjxZoS-B4Xs.jpg', '2020-03-28 06:42:11', '2020-03-28 06:42:11'),
 (3, 'Nitendo Gameboy', 'Games', 'Nitendo', 40.56, 1, 'storage/products/BjxZoS-B4Xs.jpg', '2020-03-28 14:32:25', '2020-03-28 14:32:25');
 

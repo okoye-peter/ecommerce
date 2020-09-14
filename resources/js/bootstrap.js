@@ -47,4 +47,4 @@ window.Echo = new Echo({
 window.Echo.channel('DemoChannel')
     .listen('apiWebSocketsTestEvent', (e) => {
         console.log(e)
-    })
+    });

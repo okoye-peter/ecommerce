@@ -8,21 +8,24 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+import VueChatScroll from 'vue-chat-scroll'
+Vue.use(VueChatScroll)
+    /**
+     * The following block of code may be used to automatically register your
+     * Vue components. It will recursively scan this directory for the Vue
+     * components and automatically register them with their "basename".
+     *
+     * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
+     */
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('user-chat', require('./components/UserChatComponent.vue').default);
 Vue.component('add-to-cart-form', require('./components/AddToCartForm.vue').default);
 Vue.component('my-product-quantity-increase', require('./components/MyProductQuantityIncrease.vue').default);
 Vue.component('my-product-quantity-decrease', require('./components/MyProductQuantityDecrease.vue').default);
+Vue.component('make-payment', require('./components/paystack.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -12,7 +12,7 @@
           <div class="card mr-0 shadow">
             <div class="card-body">
               <a href="{{ route('display.product',$product->id) }}">
-                <img src='{{ asset("$product->image") }}' alt="" class="rounded">
+                <img src="{{ url($product->image->first()->url) }}" alt="" class="rounded">
               </a>
               <div class="mb-2">
                 <p >

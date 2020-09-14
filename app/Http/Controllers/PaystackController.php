@@ -8,26 +8,30 @@ use Illuminate\Http\Request;
 
 class PaystackController extends Controller
 {
-    public function pay(OrderQueue $id, Request $request)
+    public function pay(OrderQueue $order)
     {
         $curl = curl_init();
 
-        $email = $request->email;
-        $amount = $request->price * 100;  //the amount in kobo. This value is actually NGN 300
+        $email = $order->user->email;
+        $amount = (int)$order->price * 100 * 350;  //the amount in kobo.
+    
+        // url to go to after payment
+        $callback_url = "127.0.0.1:8000/$order->id/payment_success";
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.paystack.co/pay/ecommerce_payment",
+            CURLOPT_URL => "https://api.paystack.co/transaction/initialize",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => json_encode([
                 'amount' => $amount,
                 'email' => $email,
-                'callback_url' => "127.0.0.1:8000/payment_success"
+                'callback_url' => $callback_url
             ]),
             CURLOPT_HTTPHEADER => [
-                "authorization: Bearer sk_test_d22a4eca3c627157c64468ab20f26c9bc5f9a56d", //replace this with your own test key
+                "authorization: Bearer sk_live_c91b7238f977c99de27e69dfbacb0b5f1ace1b54", //replace this with your own test key
+                // "authorization: Bearer sk_test_d22a4eca3c627157c64468ab20f26c9bc5f9a56d", //replace this with your own test key
                 "content-type: application/json",
-                "cache-control: no-cache"
+                // "cache-control: no-cache"
             ],
         ));
 
@@ -40,23 +44,17 @@ class PaystackController extends Controller
         }
 
         $tranx = json_decode($response, true);
-
-        if (!$tranx->status) {
+        if (!$tranx['status']) {
             // there was an error from the API
             print_r('API returned error: ' . $tranx['message']);
         }
 
-        // comment out this line if you want to redirect the user to the payment page
-        // print_r($tranx);
-
-
-        // redirect to page so User can pay
-        // uncomment this line to allow the user redirect to the payment page
         header('Location: ' . $tranx['data']['authorization_url']);
     }
 
     public function paymentSuccess()
     {
+        dd('waiting');
         $curl = curl_init();
         $reference = isset($_GET['reference']) ? $_GET['reference'] : '';
         if (!$reference) {
@@ -68,8 +66,9 @@ class PaystackController extends Controller
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
                 "accept: application/json",
+                // "authorization: Bearer sk_live_c91b7238f977c99de27e69dfbacb0b5f1ace1b54",
                 "authorization: Bearer sk_test_d22a4eca3c627157c64468ab20f26c9bc5f9a56d",
-                "cache-control: no-cache"
+                // "cache-control: no-cache"
             ],
         ));
 
@@ -89,15 +88,12 @@ class PaystackController extends Controller
         }
 
         if ('success' == $tranx->data->status) {
-            // transaction was successful...
-            // please check other things like whether you already gave value for this ref
-            // if the email matches the customer who owns the product etc
-            // Give value
             echo "<h2>Thank you for making a purchase. Your file has bee sent your email.</h2>";
         }
     }
 
-    public function transaction(){
+    public function transaction()
+    {
         return view('transaction');
     }
 }

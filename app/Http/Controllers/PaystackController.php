@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 
 class PaystackController extends Controller
 {
+    protected $id;
     public function pay(OrderQueue $order)
     {
+        $this->id = $order->id;
         $curl = curl_init();
 
         $email = $order->user->email;

@@ -24,7 +24,7 @@ Route::middleware(['auth', 'verified'])->prefix('/user')->group(function(){
     Route::patch('/cart/{product}/decrease', 'VueAddToCartController@decreaseProductOrderQuantity')->name('decrease.quantity');
     Route::delete('/carts/{order}', 'CartController@removeFromCart')->name('remove.from.cart');
     Route::post('/pay/{order}', "PaystackController@pay")->middleware('password.confirm')->name('checkout');
-    Route::post('{id}/payment_success', "PaystackController@paymentSuccess")->name('payment.status');
+    Route::post('/payment_success', "PaystackController@paymentSuccess")->name('payment.status');
     Route::get('/transaction', 'PaystackController@transaction')->name('transaction');
 });
 // email verification

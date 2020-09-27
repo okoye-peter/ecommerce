@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Http;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +25,7 @@ Route::middleware(['auth', 'verified'])->prefix('/user')->group(function(){
     Route::post('/pay/{order}', "PaystackController@pay")->middleware('password.confirm')->name('checkout');
     Route::post('/payment_success', "PaystackController@paymentSuccess")->name('payment.status');
     Route::get('/transaction', 'PaystackController@transaction')->name('transaction');
+    Route::post('vue/payment_success', 'TransactionController@saveVueTransaction')->name('vue.save.transaction');
 });
 // email verification
 Route::get('/verify', 'EmailVerifiedController@verify')->name('email.verify');
@@ -39,3 +39,5 @@ Route::get('/search', 'ProductController@search')->name('search');
 // live chat route
 Route::post('/chats/create', 'ChatsController@sendMessage')->name('chats.create');
 Route::get('/chats', 'ChatsController@fetchChats');
+
+Addchat::routes();

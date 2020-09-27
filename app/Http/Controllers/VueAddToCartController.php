@@ -45,6 +45,7 @@ class VueAddToCartController extends Controller
                 ]);
                 return count($a->orderQueue) + 1;
             }
+            return count($a->orderQueue);
         }
         
     }

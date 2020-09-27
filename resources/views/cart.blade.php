@@ -2,8 +2,10 @@
 
 @section('css')
     <link rel="stylesheet" href="{{ asset('css/cart.css') }}">    
-    <!--paystach -->
+    <!--paystack -->
     <script src="https://js.paystack.co/v1/inline.js" defer></script>
+    <!--flutterwave -->
+    <script src="https://checkout.flutterwave.com/v3.js" defer></script>
 @endsection
 
 @section('content')
@@ -48,15 +50,19 @@
                     <button type="submit"><i class="fa fa-trash" style="font-size: 20px"></i></button>
                     
                 </form> --}}
-                {{-- <make-payment user="{{auth()->user()}}" product="{{$item}}"></make-payment> --}}
+                <!-- paystack inline -->
+                <paystack-payment user="{{auth()->user()}}" product="{{$item}}" ></paystack-payment>
+                <!-- flutterwave inline -->
+                <flutterwave-payment user="{{auth()->user()}}" product="{{$item}}" tx_ref="{{ Str::random(45) }}" ></flutterwave-payment>
             </span>
             <span>
+                <!-- paystack standard -->
                 <form style="display:inline" method="POST" action="{{ route('checkout', [$item->id]) }}">
-                    <button type="submit" class="btn btn-raised btn-primary btn-sm">
-                        checkout
-                    </button>
-                @csrf
-            </form>    
+                        <button type="submit" class="btn btn-raised btn-primary btn-sm">
+                            checkout
+                        </button>
+                    @csrf
+                </form>    
             </span>
         </div>
     </div>

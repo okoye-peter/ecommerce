@@ -29,5 +29,15 @@
         {{ $products->links() }}
       </div>
     </div>
+    <div id="alert" class="add_to_cart_alert">
+      {{-- <div class="alerts">
+        <span>product added to cart successfully <a href="javascript:void(0)" onclick="endAlert(null)"></a></span>
+        <div class="time"></div>
+      </div>
+      <div class="alerts">
+        <span>product added to cart successfully <a href="javascript:void(0)" onclick="endAlert(null)"></a></span>
+        <div class="time"></div>
+      </div> --}}
+    </div>
   </div>
 @endsection

@@ -30,11 +30,21 @@
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    <!-- 1. Addchat css -->
+    <link href="<?php echo asset('assets/addchat/css/addchat.min.css') ?>" rel="stylesheet">
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     @yield('css')
 </head>
 <body>
+    <!-- 2. AddChat widget -->
+    <div id="addchat_app" 
+        data-baseurl="<?php echo url('') ?>"
+        data-csrfname="<?php echo 'X-CSRF-Token' ?>"
+        data-csrftoken="<?php echo csrf_token() ?>"
+    ></div>
+
     <div id="app">
         <aside id="sidebar">
             <a class="navbar-brand mb-5" href="{{ url('/') }}">
@@ -67,18 +77,30 @@
         <div class="content">
             <nav class="navbar navbar-expand-md navbar-light shadow-sm navigation">
                 <div class="container-fluid mx-1">
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                    <button type="button" onclick="sidebarTooggle()" class="navbar-toggler" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <div class="navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-3">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('home') }}">Home</a>
                             </li>
+                            <li class="nav-item">
+                                <form class="form-inline mr-auto form-horizontal w-100" method="GET" action="{{ route('search') }}">
+                                    <div class="input-group search-element">
+                                        <input type="text" class="form-control" name="key" placeholder="Search">
+                                        <div class="input-group-append">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </li>
                         </ul>
 
-                        <form class="form-inline mr-auto form-horizontal" method="GET" action="{{ route('search') }}">
+                        {{-- <form class="form-inline mr-auto form-horizontal" method="GET" action="{{ route('search') }}">
                             <div class="input-group search-element">
                                 <input type="text" class="form-control" name="key" placeholder="Search">
                                 <div class="input-group-append">
@@ -87,7 +109,7 @@
                                   </button>
                                 </div>
                               </div>
-                        </form>
+                        </form> --}}
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav mr-2 w-75  justify-content-center">
 
@@ -145,13 +167,10 @@
             </main>
         </div>
         
-        @auth
+        {{-- @auth
             <user-chat authuser="{{auth()->user()}}"></user-chat>
-        @endauth
+        @endauth --}}
     </div>
-    <button id="sidebarToggle" type="button" onclick="sidebarTooggle()">
-        <i class="fa fa-bars"></i>
-    </button>
     <script src="{{ asset('js/nav.js') }}"></script>
     <script>
         wow = new WOW(
@@ -167,5 +186,10 @@
     </script>
 
     @yield('script')
+    <!-- 3. AddChat JS -->
+    <!-- Modern browsers -->
+    <script type="module" src="<?php echo asset('assets/addchat/js/addchat.min.js') ?>"></script>
+    <!-- Fallback support for Older browsers -->
+    <script nomodule src="<?php echo asset('assets/addchat/js/addchat-legacy.min.js') ?>"></script>
 </body>
 </html>

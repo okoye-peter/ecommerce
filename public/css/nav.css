@@ -141,7 +141,13 @@ nav.navbar.navbar-expand-md.navbar-light.shadow {
     color: white;
 }
 
-.navigation .container-fluid .collapse .navbar-nav .nav-link {
+.navigation .container-fluid>button {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.navigation .container-fluid .navbar-collapse .navbar-nav .nav-link {
     color: white;
     font-weight: 600;
 }
@@ -218,6 +224,9 @@ div.content {
     div.content {
         padding-left: 15em;
     }
+    .navigation .container-fluid .navbar-collapse .navbar-nav .nav-item .form-inline {
+        width: 14em;
+    }
 }
 
 
@@ -237,5 +246,9 @@ div.content {
     }
     #sidebarToggle {
         display: inline;
+    }
+    .navigation .container-fluid .navbar-collapse .navbar-nav .nav-item .form-inline {
+        width: 100%;
+        margin: 1em 0em;
     }
 }

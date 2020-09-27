@@ -48,4 +48,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->morphOne(Image::class, 'imageable');
     }
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

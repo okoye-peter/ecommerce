@@ -25,7 +25,8 @@ Vue.component('user-chat', require('./components/UserChatComponent.vue').default
 Vue.component('add-to-cart-form', require('./components/AddToCartForm.vue').default);
 Vue.component('my-product-quantity-increase', require('./components/MyProductQuantityIncrease.vue').default);
 Vue.component('my-product-quantity-decrease', require('./components/MyProductQuantityDecrease.vue').default);
-Vue.component('make-payment', require('./components/paystack.vue').default);
+Vue.component('paystack-payment', require('./components/paystack.vue').default);
+Vue.component('flutterwave-payment', require('./components/flutterwave.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

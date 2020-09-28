@@ -49,12 +49,13 @@ export default {
     //       console.log('still on');
     // },
 
-    add_to_cart() {
+    add_to_cart(event) {
       axios
         .post(this.action, {})
         .then(response => {
           document.querySelector("#vue-cart-products-count").innerHTML = response.data;
-          createAlert();
+      
+          createAlert(event.target.parentNode.previousElementSibling.firstChild.children[1].textContent);
         })
         .catch(error => {
           if (error) {

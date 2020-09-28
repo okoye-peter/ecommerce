@@ -32,7 +32,7 @@ function closeNav(btn) {
     btn.style.display = 'none';
 }
 
-function endAlert(event) {
+function endAlert(event, div = null) {
     let alt = document.querySelector('.add_to_cart_alert');
     event.target.parentNode.parentNode.classList.remove('active');
     setTimeout(() => {
@@ -40,13 +40,13 @@ function endAlert(event) {
     }, 250)
 }
 
-function createAlert() {
+function createAlert(name) {
     let alert_div = document.createElement('div');
     alert_div.setAttribute('class', 'alerts');
     let span = document.createElement('span');
     let a = document.createElement('a');
     a.setAttribute('href', 'javascript:void(0)');
-    let text = document.createTextNode('product added to cart successfully ');
+    let text = document.createTextNode(`${name} added to cart successfully `);
     span.appendChild(text);
     span.appendChild(a);
     let timer_div = document.createElement('div');
@@ -57,7 +57,6 @@ function createAlert() {
     wrapper.appendChild(alert_div);
     toggleAllert(alert_div, wrapper);
 }
-// var b =
 
 function toggleAllert(div, wrapper) {
     setTimeout(() => {
@@ -83,7 +82,7 @@ function countdown(div) {
             this.width = 100;
             this.count = 0;
             setTimeout(() => {
-                if (div) {
+                if (document.querySelector('.add_to_cart_alert').contains(div)) {
                     div.parentNode.removeChild(div);
                 }
             }, 250)

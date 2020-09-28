@@ -1,23 +1,57 @@
-div.row.justify-content-center.align-content-center{
+div.row.justify-content-center.align-content-center {
     width: 100% !important;
 }
 
-#heading{
+#heading {
     border-bottom: 0.4px solid silver;
 }
 
-div.product img{
+.cart .grids {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 1em;
+}
+
+.cart .grids .card .card-body img {
+    width: 100%;
+    height: 10em;
+}
+
+.cart .grids>.card {
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    background-color: white;
+}
+
+div.product img {
     width: 120px;
     height: 70px;
 }
 
-form div.col-lg-2.py-3 div.form-group.input-group-sm a{
-    color: gray;
-}
-
-form.removeForm button{
+form.removeForm button {
     border: 0px;
     background: transparent;
     outline: none;
-    margin-right: 4em;
+    color: #d42525;
+    font-size: 12px;
+}
+
+.cart .grids .card .card-body div .d-flex form.form-inline input[type=text] {
+    width: 2em;
+    border: 1px solid #bab5b5;
+    color: #857070;
+    border-radius: 0;
+    text-align: center;
+    font-size: 10px;
+}
+
+.cart .grids .card div .d-flex {
+    padding: 0.5em;
+    justify-content: flex-end;
+    align-items: baseline;
+}
+
+.cart .grids .card .card-body .d-flex form.removeForm {
+    margin: 0;
+    display: inline-block;
+    width: fit-content;
 }

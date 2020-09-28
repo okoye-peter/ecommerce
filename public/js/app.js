@@ -1954,10 +1954,10 @@ __webpack_require__.r(__webpack_exports__);
     //       }
     //       console.log('still on');
     // },
-    add_to_cart: function add_to_cart() {
+    add_to_cart: function add_to_cart(event) {
       axios.post(this.action, {}).then(function (response) {
         document.querySelector("#vue-cart-products-count").innerHTML = response.data;
-        createAlert();
+        createAlert(event.target.parentNode.previousElementSibling.firstChild.children[1].textContent);
       })["catch"](function (error) {
         if (error) {
           console.log(error);
@@ -6826,7 +6826,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-7c53c79e]{\n  border: 10px;\n  background: transparent;\n  outline: none;\n  position: relative;\n  left: -23.5px;\n  top: 6px;\n}\nform[data-v-7c53c79e]{\n  display: inline;\n}\n", ""]);
+exports.push([module.i, "\nbutton[data-v-7c53c79e]{\n  border-radius: 6px 0px 0px 6px;\n  outline: none;\n  background: transparent;\n  border: 1px solid #bab5b5;\n  color: #857070;\n  font-size: 10px;\n  /* height: 100%; */\n}\nform[data-v-7c53c79e]{\n  display: inline;\n}\n", ""]);
 
 // exports
 
@@ -6845,7 +6845,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-24589fd5]{\n  border: 10px;\n  background: transparent;\n  outline: none;\n  position: relative;\n  top: -11px;\n}\nform[data-v-24589fd5]{\n  display: inline;\n}\n", ""]);
+exports.push([module.i, "\nbutton[data-v-24589fd5]{\n  background: transparent;\n  outline: none;\n  border: 1px solid #bab5b5;\n  color: #857070;\n  border-radius: 0px 6px 6px 0px;\n  /* height: 100%; */\n  font-size: 10px;\n}\nform[data-v-24589fd5]{\n  display: inline;\n}\n", ""]);
 
 // exports
 
@@ -45028,7 +45028,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("button", { attrs: { type: "submit" } }, [
-      _c("i", { staticClass: "fa fa-caret-down" })
+      _c("i", { staticClass: "fa fa-minus" })
     ])
   }
 ]
@@ -45073,7 +45073,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("button", { attrs: { type: "submit" } }, [
-      _c("i", { staticClass: "fa fa-caret-up" })
+      _c("i", { staticClass: "fa fa-plus" })
     ])
   }
 ]

@@ -1,5 +1,5 @@
 <template>
-  <form :action="action" @submit.prevent="decrease_order_quantity" :id="id">
+  <form :action="action" @submit.prevent="decrease_order_quantity">
     <button type="submit"><i class="fa fa-minus"></i></button>
   </form>
 </template>
@@ -10,10 +10,6 @@ export default {
     action:{
         type: String,
         required: true
-      },
-      id:{
-        type: String,
-        required: true,
       }
   },
 
@@ -22,10 +18,7 @@ export default {
       axios
         .patch(this.action, {})
         .then(response => {
-          var ele = document.getElementsByClassName(this.id);
-          ele[0].innerHTML = response.data.price.toFixed(2);
-          ele[1].innerHTML = response.data.quantity;
-          ele[2].value = response.data.price.toFixed(2) * 100;
+          this.$emit('quantity', response.data);
         })
         .catch(error => {
           if (error) {

@@ -15,7 +15,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // broadcast(new apiWebSocketsTestEvent('welcome'));
         $products = Product::where("quantity", '>' , 0)->with('image')->inRandomOrder()->paginate(20);
         return view('start', compact('products'));
     }

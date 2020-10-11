@@ -13,35 +13,32 @@
 <hr>
 <div class="cart">
     <div class="grids">
-        @foreach ($orders as $item)
+        @foreach ($orders as $order)
             <div class="card">
                 <div class="card-body p-0">
-                    <img src="{{ asset($item->product->image->first()->url) }}" alt="">
-                    <div class="mb-2">
-                        <p class="mb-0">Name: {{$item->product->name}}</p>
-                        <p>Price: ${{$item->price}}</p>
+                    <img src="{{ asset($order->product->image->first()->url) }}" alt="">
+                    <div class="mb-1">
+                        <p class="pl-2 mb-0">Name: {{$order->product->name}}</p>
+                        <p class="pl-2 mb-0">Price: $<span class="price">{{$order->price}}</span></p>
                         <div class="d-flex">
-                            <my-product-quantity-decrease id="{{$item->id}}" action="{{ route('decrease.quantity', $item->id) }}"></my-product-quantity-decrease>
-                            <form action="" class="form-inline">
-                                <input type="text" name="quantity" value="{{$item->quantity}}" onchange="if(this.vlaue == ''){console.log('changed')}">
-                            </form>
-                            <my-product-quantity-increase id="{{$item->id}}" action="{{ route('increase.quantity', $item->id) }}"></my-product-quantity-increase>
+                            {{-- <my-product-quantity-decrease id="{{$order->id}}" action="{{ route('decrease.quantity', $order->id) }}"></my-product-quantity-decrease> --}}
+                            <product-quantity quantity_action="{{ route('set.product.quantity', [$order->id]) }}" :aquantity="{{ $order->quantity }}" decrease_action="{{ route('decrease.quantity', $order->id) }}" increase_action="{{ route('increase.quantity', $order->id) }}" :order="{{ $order }}"></product-quantity>
+                            {{-- <my-product-quantity-increase id="{{$order->id}}" action="{{ route('increase.quantity', $order->id) }}"></my-product-quantity-increase> --}}
                         </div>
-                        <div class="d-flex justify-content-end p-0">
-                            <form action="{{ route('remove.from.cart', $item->product_id) }}" class="removeForm" method="POST">
-                                @method('DELETE')
+                        <div class="d-flex justify-content-end p-0 mr-2">
+                            <form action="{{ route('remove.from.cart', $order->product_id) }}" class="removeForm" method="POST">
                                 @csrf
                                 <button type="submit"><i class="fa fa-trash-alt"></i></button>
                             </form>
                             <span>
                                 <!-- paystack inline -->
-                                {{-- <paystack-payment user="{{auth()->user()}}" product="{{$item}}" ></paystack-payment> --}}
+                                {{-- <paystack-payment user="{{auth()->user()}}" product="{{$order}}" ></paystack-payment> --}}
                                 <!-- flutterwave inline -->
-                                <flutterwave-payment user="{{auth()->user()}}" product="{{$item}}" tx_ref="{{ Str::random(45) }}" ></flutterwave-payment>
+                                <flutterwave-payment user="{{auth()->user()}}" product="{{$order}}" tx_ref="{{ Str::random(45) }}" ></flutterwave-payment>
                             </span>
                             {{-- <span>
                                 <!-- paystack standard -->
-                                <form style="display:inline" method="POST" action="{{ route('checkout', [$item->id]) }}">
+                                <form style="display:inline" method="POST" action="{{ route('checkout', [$order->id]) }}">
                                         <button type="submit" class="btn btn-raised btn-primary btn-sm">
                                             checkout
                                         </button>
@@ -56,3 +53,7 @@
     </div>
 </div>
 @endsection 
+
+@section('script')
+    <script src="{{ asset('js/cart.js') }}"></script>
+@endsection

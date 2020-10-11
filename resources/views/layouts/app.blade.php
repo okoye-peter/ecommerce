@@ -31,7 +31,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- 1. Addchat css -->
-    <link href="<?php echo asset('assets/addchat/css/addchat.min.css') ?>" rel="stylesheet">
+    {{-- <link href="{{asset('assets/addchat/css/addchat.min.css') }}" rel="stylesheet"> --}}
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -39,11 +39,11 @@
 </head>
 <body>
     <!-- 2. AddChat widget -->
-    <div id="addchat_app" 
-        data-baseurl="<?php echo url('') ?>"
-        data-csrfname="<?php echo 'X-CSRF-Token' ?>"
-        data-csrftoken="<?php echo csrf_token() ?>"
-    ></div>
+    {{-- <div id="addchat_app" 
+        data-baseurl="{{ url('') }}"
+        data-csrfname="{{ 'X-CSRF-Token' }}"
+        data-csrftoken="{{ csrf_token() }}"
+    ></div> --}}
 
     <div id="app">
         <aside id="sidebar">
@@ -111,8 +111,10 @@
                               </div>
                         </form> --}}
                         <!-- Left Side Of Navbar -->
-                        <ul class="navbar-nav mr-2 w-75  justify-content-center">
-
+                        <ul class="navbar-nav mr-2 justify-content-center">
+                            <li class="nav-item">
+                                <a href="{{ URL::signedRoute('admin.layout') }}" class="nav-link">User</a>
+                            </li>
                         </ul>
 
                         <!-- Right Side Of Navbar -->
@@ -138,7 +140,7 @@
 
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <img alt="image" src='@if(Auth::user()->image) {{asset(Auth::user()->image->url) }} @else {{ asset("image/user.png") }} @endif' class="user-img-radious-style">
+                                        <img alt="image" src='@if(Auth::user()->image) {{asset(Auth::user()->image->first()->url) }} @else {{ asset("image/download.jpeg") }} @endif' class="user-img-radious-style">
                                         {{ Auth::user()->name }} <span class="caret"></span>
                                     </a>
 
@@ -167,9 +169,11 @@
             </main>
         </div>
         
-        {{-- @auth
-            <user-chat authuser="{{auth()->user()}}"></user-chat>
-        @endauth --}}
+        @if (Auth::user() && Auth::user()->isadmin == 1)
+            <admin-chart :authuser="{{auth()->user()}}"></admin-chart>
+        @elseif(Auth::user())
+            <user-chat :authuser="{{auth()->user()}}"></user-chat>    
+        @endif
     </div>
     <script src="{{ asset('js/nav.js') }}"></script>
     <script>
@@ -188,8 +192,8 @@
     @yield('script')
     <!-- 3. AddChat JS -->
     <!-- Modern browsers -->
-    <script type="module" src="<?php echo asset('assets/addchat/js/addchat.min.js') ?>"></script>
+    {{-- <script type="module" src="{{ asset('assets/addchat/js/addchat.min.js') }}"></script> --}}
     <!-- Fallback support for Older browsers -->
-    <script nomodule src="<?php echo asset('assets/addchat/js/addchat-legacy.min.js') ?>"></script>
+    {{-- <script nomodule src="{{ asset('assets/addchat/js/addchat-legacy.min.js') }}"></script> --}}
 </body>
 </html>

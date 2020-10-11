@@ -3,14 +3,14 @@
         <div class="wrapper shadow-sm pb-2" v-show="display">
             <div class="header">
                 <button @click="display = false" class="close">
-                    <span aria-hidden="true" style="font-size:20px">×</span>
+                    <span aria-hidden="true">&times;</span>
                 </button>
-                <p class="text-center" v-show="users.length == 0">
+                <p class="text-center px-3 py-1" v-show="users.length == 0">
                     Please fill out the form below to start chatting with the
                     next available agent.
                 </p>
-                <div class="row justify-content-center" v-for="(user, index) in users" :key="index">
-                    <img :src="user.image" alt="" /> <small>{{user.name}}</small>
+                <div class="row justify-content-center users" v-for="(user, index) in users" :key="index">
+                    <img v-if="user.image" :src="user.image.url" alt="" /> <small>{{user.name}}</small>
                 </div>
             </div>
             <div>
@@ -18,12 +18,12 @@
                     <div
                         v-for="(chat, index) in chats"
                         :key="index"
-                        class="mb-3"
+                        :class="{sender: authuser.id == chat.user.id}"
                     >
-                        <span>
+                        <p>
                             <strong>{{ chat.user.name }}</strong>
-                            <p>{{ chat.message }}</p>
-                        </span>
+                            <span>{{ chat.message }}</span>
+                        </p>
                     </div>
                 </div>
                 <div class="loader ml-3" v-show="typing">
@@ -33,18 +33,15 @@
                         <div></div>
                     </div>
                 </div>
-                <form action="" @submit.prevent="validate" method="post" name="chat">
+                <form action="" method="post" name="chat">
                     <div class="invalid" v-show="invalid">Please fill out this field.</div>
-                    <div class="d-flex flex-nowrap px-3" >
-                        <textarea name="message" id="" cols="40" rows="2" @keydown="invalid = false" @keypress="sendTypingEvent" v-model="message"></textarea>
-                        <button type="submit" class="submit">
-                            <i class="fa fa-paper-plane" ></i>
-                        </button>  
+                    <div class="d-flex flex-nowrap px-1" >
+                        <textarea name="message" @keydown="invalid = false" @keypress="sendTypingEvent" @keydown.prevent.enter="validate" v-model="message"></textarea>
                     </div>
                 </form>
             </div>
         </div>
-        <button @click="display = !display" >
+        <button @click="display = !display">
             <i class="fa fa-comment fa-2x"></i>
         </button>
     </div>
@@ -53,15 +50,12 @@
 <script>
 export default {
     mounted() {
-        console.log("user chat componnet loaded");
+        // console.log("user chat componnet loaded");
     },
     props: {
-        // src: {
-        //     type: String,
-        //     required: true
-        // },
         authuser:{
-            required: true
+            required: true,
+            type: Object
         }
     },
     data() {
@@ -78,12 +72,10 @@ export default {
 
     created(){
         this.fetchMessages();
-        // console.log(this.users);
-        let Authuser = JSON.parse(this.authuser);
-        Echo.join('chat')
+        Echo.join(`chat.${this.authuser.id}`)
             .here(user => {
                 console.log('here');
-                this.users = user.filter(u=>u.id != Authuser.id);
+                this.users = user.filter(u=>u.id != this.authuser.id);
             })
             .joining(user => {
                 console.log('joining');
@@ -95,8 +87,9 @@ export default {
                     u.id !=user.id &&  u.isadmin == 1
                     })
             })
-            .listen('MessageEvent', (event)=>{
+            .listen('AdminMessageEvent', (event)=>{
                 this.chats.push(event.message);
+                console.log(event);
             })
             .listenForWhisper('typing', response =>{ 
                 this.typing = true;
@@ -118,15 +111,14 @@ export default {
             }else{
                 this.sendMessage();
                 this.message = '';
+                validity.value= '';
             }
         },
         sendMessage: function(){
-            let user = JSON.parse(this.authuser);
             let id  = this.users.length > 0 ? this.users[0].id : undefined;
-            // console.log(user);
             this.chats.push({
                 message: this.message,
-                user: user
+                user: this.authuser
             }); 
             axios.post('chats/create', {
                 message: this.message,
@@ -139,11 +131,11 @@ export default {
         },
         fetchMessages: function(){
             axios.get('chats').then((response)=>{
-                this.chats = response.data
+                this.chats = response.data;
             });
         },
         sendTypingEvent: function () {
-            Echo.join('chat')
+            Echo.join(`chat.${this.authuser.id}`)
                 .whisper('typing', this.authuser)
         }
     }
@@ -163,13 +155,13 @@ export default {
     margin: 0;
     margin-bottom: 1em;
     background-color: white;
-    border-radius: 1em;
-    width: 23em;
+    border-radius: 0.4em;
+    width: 260px;
 }
 
 .chat_wrapper .wrapper .header {
-    padding: 1em;
-    border-radius: 1em 1em 0em 0em;
+    padding: .3em;
+    border-radius: 0.4em 0.4em 0em 0em;
     background-color: #1f80e3;
     margin-bottom: 0;
 }
@@ -184,8 +176,9 @@ export default {
     width: 3em;
     border-radius: 2em;
 }
-.chat_wrapper .wrapper .header .row {
+.chat_wrapper .wrapper .header .row.users {
     align-items: center;
+    margin: 0;
 }
 .chat_wrapper .wrapper .header .row small {
     font-weight: 550;
@@ -195,44 +188,41 @@ export default {
 
 .chat_wrapper .wrapper div .chats {
     margin: 0;
-    padding: 1em;
+    padding: 0.3em;
     height: 18.75em;
     overflow-y: auto;
 }
 
 .chat_wrapper .wrapper div .chats div{
-    margin-bottom: 2em;
+    margin-bottom: 0em;
+    display: flex;
+    flex-direction: column;
 }
-.chat_wrapper .wrapper div .chats div span {
+.chat_wrapper .wrapper div .chats div p {
     max-width: 15em;
     font-size: 14px;
+    margin-bottom: 0.6em;
 }
-.chat_wrapper .wrapper div .chats div span p {
+.chat_wrapper .wrapper div .chats div p span {
     margin-bottom: 0;
     text-align: justify;
-    font-size: 14px;
+    font-size: 12px;
+    overflow-wrap: anywhere;
 }
 
-.chat_wrapper .wrapper div .chats div:nth-child(even) span {
-    background-color: lightgray;
-    color: rgba(0, 0, 0, 0.555);
+.chat_wrapper .wrapper div .chats div p {
+    background-color: #e4e4e4;
+    color: #118488;
+    display: grid;
     padding: 0.6em;
     border-radius: 0.5em;
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
+    width: 15em;
+    font-size: 12px;
 }
 
-.chat_wrapper .wrapper div .chats div:nth-child(odd) {
-    display: flex;
-    align-items: flex-end;
-    flex-direction: column;
-}
-
-.chat_wrapper .wrapper div .chats div:nth-child(odd) span {
-    padding: 0.6em;
-    border-radius: 0.5em;
-    background-color: #1f80e3;
+.chat_wrapper .wrapper div .chats div.sender p {
+    background-color: #5296b1;
+    align-self: flex-end;
     color: white;
 }
 
@@ -247,18 +237,12 @@ form .invalid{
 form .d-flex textarea{
     outline: none;
     resize: none;
-    border-radius: 0.4em 0em 0em 0.4em;
+    border-radius: 0.4em;
     font-size: 12px;
+    width: 100%;
 }
 .invalid-textarea{
     border-color: #e01414;
-}
-
-.submit{
-    border: 0;
-    background-color: #173469;
-    border-radius: 0em 0.4em 0.4em 0em;
-    outline: none;
 }
 
 .loader .loader-inner div{
@@ -288,6 +272,10 @@ button i {
     margin-left: 90%;
     border: 0;
     outline: none;
+    position: absolute;
+    right: 0.5em;
+    top: 4px;
+    font-size: 16px;
 }
 
 @media screen and (max-width: 425px){

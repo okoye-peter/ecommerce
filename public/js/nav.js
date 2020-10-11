@@ -70,7 +70,6 @@ function toggleAllert(div, wrapper) {
             width: 100,
             count: 0,
         }, [div]);
-        // m(div);
     }, 900);
 }
 
@@ -93,5 +92,4 @@ function countdown(div) {
             time.style.width = this.width + "%";
         }
     }, 10);
-    // console.log(div);
 }

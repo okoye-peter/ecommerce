@@ -31,7 +31,7 @@
     </div>
     <!-- add to cart alert -->
     <div id="alert" class="add_to_cart_alert">
-
+      
     </div>
   </div>
 @endsection

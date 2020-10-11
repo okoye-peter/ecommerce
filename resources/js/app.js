@@ -23,18 +23,21 @@ Vue.use(VueChatScroll)
 
 Vue.component('user-chat', require('./components/UserChatComponent.vue').default);
 Vue.component('add-to-cart-form', require('./components/AddToCartForm.vue').default);
-Vue.component('my-product-quantity-increase', require('./components/MyProductQuantityIncrease.vue').default);
-Vue.component('my-product-quantity-decrease', require('./components/MyProductQuantityDecrease.vue').default);
+Vue.component('product-quantity-increase', require('./components/ProductQuantityIncrease.vue').default);
+Vue.component('product-quantity-decrease', require('./components/ProductQuantityDecrease.vue').default);
+Vue.component('product-quantity', require('./components/ProductQuantity.vue').default);
 Vue.component('paystack-payment', require('./components/paystack.vue').default);
 Vue.component('flutterwave-payment', require('./components/flutterwave.vue').default);
+Vue.component('admin-chat', require('./components/AdminChat.vue').default);
+Vue.component('admin-message', require('./components/AdminMessage.vue').default);
+Vue.component('user-list', require('./components/UsersList.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
+export let bus = new Vue({});
 const app = new Vue({
     el: '#app',
-
 });

@@ -18,6 +18,7 @@ class CreateChatsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->text('message');
             $table->unsignedBigInteger('receiver_id')->nullable();
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
 
             $table->foreign('receiver_id')->references('id')->on('users')->onDelete('set null');

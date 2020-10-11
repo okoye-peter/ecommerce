@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use App\OrderQueue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,12 +14,6 @@ class VueAddToCartController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-    }
-
-    protected function validateProduct($product){
-        return Validator::make($product, [
-            'id' => 'exists:products,id'
-        ]);
     }
 
     /**
@@ -51,41 +46,67 @@ class VueAddToCartController extends Controller
     }
 
     /**
-     * @param Product
+     * @param OrderQueue
      * 
      * @return array
      */
-    public function increaseProductOrderQuantity(Product $product)
+    public function increaseProductOrderQuantity(OrderQueue $order)
     {
-        if ($product->id) {
-            $orders = auth()->user()->orderQueue->where('product_id', $product->id)->first();
-            $quantity = ++$orders->quantity;
-            $price = $product->price * $quantity;
+        if ($order) {
+            $quantity = ++$order->quantity;
+            $price = $order->product->price * $quantity;
             $data = ["quantity" => $quantity, "price" => $price];
-            $orders->update($data);
+            $order->update($data);
             return $data;
         }
+        return response([
+            'error' => 'Order id not found'
+        ]);
     }
 
     /**
-     * @param Product
+     * @param OrderQueue
      * 
      * @return array
      */
-    public function decreaseProductOrderQuantity(Product $product)
+     public function decreaseProductOrderQuantity(OrderQueue $order)
     {
 
-        if ($product->id) {
-            $orders = auth()->user()->orderQueue->where('product_id', $product->id)->first();
-            if ($orders->quantity > 1) {
-                $quantity = --$orders->quantity;
-                $price = $product->price * $quantity;
+        if ($order) {
+            if ($order->quantity > 1) {
+                $quantity = --$order->quantity;
+                $price = $order->product->price * $quantity;
                 $data = ["quantity" => $quantity, "price" => $price];
-                $orders->update($data);
+                $order->update($data);
                 return $data;
             }
-            $data = ["quantity" => $orders->quantity, "price" => $orders->price];
+            $data = ["quantity" => $order->quantity, "price" => $order->price];
             return $data;
         }
+        return response([
+            'error' => 'Order id not found'
+        ]);
+    }
+    /**
+     * @param OrderQueue
+     * 
+     * @return array
+     */
+    public function productOrderQuantity(OrderQueue $order, Request $request)
+    {
+        if ($order) {
+            if ($request->quantity > 0) {
+                $price = $order->product->price * $request->quantity;
+                $data = ["quantity" => $request->quantity, "price" => $price];
+                $order->update($data);
+                return $data;
+            }
+            $data = ["quantity" => $order->quantity, "price" => $order->price];
+            $order->update($data);
+            return $data;
+        }
+        return response([
+            'error' => 'Order id not found'
+        ]);
     }
 }

@@ -56,6 +56,14 @@ export default {
         authuser:{
             required: true,
             type: Object
+        },
+        send_message:{
+            type: String,
+            required: true
+        },
+        fetch_chat:{
+            type: String,
+            required: true
         }
     },
     data() {
@@ -120,17 +128,17 @@ export default {
                 message: this.message,
                 user: this.authuser
             }); 
-            axios.post('chats/create', {
+            axios.post(this.send_message, {
                 message: this.message,
                 receiver_id: id
             }).then(function (response) {
-                // console.log(response.data);
+                console.log(response.data);
             }).catch((err)=>{
                 console.log(err);
             });
         },
         fetchMessages: function(){
-            axios.get('chats').then((response)=>{
+            axios.get(this.fetch_chat).then((response)=>{
                 this.chats = response.data;
             });
         },

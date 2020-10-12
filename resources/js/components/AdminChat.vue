@@ -1,7 +1,7 @@
 <template>
   <div>
-      <user-list></user-list>
-      <admin-message :authuser="authuser"></admin-message>
+      <user-list :users_list="list_users"></user-list>
+      <admin-message :authuser="authuser" :fetch_message="fetch_user_message" :message_send="send_message"></admin-message>
   </div>
 </template>
 
@@ -10,7 +10,19 @@ export default {
   props:{
     authuser:{
       type: Object,
-      require: true
+      required: true
+    },
+    list_users:{
+      type: String,
+      required: true
+    },
+    fetch_user_message:{
+      type: String,
+      required: true
+    },
+    send_message:{
+      type: String,
+      required: true
     }
   },
   data(){
@@ -22,7 +34,7 @@ export default {
     updateActiveUser(user){
 
     }
-  }
+  },
 
 }
 </script>

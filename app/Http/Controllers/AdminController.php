@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Chat;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Events\AdminMessageEvent;
 
@@ -12,6 +13,7 @@ class AdminController extends Controller{
     {
         $this->middleware('isadmin');
     }
+    
     public function page(){
         return view('admin');
     }
@@ -23,16 +25,19 @@ class AdminController extends Controller{
 
     public function getUserConversation(Request $request)
     {
-        $chats = Chat::where(function($q) use ($request){
+        $chats = Chat::whereBetween('created_at', [Carbon::today(), Carbon::tomorrow()])
+        ->where(function($q) use ($request){
             $q->where(function($query) use ($request){
                 $query->where('user_id', $request->id)->where('receiver_id', auth()->id());
-            })->orWhere(function($query) use ($request){
+            })
+            ->orWhere(function($query) use ($request){
                 $query->where('user_id', auth()->id())->where('receiver_id', $request->id);
+            })
+            ->orWhere(function ($q) use ($request) {
+                $q->where('user_id', $request->id)->where('receiver_id', null)->where('read_at', null);
             });
-        })->orWhere(function($q) use ($request){
-            $q->where('user_id',$request->id)->where('receiver_id', null)->where('read_at', null);
         })
-        ->whereBetween('created_at', [date('Y-m-d'), date("Y-m-d", strtotime("+1 day"))])->with('user')->get();
+        ->with('user')->get();
         return response()->json($chats);
     }
 

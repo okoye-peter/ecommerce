@@ -1990,7 +1990,19 @@ __webpack_require__.r(__webpack_exports__);
   props: {
     authuser: {
       type: Object,
-      require: true
+      required: true
+    },
+    list_users: {
+      type: String,
+      required: true
+    },
+    fetch_user_message: {
+      type: String,
+      required: true
+    },
+    send_message: {
+      type: String,
+      required: true
     }
   },
   data: function data() {
@@ -2058,6 +2070,14 @@ __webpack_require__.r(__webpack_exports__);
     authuser: {
       type: Object,
       required: true
+    },
+    fetch_message: {
+      type: String,
+      required: true
+    },
+    message_send: {
+      type: String,
+      required: true
     }
   },
   data: function data() {
@@ -2102,7 +2122,7 @@ __webpack_require__.r(__webpack_exports__);
     fetchMessages: function fetchMessages(id) {
       var _this2 = this;
 
-      axios.get("admin/user?id=".concat(id)).then(function (response) {
+      axios.get("".concat(this.fetch_message, "?id=").concat(id)).then(function (response) {
         _this2.conversations = response.data;
       })["catch"](function (err) {
         console.log(err);
@@ -2129,7 +2149,7 @@ __webpack_require__.r(__webpack_exports__);
         message: this.message,
         user: this.authuser
       });
-      axios.post('admin/chat', {
+      axios.post(this.message_send, {
         message: this.message,
         receiver_id: id
       }).then(function (response) {
@@ -2356,6 +2376,14 @@ __webpack_require__.r(__webpack_exports__);
     authuser: {
       required: true,
       type: Object
+    },
+    send_message: {
+      type: String,
+      required: true
+    },
+    fetch_chat: {
+      type: String,
+      required: true
     }
   },
   data: function data() {
@@ -2422,10 +2450,11 @@ __webpack_require__.r(__webpack_exports__);
         message: this.message,
         user: this.authuser
       });
-      axios.post('chats/create', {
+      axios.post(this.send_message, {
         message: this.message,
         receiver_id: id
-      }).then(function (response) {// console.log(response.data);
+      }).then(function (response) {
+        console.log(response.data);
       })["catch"](function (err) {
         console.log(err);
       });
@@ -2433,7 +2462,7 @@ __webpack_require__.r(__webpack_exports__);
     fetchMessages: function fetchMessages() {
       var _this2 = this;
 
-      axios.get('chats').then(function (response) {
+      axios.get(this.fetch_chat).then(function (response) {
         _this2.chats = response.data;
       });
     },
@@ -2472,6 +2501,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    users_list: {
+      type: String,
+      required: true
+    }
+  },
   created: function created() {
     this.fetchUsers();
   },
@@ -2486,7 +2521,7 @@ __webpack_require__.r(__webpack_exports__);
     fetchUsers: function fetchUsers() {
       var _this = this;
 
-      axios.get('admin/users').then(function (response) {
+      axios.get(this.users_list).then(function (response) {
         _this.users = response.data;
       })["catch"](function (err) {
         console.log(err);
@@ -45436,9 +45471,15 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("user-list"),
+      _c("user-list", { attrs: { users_list: _vm.list_users } }),
       _vm._v(" "),
-      _c("admin-message", { attrs: { authuser: _vm.authuser } })
+      _c("admin-message", {
+        attrs: {
+          authuser: _vm.authuser,
+          fetch_message: _vm.fetch_user_message,
+          message_send: _vm.send_message
+        }
+      })
     ],
     1
   )

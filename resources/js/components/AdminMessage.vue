@@ -42,6 +42,14 @@ export default {
         authuser:{
             type: Object,
             required: true
+        },
+        fetch_message:{
+            type: String,
+            required: true
+        },
+        message_send:{
+            type: String,
+            required: true
         }
     },
     data(){
@@ -81,7 +89,7 @@ export default {
     },
     methods:{
         fetchMessages(id){
-            axios.get(`admin/user?id=${id}`)
+            axios.get(`${this.fetch_message}?id=${id}`)
             .then(response=>{
                 this.conversations = response.data;
             })
@@ -110,7 +118,7 @@ export default {
                 message: this.message,
                 user: this.authuser
             }); 
-            axios.post('admin/chat', {
+            axios.post(this.message_send, {
                 message: this.message,
                 receiver_id: id
             }).then(function (response) {

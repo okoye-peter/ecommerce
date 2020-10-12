@@ -16,6 +16,12 @@
 <script>
 import { bus } from '../app';
 export default {
+    props:{
+        users_list: {
+            type: String,
+            required: true
+        }
+    },
     created(){
         this.fetchUsers();
     },
@@ -29,7 +35,7 @@ export default {
 
     methods:{
         fetchUsers: function(){
-            axios.get('admin/users')
+            axios.get(this.users_list)
             .then(response=>{
                 this.users = response.data;
             })

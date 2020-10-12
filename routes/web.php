@@ -47,6 +47,6 @@ Route::name('admin.')->middleware(['auth', 'verified','isadmin'])->prefix('admin
 
 // live chat route
 Route::post('/chats/create', 'ChatsController@sendMessage')->name('chats.create');
-Route::get('/chats', 'ChatsController@fetchChats');
+Route::get('/chats', 'ChatsController@fetchChats')->name('chat');
 Addchat::routes();
 Route::any('{anything}', 'AdminController@getUser')->where(['anything' => '[A-Za-z]+']);

@@ -16,7 +16,7 @@ class ChatsController extends Controller
 
     public function fetchChats()
     {
-        return response()->json(Chat::whereBetween('created_at',[Carbon::today(),Carbon::tomorrow()])->where(function($query){
+        return response()->json(Chat::whereBetween('created_at',[Carbon::today(), Carbon::tomorrow()])->where(function($query){
             $query->where('user_id', auth()->user()->id)->orwhere('receiver_id', auth()->user()->id);
         })->with('user')->get());
     }

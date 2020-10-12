@@ -170,9 +170,9 @@
         </div>
         
         @if (Auth::user() && Auth::user()->isadmin == 1)
-            <admin-chart :authuser="{{auth()->user()}}"></admin-chart>
+            <admin-chat :authuser="{{auth()->user()}}" list_users="{{route('admin.users')}}" fetch_user_message={{ route('admin.user') }} send_message="{{ route('admin.chat') }}"></admin-chat>
         @elseif(Auth::user())
-            <user-chat :authuser="{{auth()->user()}}"></user-chat>    
+            <user-chat :authuser="{{auth()->user()}}" send_message={{route('chats.create')}} fetch_chat= {{route('chat')}}></user-chat>    
         @endif
     </div>
     <script src="{{ asset('js/nav.js') }}"></script>

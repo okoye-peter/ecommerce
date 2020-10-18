@@ -85,6 +85,20 @@
     transition: all 2s linear;
 }
 
+.ajax-load {
+    margin-top: 3em;
+    display: none;
+}
+
+.ajax-load p {
+    font-size: 16px;
+}
+
+.ajax-load p img {
+    width: 3em;
+    margin-right: 2em;
+}
+
 @media screen and (max-width: 425px) {
     .grid-wrapper {
         grid-template-columns: repeat(2, 1fr);

@@ -13,9 +13,13 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::where("quantity", '>' , 0)->with('image')->inRandomOrder()->paginate(20);
+        $products = Product::where("quantity", '>' , 0)->with('image')->inRandomOrder()->paginate(15);
+        if ($request->ajax()) {
+            $view = view('data',compact('products'))->render();
+            return response()->json(['html'=>$view]);
+        }
         return view('start', compact('products'));
     }
 }

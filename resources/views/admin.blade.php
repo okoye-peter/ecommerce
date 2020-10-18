@@ -39,7 +39,7 @@
 </head>
 <body>
     <div id="app">
-        <admin-chat list_users="{{route('admin.users')}}" fetch_user_message={{ route('admin.user') }} send_message="{{ route('admin.chat') }}"  :authuser="{{auth()->user()}}"></admin-chat>
+        <admin-chat list_users="{{route('admin.users')}}" fetch_user_message={{ route('admin.user') }} send_message="{{ route('admin.chat') }}"  :authuser="{{collect(auth()->user()->only(['id','name','image']))}}"></admin-chat>
     </div>
 </body>
 </html>

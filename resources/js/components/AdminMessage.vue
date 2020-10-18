@@ -73,7 +73,7 @@ export default {
                 console.log('here');
             })
             .listen('MessageEvent', (event)=>{
-                this.conversations.push(event.message);
+                this.handleIncomingMessages(event.message);
             })
             .listenForWhisper('typing', response =>{ 
                 this.typing = true;
@@ -126,7 +126,16 @@ export default {
             }).catch((err)=>{
                 console.log(err);
             });
-        }
+        },
+        handleIncomingMessages(message){
+            if(this.user && this.user.id == message.user.id){
+                this.conversations.push(message);
+                return;
+            }
+            this.$emit('updateResetCount', {user: message.user, reset:false});
+        },
+
+        
     }
 }
 </script>

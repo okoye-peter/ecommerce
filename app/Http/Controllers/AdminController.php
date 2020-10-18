@@ -13,13 +13,38 @@ class AdminController extends Controller{
     {
         $this->middleware('isadmin');
     }
-    
+
     public function page(){
         return view('admin');
     }
     
-    public function users(){
-        return User::where('isadmin', 0)->with('image')->get();
+    public function users()
+    {
+
+        // \DB::listen(function($q){
+        //     dump($q->sql);
+        // });
+        $users = User::where('isadmin', 0)->with('image')->get();
+        $unreadIds = Chat::select(\DB::raw('`user_id` as sender, count(`user_id`) as messages_count'))
+        ->where(function($q){
+            $q->where(function($q){
+                $q->where('receiver_id', auth()->id())
+                ->where('read_at', null);
+            })->orWhere(function ($q) {
+                $q->where('receiver_id', null)
+                ->where('read_at', null);
+            });
+        })
+        ->groupBy('user_id')
+        ->whereBetween('created_at',[Carbon::today(), Carbon::tomorrow()])
+        ->get();
+        // dd($unreadIds);
+        $users = $users->map(function($user) use ($unreadIds){
+            $userUnread = $unreadIds->where('sender', $user->id)->first();
+            $user->unread = $userUnread ? $userUnread->messages_count : 0; 
+            return $user;
+        });
+        return response()->json($users);
     }
 
 
@@ -38,6 +63,7 @@ class AdminController extends Controller{
             });
         })
         ->with('user')->get();
+
         return response()->json($chats);
     }
 

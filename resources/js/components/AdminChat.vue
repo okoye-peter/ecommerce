@@ -1,6 +1,6 @@
 <template>
   <div>
-      <user-list :users_list="list_users"></user-list>
+      <user-list :users_list="list_users" ></user-list>
       <admin-message :authuser="authuser" :fetch_message="fetch_user_message" :message_send="send_message"></admin-message>
   </div>
 </template>
@@ -29,6 +29,11 @@ export default {
     return{
       user: null
     }
+  },
+  created(){
+    this.$on('updateResetCount', ($event) => {
+      console.log($event);
+    })
   },
   methods:{
     updateActiveUser(user){

@@ -18,5 +18,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login', 'UserApiController@index');
-Route::middleware('auth:sanctum')->get('users', 'UserApiController@users');
+Route::post('login', 'api\UserApiController@index');
+Route::middleware('auth:sanctum')->get('users', 'api\UserApiController@users');

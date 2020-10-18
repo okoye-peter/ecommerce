@@ -29,21 +29,14 @@
     <link rel="stylesheet" href="{{ asset('css/wow.css') }}">
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
-    <!-- 1. Addchat css -->
-    {{-- <link href="{{asset('assets/addchat/css/addchat.min.css') }}" rel="stylesheet"> --}}
+    <!-- JQuery -->
+    <script src="{{ asset('js/jquery-3.5.1.min.js') }}"></script>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     @yield('css')
 </head>
 <body>
-    <!-- 2. AddChat widget -->
-    {{-- <div id="addchat_app" 
-        data-baseurl="{{ url('') }}"
-        data-csrfname="{{ 'X-CSRF-Token' }}"
-        data-csrftoken="{{ csrf_token() }}"
-    ></div> --}}
 
     <div id="app">
         <aside id="sidebar">
@@ -84,7 +77,7 @@
                     <div class="navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-3">
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('home') }}">Home</a>
+                                <a class="nav-link" href="{{ route('start') }}">Home</a>
                             </li>
                             <li class="nav-item">
                                 <form class="form-inline mr-auto form-horizontal w-100" method="GET" action="{{ route('search') }}">
@@ -169,11 +162,12 @@
             </main>
         </div>
         
-        @if (Auth::user() && Auth::user()->isadmin == 1)
-            <admin-chat :authuser="{{auth()->user()}}" list_users="{{route('admin.users')}}" fetch_user_message={{ route('admin.user') }} send_message="{{ route('admin.chat') }}"></admin-chat>
+        {{-- @if (Auth::user() && Auth::user()->isadmin == 1)
+            <admin-chat :authuser="{{collect(auth()->user()->only(['id','name','image']))}}" list_users="{{route('admin.users')}}" fetch_user_message={{ route('admin.user') }} send_message="{{ route('admin.chat') }}"></admin-chat>
         @elseif(Auth::user())
-            <user-chat :authuser="{{auth()->user()}}" send_message={{route('chats.create')}} fetch_chat= {{route('chat')}}></user-chat>    
-        @endif
+            <user-chat :authuser="{{collect(auth()->user()->only(['id','name','image']))}}" send_message={{route('chats.create')}} fetch_chat= {{route('chat')}}></user-chat>    
+        @endif --}}
+        
     </div>
     <script src="{{ asset('js/nav.js') }}"></script>
     <script>
@@ -190,10 +184,5 @@
     </script>
 
     @yield('script')
-    <!-- 3. AddChat JS -->
-    <!-- Modern browsers -->
-    {{-- <script type="module" src="{{ asset('assets/addchat/js/addchat.min.js') }}"></script> --}}
-    <!-- Fallback support for Older browsers -->
-    {{-- <script nomodule src="{{ asset('assets/addchat/js/addchat-legacy.min.js') }}"></script> --}}
 </body>
 </html>

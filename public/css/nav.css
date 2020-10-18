@@ -44,6 +44,12 @@ aside#sidebar {
     width: fit-content;
 }
 
+.category_wrapper {
+    height: 86%;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+}
+
 .category_wrapper .accordion {
     color: #fff;
     cursor: pointer;

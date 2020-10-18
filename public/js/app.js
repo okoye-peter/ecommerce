@@ -2010,6 +2010,11 @@ __webpack_require__.r(__webpack_exports__);
       user: null
     };
   },
+  created: function created() {
+    this.$on('updateResetCount', function ($event) {
+      console.log($event);
+    });
+  },
   methods: {
     updateActiveUser: function updateActiveUser(user) {}
   }
@@ -2102,7 +2107,7 @@ __webpack_require__.r(__webpack_exports__);
       Echo.join("chat." + _this.user.id).here(function (user) {
         console.log('here');
       }).listen('MessageEvent', function (event) {
-        _this.conversations.push(event.message);
+        _this.handleIncomingMessages(event.message);
       }).listenForWhisper('typing', function (response) {
         _this.typing = true;
 
@@ -2156,6 +2161,17 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response.data);
       })["catch"](function (err) {
         console.log(err);
+      });
+    },
+    handleIncomingMessages: function handleIncomingMessages(message) {
+      if (this.user && this.user.id == message.user.id) {
+        this.conversations.push(message);
+        return;
+      }
+
+      this.$emit('updateResetCount', {
+        user: message.user,
+        reset: false
       });
     }
   }
@@ -2499,6 +2515,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2508,29 +2529,63 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
+    var _this = this;
+
     this.fetchUsers();
+    this.$on('updateResetCount', function ($event) {
+      console.log($event);
+
+      _this.updateUnreadCount($event.user, $event.reset);
+    });
+  },
+  computed: {
+    sortUsers: function sortUsers() {
+      var _this2 = this;
+
+      return _.sortBy(this.users, [function (user) {
+        if (_this2.selectedUser == user) {
+          return Infinity;
+        }
+
+        return user.unread;
+      }]).reverse();
+    }
   },
   data: function data() {
     return {
       users: [],
-      selectedUser: null,
-      activeUser: 0
+      selectedUser: null
     };
   },
   methods: {
     fetchUsers: function fetchUsers() {
-      var _this = this;
+      var _this3 = this;
 
       axios.get(this.users_list).then(function (response) {
-        _this.users = response.data;
+        _this3.users = response.data;
       })["catch"](function (err) {
         console.log(err);
       });
     },
     selectUser: function selectUser(user) {
       this.selectedUser = user;
-      this.activeUser = user.id;
-      _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$emit('user', user);
+      this.updateUnreadCount(user, true);
+      _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$emit("user", user);
+    },
+    updateUnreadCount: function updateUnreadCount(contact, reset) {
+      this.users = this.users.map(function (user) {
+        if (user.id != contact.id) {
+          return user;
+        }
+
+        if (reset) {
+          user.unread = 0;
+        } else {
+          user.unread += 1;
+        }
+
+        return user;
+      });
     }
   }
 });
@@ -7234,7 +7289,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nul[data-v-1a2645eb]{\n    list-style: none;\n    padding-left: 0px;\n    width: 250px;\n    position: fixed;\n    height: 100%;\n    right: 0;\n    border-left: 1px solid lightgrey;\n}\nul li[data-v-1a2645eb]{\n    display: flex;\n    align-items: center;\n    padding: 0.5em 1em;\n}\nul li[data-v-1a2645eb]:hover{\n    cursor: pointer;\n}\nul li.active[data-v-1a2645eb]{\n    background-color: #ddebf9;\n}\nul li[data-v-1a2645eb]:not(:first-child){\n    border-top: 1px solid rgb(236, 230, 230);\n}\nul li[data-v-1a2645eb]:hover{\n    background-color: rgb(236 236 236 / 50%);\n}\nul li img[data-v-1a2645eb]{\n    height: 35px;\n    width: 35px;\n    border-radius: 25px;\n    margin-right: 1em;\n}\nul li p[data-v-1a2645eb]{\n    display: flex;\n    flex-direction: column;\n    align-content: space-between;\n    margin-bottom: 0em;\n    font-size: 11px;\n}\nul li p span[data-v-1a2645eb]:first-child{\n    font-weight: 600;\n}\nul li p > span[data-v-1a2645eb]{\n    width: 130px;\n    overflow-x: hidden;\n    text-overflow: ellipsis;\n}\nul li > div[data-v-1a2645eb]{\n    position: absolute;\n    right: 1em;\n    background-color: #9ec0d4;\n    color: white;\n    font-weight: 600;\n    border-radius: 50%;\n    height: 15px;\n    width: 15px;\n    font-size: 12px;\n    text-align: center;\n}\n", ""]);
+exports.push([module.i, "\nul[data-v-1a2645eb] {\n    list-style: none;\n    padding-left: 0px;\n    width: 250px;\n    position: fixed;\n    height: 100%;\n    right: 0;\n    border-left: 1px solid lightgrey;\n}\nul li[data-v-1a2645eb] {\n    display: flex;\n    align-items: center;\n    padding: 0.5em 1em;\n}\nul li[data-v-1a2645eb]:hover {\n    cursor: pointer;\n}\nul li.active[data-v-1a2645eb] {\n    background-color: #ddebf9;\n}\nul li[data-v-1a2645eb]:not(:first-child) {\n    border-top: 1px solid rgb(236, 230, 230);\n}\nul li[data-v-1a2645eb]:hover {\n    background-color: rgb(236 236 236 / 50%);\n}\nul li img[data-v-1a2645eb] {\n    height: 35px;\n    width: 35px;\n    border-radius: 25px;\n    margin-right: 1em;\n}\nul li p[data-v-1a2645eb] {\n    display: flex;\n    flex-direction: column;\n    align-content: space-between;\n    margin-bottom: 0em;\n    font-size: 11px;\n}\nul li p span[data-v-1a2645eb]:first-child {\n    font-weight: 600;\n}\nul li p > span[data-v-1a2645eb] {\n    width: 130px;\n    overflow-x: hidden;\n    text-overflow: ellipsis;\n}\nul li > div[data-v-1a2645eb] {\n    position: absolute;\n    font-family: monospace;\n    right: 1em;\n    background-color: #26c639;\n    color: white;\n    font-weight: 600;\n    border-radius: 50%;\n    height: 15px;\n    width: 15px;\n    font-size: 10px;\n    text-align: center;\n    padding-bottom: 1.5em;\n}\n", ""]);
 
 // exports
 
@@ -46043,12 +46098,12 @@ var render = function() {
   return _c("div", [
     _c(
       "ul",
-      _vm._l(_vm.users, function(user, index) {
+      _vm._l(_vm.sortUsers, function(user, index) {
         return _c(
           "li",
           {
             key: index,
-            class: { active: _vm.activeUser == user.id },
+            class: { active: _vm.selectedUser == user },
             on: {
               click: function($event) {
                 return _vm.selectUser(user)
@@ -46068,7 +46123,7 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("div", [_vm._v("3")])
+            user.unread ? _c("div", [_vm._v(_vm._s(user.unread))]) : _vm._e()
           ]
         )
       }),

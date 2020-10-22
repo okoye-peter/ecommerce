@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\apiWebSocketsTestEvent;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -15,7 +14,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::where("quantity", '>' , 0)->with('image')->inRandomOrder()->paginate(15);
+        $products = Product::where("quantity", '>' , 0)->with('image')->inRandomOrder()->paginate(18);
         if ($request->ajax()) {
             $view = view('data',compact('products'))->render();
             return response()->json(['html'=>$view]);

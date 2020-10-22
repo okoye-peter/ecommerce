@@ -1926,14 +1926,6 @@ __webpack_require__.r(__webpack_exports__);
       required: true
     }
   },
-  data: function data() {
-    return {
-      width: 100,
-      x: false,
-      y: 0
-    };
-  },
-  computed: {},
   methods: {
     // toggleAlert(alt){
     //       alt.classList.add('active');
@@ -7175,7 +7167,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nbutton[data-v-757f0276] {\n    position: absolute;\n    top: 14.6em;\n    right: 0.5em;\n    background: yellowgreen;\n    outline: none;\n    border: 0;\n    padding: 0.25rem 0.5rem;\n    font-size: 0.7875rem;\n    line-height: 1.5;\n    border-radius: 0.2rem;\n    transition: all 1s;\n    color: white;\n}\nbutton[data-v-757f0276]:hover {\n    background: #38c172;\n}\n", ""]);
+exports.push([module.i, "\nbutton[data-v-757f0276] {\n  position: absolute;\n  top: 14.6em;\n  right: 0.5em;\n  background: yellowgreen;\n  outline: none;\n  border: 0;\n  padding: 0.25rem 0.5rem;\n  font-size: 0.7875rem;\n  line-height: 1.5;\n  border-radius: 0.2rem;\n  transition: all 1s;\n  color: white;\n}\nbutton[data-v-757f0276]:hover {\n  background: #38c172;\n}\n", ""]);
 
 // exports
 

@@ -230,6 +230,10 @@ div.content {
     background: rgba(0, 0, 0, 0.02);
 }
 
+.navigation .container-fluid .navbar-collapse .navbar-nav {
+    margin-right: 0.6em;
+}
+
 @media screen and (max-width: 1024px) {
     div.content {
         padding-left: 15em;
@@ -243,6 +247,9 @@ div.content {
 /* tablet */
 
 @media screen and (max-width: 768px) {
+    .navbar-toggler-icon {
+        display: inline-block;
+    }
     aside#sidebar {
         height: 100%;
         width: 0px;
@@ -260,5 +267,9 @@ div.content {
     .navigation .container-fluid .navbar-collapse .navbar-nav .nav-item .form-inline {
         width: 100%;
         margin: 1em 0em;
+    }
+    .navbar-expand-md .navbar-nav {
+        align-items: baseline;
+        margin-right: 0em;
     }
 }

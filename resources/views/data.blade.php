@@ -11,7 +11,14 @@
                         <strong class="text-muted">price: </strong> <i>${{ $product->price }}</i>
                     </p>
                 </div>
-                <add-to-cart-form action="{{ route('add.to.cart',$product->id)}}"></add-to-cart-form>
+                <div class="add_to_cart_form">
+                    <form action="{{ route('add.to.cart', [$product->id]) }}" method="post" onsubmit="
+                        event.preventDefault();add_to_cart(this)"
+                        >
+                        @csrf
+                        <button>Add <i class="fa fa-cart-plus"></i></button>
+                    </form>
+              </div>
             </div>
         </div>
     </div>

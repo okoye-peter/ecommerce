@@ -17,16 +17,6 @@ export default {
       required: true
     }
   },
-  data(){
-    return {
-      width: 100,
-      x: false,
-      y: 0
-    }
-  },
-  computed:{
-
-  },
 
   methods: {
     // toggleAlert(alt){
@@ -60,7 +50,7 @@ export default {
         .catch(error => {
           if (error) {
             console.log(error);
-            window.location.assign("/login");
+            window.location;
           }
         });
     },
@@ -71,20 +61,20 @@ export default {
 
 <style scoped>
 button {
-    position: absolute;
-    top: 14.6em;
-    right: 0.5em;
-    background: yellowgreen;
-    outline: none;
-    border: 0;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7875rem;
-    line-height: 1.5;
-    border-radius: 0.2rem;
-    transition: all 1s;
-    color: white;
+  position: absolute;
+  top: 14.6em;
+  right: 0.5em;
+  background: yellowgreen;
+  outline: none;
+  border: 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7875rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+  transition: all 1s;
+  color: white;
 }
 button:hover {
-    background: #38c172;
+  background: #38c172;
 }
 </style>

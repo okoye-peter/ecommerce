@@ -15,7 +15,6 @@ class ProductController extends Controller
 
     public function index()
     {
-        // broadcast(new apiWebSocketsTestEvent('welcome'));
         $products = Product::where("quantity", '>', 0)->inRandomOrder()->paginate(20);
         return view('start', compact('products'));
     }
@@ -94,13 +93,20 @@ class ProductController extends Controller
 
     public function fetchSubcategoryProducts($category, $subcategory)
     {
-        $products = Product::where('category', 'like', $category)->where('subcategory', 'like', $subcategory)->where("quantity", '>' , 0)->inRandomOrder()->paginate(20);
-
-        return view('products', compact('products'));
+        $products = Product::where('category', 'like', $category)->where('subcategory', 'like', $subcategory)->where("quantity", '>' , 0)->inRandomOrder()->paginate(18);
+        if (request()->ajax()) {
+            $view = view('data', compact('products'))->render();
+            return response()->json(['html' => $view]);
+        }
+        return view('start', compact('products'));
     }
 
     public function search(Request $request){
-        $products = Product::where('name', 'LIKE', "%".$request->input('key')."%")->get();
-        return view('products', compact('products'));
+        $products = Product::where('name', 'LIKE', "%".$request->input('key')."%")->paginate(18);
+        if (request()->ajax()) {
+            $view = view('data', compact('products'))->render();
+            return response()->json(['html' => $view]);
+        }
+        return view('start', compact('products'));
     }
 }

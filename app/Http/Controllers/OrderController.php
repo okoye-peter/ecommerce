@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Product;
 use App\OrderQueue;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class VueAddToCartController extends Controller
+class OrderController extends Controller
 {
     //
 
@@ -17,11 +17,22 @@ class VueAddToCartController extends Controller
     }
 
     /**
+     * @param User
+     * 
+     * @return view & array
+     */
+    public function index(User $user)
+    {
+        $orders = $user->orderQueue()->with('product')->latest()->get();
+        return view('cart', compact('orders', 'user'));
+    }
+
+    /**
      * @param Product
      * 
      * @return integer
      */
-    public function addToCart(Product $product)
+    public function store(Product $product)
     {
         if ($product->id) {
             $status = false;
@@ -87,12 +98,13 @@ class VueAddToCartController extends Controller
             'error' => 'Order id not found'
         ]);
     }
+
     /**
      * @param OrderQueue
      * 
      * @return array
      */
-    public function productOrderQuantity(OrderQueue $order, Request $request)
+    public function setProductOrderQuantity(OrderQueue $order, Request $request)
     {
         if ($order) {
             if ($request->quantity > 0) {
@@ -108,5 +120,12 @@ class VueAddToCartController extends Controller
         return response([
             'error' => 'Order id not found'
         ]);
+    }
+
+
+    public function destroy(Product $order)
+    {
+        OrderQueue::where("product_id", $order->id)->where("user_id", auth()->user()->id)->delete();
+        return back();
     }
 }

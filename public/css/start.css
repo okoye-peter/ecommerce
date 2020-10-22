@@ -5,8 +5,8 @@
 .grid-wrapper {
     width: inherit;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 2em;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1em;
 }
 
 .grid-wrapper .grid {
@@ -20,7 +20,7 @@
 
 .grid-wrapper .grid .card .card-body {
     padding: 3px;
-    height: 15em;
+    height: 14em;
 }
 
 .grid-wrapper .grid .card .card-body a img {
@@ -31,6 +31,28 @@
 .grid-wrapper .grid .card .card-body div>p,
 .grid-wrapper .grid .card .card-body div>p strong {
     font-size: 12px;
+}
+
+.add_to_cart_form {
+    display: flex;
+    justify-content: flex-end
+}
+
+.add_to_cart_form button {
+    position: relative;
+    background: yellowgreen;
+    outline: none;
+    border: 0;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+    transition: all 1s;
+    color: white;
+}
+
+.add_to_cart_form button:hover {
+    background: #38c172;
 }
 
 .add_to_cart_alert {
@@ -46,7 +68,8 @@
     right: -24em;
     transition: all 0.5s;
     opacity: 0;
-    background-color: rgb(113 202 118 / 80%);
+    background-color: rgb(155 222 170);
+    ;
     margin-bottom: 0.8em;
     border: 1px solid green;
     margin-bottom: 0.6em;
@@ -87,7 +110,6 @@
 
 .ajax-load {
     margin-top: 3em;
-    display: none;
 }
 
 .ajax-load p {
@@ -97,6 +119,12 @@
 .ajax-load p img {
     width: 3em;
     margin-right: 2em;
+}
+
+@media screen and (max-width: 1024px) {
+    .grid-wrapper {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 @media screen and (max-width: 425px) {

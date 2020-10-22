@@ -75,7 +75,7 @@
                     </button>
 
                     <div class="navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-3">
+                        <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('start') }}">Home</a>
                             </li>
@@ -170,6 +170,7 @@
         
     </div>
     <script src="{{ asset('js/nav.js') }}"></script>
+    @if (request()->routeIs('start') || request()->routeIs('home') || request()->routeIs('subcategory.products') || request()->routeIs('search'))
     <script>
         wow = new WOW(
             {
@@ -181,8 +182,30 @@
             }
         );
         wow.init();
-    </script>
+        function add_to_cart(form) {
+            let action = form.getAttribute('action');
+            let token = form._token;
+            $.ajax({
+                url: action,
+                method: 'post',
+                data:{_token: token.value}
 
+            })
+            .done(function(data){
+                document.querySelector("#vue-cart-products-count").innerHTML = data;
+                createAlert(form.parentNode.previousElementSibling.firstChild.children[1].textContent);
+            })
+            .fail(function(jqXHR, ajaxOptions, thrownError){
+                if (jqXHR.status == 401) {
+                    window.location.assign("/login");
+                }
+                console.log('jqXHR', jqXHR);
+                console.log('ajaxOptions', ajaxOptions);
+                console.log('thrownError', thrownError);
+            })
+        }
+    </script>
+    @endif
     @yield('script')
 </body>
 </html>

@@ -17,12 +17,12 @@ Auth::routes(['verify' => true]);
 
 // users route
 Route::middleware(['auth', 'verified'])->prefix('user')->group(function(){
-    Route::get('/cart/{user}', 'CartController@view')->name('cart');
-    Route::post('/cart/{product}', 'VueAddToCartController@addToCart')->name('add.to.cart');
-    Route::patch('/cart/{order}/increase', 'VueAddToCartController@increaseProductOrderQuantity')->name('increase.quantity');
-    Route::patch('/cart/{order}/decrease', 'VueAddToCartController@decreaseProductOrderQuantity')->name('decrease.quantity');
-    Route::patch('/cart/{order}', 'VueAddToCartController@productOrderQuantity')->name('set.product.quantity');
-    Route::post('/carts/{order}', 'CartController@removeFromCart')->name('remove.from.cart');
+    Route::post('/cart/{product}', 'OrderController@store')->name('add.to.cart');
+    Route::get('/cart/{user}', 'OrderController@index')->name('cart');
+    Route::patch('/cart/{order}/increase', 'OrderController@increaseProductOrderQuantity')->name('increase.quantity');
+    Route::patch('/cart/{order}/decrease', 'OrderController@decreaseProductOrderQuantity')->name('decrease.quantity');
+    Route::patch('/cart/{order}', 'OrderController@setProductOrderQuantity')->name('set.product.quantity');
+    Route::post('/carts/{order}', 'OrderController@destroy')->name('remove.from.cart');
     Route::post('/pay/{order}', "PaystackController@pay")->middleware('password.confirm')->name('checkout');
     Route::post('/payment_success', "PaystackController@paymentSuccess")->name('payment.status');
     Route::get('/transaction', 'PaystackController@transaction')->name('transaction');

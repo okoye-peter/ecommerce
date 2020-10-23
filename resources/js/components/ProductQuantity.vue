@@ -2,7 +2,7 @@
 <template>
     <div class="d-flex">
         <product-quantity-decrease :action="decrease_action" v-on:quantity="setProductDetails($event)"></product-quantity-decrease>
-        <form :action="quantity_action" class="form-inline" :id="order.product.name">
+        <form :action="quantity_action" class="form-inline" :id="order.product.name + order.product.id">
             <input type="text" name="quantity" v-model="quantity" @keyup="update">
         </form>
         <product-quantity-increase :action="increase_action"  v-on:quantity="setProductDetails($event)"></product-quantity-increase>
@@ -39,7 +39,8 @@ export default {
     },
     methods:{
         update: function(data){
-            let form = document.getElementById(this.order.product.name)
+            let id = this.order.product.name + this.order.product.id;
+            let form = document.getElementById(id);
             let input = form.quantity;
             if (input.value.trim() != '' && !input.value.match(/[A-Za-z]/g)) {
                 axios.patch(this.quantity_action, {
@@ -51,7 +52,8 @@ export default {
         },
 
         setProductDetails(data){
-            let form = document.getElementById(this.order.product.name);
+            let id = this.order.product.name + this.order.product.id;
+            let form = document.getElementById(id);
             form.parentNode.parentNode.previousElementSibling.querySelector('.price').innerHTML = data.price.toFixed(2);
             this.quantity = data.quantity;
         }

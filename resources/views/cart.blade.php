@@ -34,9 +34,9 @@
                                 <!-- paystack inline -->
                                 {{-- <paystack-payment user="{{auth()->user()}}" product="{{$order}}" ></paystack-payment> --}}
                                 <!-- flutterwave inline -->
-                                <flutterwave-payment user="{{auth()->user()}}" product="{{$order}}" tx_ref="{{ Str::random(45) }}" ></flutterwave-payment>
+                                {{-- <flutterwave-payment user="{{auth()->user()}}" product="{{$order}}" tx_ref="{{ Str::random(45) }}" ></flutterwave-payment> --}}
                             </span>
-                            {{-- <span>
+                            <span>
                                 <!-- paystack standard -->
                                 <form style="display:inline" method="POST" action="{{ route('checkout', [$order->id]) }}">
                                         <button type="submit" class="btn btn-raised btn-primary btn-sm">
@@ -44,7 +44,7 @@
                                         </button>
                                     @csrf
                                 </form>    
-                            </span> --}}
+                            </span>
                         </div>
                     </div>
                 </div>

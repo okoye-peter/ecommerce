@@ -17,11 +17,12 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('transaction_token');
-            $table->string('paystack_reference');
+            $table->string('paystack_ref');
+            $table->string('paystack_trxref');
+            $table->string('order_ref');
             $table->float('price', 12, 2);
             $table->integer('quantity');
-            $table->string('status');
+            $table->boolean('status');
             $table->timestamps();
         });
     }

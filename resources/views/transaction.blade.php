@@ -5,6 +5,7 @@
 @endsection
 @section('content')
     <div class="wrapper">
+        {{dd($transactions)}}
         <div class="container-fluid">
             <div class="card card-info shadow-sm">
                 <div class="card-head">

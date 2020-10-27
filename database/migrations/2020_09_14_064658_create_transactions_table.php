@@ -17,8 +17,9 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('paystack_ref');
-            $table->string('paystack_trxref');
+            $table->string('type');
+            $table->string('gateway_ref');
+            $table->string('gateway_transaction');
             $table->string('order_ref');
             $table->float('price', 12, 2);
             $table->integer('quantity');

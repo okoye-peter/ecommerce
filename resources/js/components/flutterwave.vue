@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div>
         <form >
             <button type="button" @click.prevent="makePayment()">Pay Now</button>
@@ -10,50 +10,47 @@
 export default {
     props: {
         user: {
-            required: true
+            required: true,
+            type: Object
         },
         product: {
-            required: true
+            required: true,
+            type: Object
         },
         tx_ref: {
+            required: true,
+            type: String
+        },
+        callback:{
             required: true,
             type: String
         }
     },
     data() {
         return {
-            activeUser: "",
-            products: ""
         };
-    },
-    created() {
-        this.activeUser = JSON.parse(this.user);
-        this.products = JSON.parse(this.product);
     },
 
     methods:{
         makePayment: function() {
-            console.log(this.products);
             FlutterwaveCheckout({
                 public_key: "FLWPUBK-add52e0c5a1028ac1daa8c0d406bc1b6-X",
                 tx_ref: this.tx_ref,
-                amount: this.products.price,
+                amount: this.product.price,
                 currency: "NGN",
                 country: "NG",
                 payment_options: "card, mobilemoneyghana, ussd",
-                redirect_url: // specified redirect URL
-                    // "https://callbacks.piedpiper.com/flutterwave.aspx?ismobile=34",
-                    "http://127.0.0.1:8000/vue/payment_success",
+                redirect_url: this.callback, // specified redirect URL
                 customer: {
-                    email: this.activeUser.email,
-                    phone_number: "08103078096",
-                    name: this.activeUser.name,
+                    email: this.user.email,
+                    phone_number: "+2348103078096",
+                    name: this.user.name,
                 },
                 callback: function (data) {
                     console.log(data);
                 },
                 onclose: function() {
-                    // close modal
+                    window.location.assign(`user/transactions/${this.user.id}`);
                 },
                 customizations: {
                     title: "My store",

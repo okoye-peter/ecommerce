@@ -17,16 +17,15 @@ Auth::routes(['verify' => true]);
 
 // users route
 Route::middleware(['auth', 'verified'])->prefix('user')->group(function(){
+    Route::post('/pay/{order}', "PaystackController@pay")->middleware('password.confirm')->name('paystack.checkout');
+    Route::get('/payment_success/{order}', "PaystackController@saveTransaction")->name('paystack.payment.status');
+    Route::get('/transactions/{user}', 'TransactionController@transaction')->name('transaction');
     Route::post('/cart/{product}', 'OrderController@store')->name('add.to.cart');
     Route::get('/cart/{user}', 'OrderController@index')->name('cart');
     Route::patch('/cart/{order}/increase', 'OrderController@increaseProductOrderQuantity')->name('increase.quantity');
     Route::patch('/cart/{order}/decrease', 'OrderController@decreaseProductOrderQuantity')->name('decrease.quantity');
     Route::patch('/cart/{order}', 'OrderController@setProductOrderQuantity')->name('set.product.quantity');
     Route::post('/carts/{order}', 'OrderController@destroy')->name('remove.from.cart');
-    Route::post('/pay/{order}', "PaystackController@pay")->middleware('password.confirm')->name('checkout');
-    Route::get('{order}/payment_success', "TransactionController@saveTransaction")->name('payment.status');
-    Route::get('/transaction', 'PaystackController@transaction')->name('transaction');
-    Route::post('vue/payment_success', 'TransactionController@saveTransaction')->name('vue.save.transaction');
 });
 // email verification
 Route::get('/verify', 'EmailVerifiedController@verify')->name('email.verify');

@@ -1,9 +1,7 @@
 <template>
     <div>
         <form>
-            <button type="button" @click.prevent="payWithPaystack()">
-                Pay
-            </button>
+            <button type="button" @click.prevent="payWithPaystack()">Pay Now</button>
         </form>
     </div>
 </template>
@@ -13,57 +11,69 @@
 export default {
     props: {
         user: {
-            required: true
+            required: true,
+            type: Object
+        },
+        transaction: {
+            required: true,
+            type: String
         },
         product: {
-            required: true
+            required: true,
+            type: Object
         }
     },
     data() {
         return {
-            activeUser: "",
-            products: ""
         };
     },
     created() {
-        this.activeUser = JSON.parse(this.user);
-        this.products = JSON.parse(this.product);
     },
     methods: {
         payWithPaystack: function() {
             var handler = PaystackPop.setup({
                 key: "pk_test_912e18250213dbf08dde37f548f96d724756d713",
-                email: this.activeUser.email,
-                amount: Math.round(parseInt(this.products.price) * 100 * 350),
+                email: this.user.email,
+                amount: Math.round(parseInt(this.product.price) * 100),
                 // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
                 metadata: {
                     custom_fields: [
                         {
                             display_name: "Mobile Number",
                             variable_name: "mobile_number",
-                            value: this.activeUser.phone
+                            value: this.user.phone
                         }
                     ]
                 },
-                callback: function(response) {
+                callback: (response) =>{
                     console.log(response);
-                    // alert('success. transaction ref is ' + response.reference);
-                    axios.post('user/vue/payment_success',{
-                        'product_id': this.products.product.id,
-                        'paystack_reference': response.reference,
-                        'price': this.products.price,
-                        'quantity': this.products.quantity,
-                        'status': response.status
-                    }).then(function () {
-                        window.location.assign('/transactions');
-                    })
+                    this.saveTransaction(response);
+
                 },
                 onClose: function() {
-                    // alert("window closed");
+                    alert("window closed");
                 }
             });
             handler.openIframe();
+        },
+        saveTransaction(response){
+            let link = `/user/payment_success/${this.product.id}?reference=${response.reference}&transaction=${response.transaction}`;
+            axios.get(link)
+            .then((res) => {
+                console.log(res.data)
+                window.location = this.transaction;
+            }).catch(err=>{
+                console.log(err);
+            })
         }
     }
 };
 </script>
+<style scoped>
+    button{
+        outline: none;
+        border: 0;
+        background: gold;
+        color: white;
+    }
+</style>

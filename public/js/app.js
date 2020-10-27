@@ -2606,48 +2606,46 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     user: {
-      required: true
+      required: true,
+      type: Object
     },
     product: {
-      required: true
+      required: true,
+      type: Object
     },
     tx_ref: {
+      required: true,
+      type: String
+    },
+    callback: {
       required: true,
       type: String
     }
   },
   data: function data() {
-    return {
-      activeUser: "",
-      products: ""
-    };
-  },
-  created: function created() {
-    this.activeUser = JSON.parse(this.user);
-    this.products = JSON.parse(this.product);
+    return {};
   },
   methods: {
     makePayment: function makePayment() {
-      console.log(this.products);
       FlutterwaveCheckout({
         public_key: "FLWPUBK-add52e0c5a1028ac1daa8c0d406bc1b6-X",
         tx_ref: this.tx_ref,
-        amount: this.products.price,
+        amount: this.product.price,
         currency: "NGN",
         country: "NG",
         payment_options: "card, mobilemoneyghana, ussd",
-        redirect_url: // specified redirect URL
-        // "https://callbacks.piedpiper.com/flutterwave.aspx?ismobile=34",
-        "http://127.0.0.1:8000/vue/payment_success",
+        redirect_url: this.callback,
+        // specified redirect URL
         customer: {
-          email: this.activeUser.email,
-          phone_number: "08103078096",
-          name: this.activeUser.name
+          email: this.user.email,
+          phone_number: "+2348103078096",
+          name: this.user.name
         },
         callback: function callback(data) {
           console.log(data);
         },
-        onclose: function onclose() {// close modal
+        onclose: function onclose() {
+          window.location.assign("user/transactions/".concat(this.user.id));
         },
         customizations: {
           title: "My store",
@@ -2679,58 +2677,62 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     user: {
-      required: true
+      required: true,
+      type: Object
+    },
+    transaction: {
+      required: true,
+      type: String
     },
     product: {
-      required: true
+      required: true,
+      type: Object
     }
   },
   data: function data() {
-    return {
-      activeUser: "",
-      products: ""
-    };
+    return {};
   },
-  created: function created() {
-    this.activeUser = JSON.parse(this.user);
-    this.products = JSON.parse(this.product);
-  },
+  created: function created() {},
   methods: {
     payWithPaystack: function payWithPaystack() {
+      var _this = this;
+
       var handler = PaystackPop.setup({
         key: "pk_test_912e18250213dbf08dde37f548f96d724756d713",
-        email: this.activeUser.email,
-        amount: Math.round(parseInt(this.products.price) * 100 * 350),
+        email: this.user.email,
+        amount: Math.round(parseInt(this.product.price) * 100),
         // ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
         metadata: {
           custom_fields: [{
             display_name: "Mobile Number",
             variable_name: "mobile_number",
-            value: this.activeUser.phone
+            value: this.user.phone
           }]
         },
         callback: function callback(response) {
-          console.log(response); // alert('success. transaction ref is ' + response.reference);
+          console.log(response);
 
-          axios.post('user/vue/payment_success', {
-            'product_id': this.products.product.id,
-            'paystack_reference': response.reference,
-            'price': this.products.price,
-            'quantity': this.products.quantity,
-            'status': response.status
-          }).then(function () {
-            window.location.assign('/transactions');
-          });
+          _this.saveTransaction(response);
         },
-        onClose: function onClose() {// alert("window closed");
+        onClose: function onClose() {
+          alert("window closed");
         }
       });
       handler.openIframe();
+    },
+    saveTransaction: function saveTransaction(response) {
+      var _this2 = this;
+
+      var link = "/user/payment_success/".concat(this.product.id, "?reference=").concat(response.reference, "&transaction=").concat(response.transaction);
+      axios.get(link).then(function (res) {
+        console.log(res.data);
+        window.location = _this2.transaction;
+      })["catch"](function (err) {
+        console.log(err);
+      });
     }
   }
 });
@@ -7303,6 +7305,25 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 // module
 exports.push([module.i, "\nbutton[data-v-8313e4cc]{\n    outline: none;\n    border: 0;\n    background: gold;\n    color: white;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\nbutton[data-v-930ee7aa]{\n    outline: none;\n    border: 0;\n    background: gold;\n    color: white;\n}\n", ""]);
 
 // exports
 
@@ -44776,6 +44797,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/lib/addStyles.js":
 /*!****************************************************!*\
   !*** ./node_modules/style-loader/lib/addStyles.js ***!
@@ -46175,10 +46226,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&":
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa& ***!
-  \***********************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&scoped=true&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&scoped=true& ***!
+  \***********************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -46203,7 +46254,7 @@ var render = function() {
             }
           }
         },
-        [_vm._v("\n            Pay\n        ")]
+        [_vm._v("Pay Now")]
       )
     ])
   ])
@@ -59262,9 +59313,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _paystack_vue_vue_type_template_id_930ee7aa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./paystack.vue?vue&type=template&id=930ee7aa& */ "./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&");
+/* harmony import */ var _paystack_vue_vue_type_template_id_930ee7aa_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./paystack.vue?vue&type=template&id=930ee7aa&scoped=true& */ "./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&scoped=true&");
 /* harmony import */ var _paystack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./paystack.vue?vue&type=script&lang=js& */ "./resources/js/components/paystack.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _paystack_vue_vue_type_style_index_0_id_930ee7aa_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css& */ "./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -59272,13 +59325,13 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _paystack_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _paystack_vue_vue_type_template_id_930ee7aa___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _paystack_vue_vue_type_template_id_930ee7aa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _paystack_vue_vue_type_template_id_930ee7aa_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _paystack_vue_vue_type_template_id_930ee7aa_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  null,
+  "930ee7aa",
   null
   
 )
@@ -59304,19 +59357,35 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&":
-/*!*****************************************************************************!*\
-  !*** ./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa& ***!
-  \*****************************************************************************/
+/***/ "./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css&":
+/*!*******************************************************************************************************!*\
+  !*** ./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css& ***!
+  \*******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_style_index_0_id_930ee7aa_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=style&index=0&id=930ee7aa&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_style_index_0_id_930ee7aa_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_style_index_0_id_930ee7aa_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_style_index_0_id_930ee7aa_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_style_index_0_id_930ee7aa_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_style_index_0_id_930ee7aa_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&scoped=true&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&scoped=true& ***!
+  \*****************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_template_id_930ee7aa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./paystack.vue?vue&type=template&id=930ee7aa& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_template_id_930ee7aa___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_template_id_930ee7aa_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./paystack.vue?vue&type=template&id=930ee7aa&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/paystack.vue?vue&type=template&id=930ee7aa&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_template_id_930ee7aa_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_template_id_930ee7aa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_paystack_vue_vue_type_template_id_930ee7aa_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

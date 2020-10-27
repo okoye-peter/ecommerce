@@ -19,7 +19,6 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('type');
             $table->string('gateway_ref');
-            $table->string('gateway_transaction');
             $table->string('order_ref');
             $table->float('price', 12, 2);
             $table->integer('quantity');

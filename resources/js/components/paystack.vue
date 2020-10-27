@@ -19,7 +19,7 @@ export default {
             type: String
         },
         product: {
-            required: true,
+        required: true,
             type: Object
         }
     },
@@ -57,7 +57,7 @@ export default {
             handler.openIframe();
         },
         saveTransaction(response){
-            let link = `/user/payment_success/${this.product.id}?reference=${response.reference}&transaction=${response.transaction}`;
+            let link = `/user/payment_success/${this.product.id}?reference=${response.reference}`;
             axios.get(link)
             .then((res) => {
                 console.log(res.data)

@@ -32,18 +32,18 @@
                             </form>
                             <span>
                                 <!-- paystack inline -->
-                                <paystack-payment :user="{{auth()->user()}}" :product="{{$order}}" transaction="{{route('transaction', $order->user_id)}}"></paystack-payment>
+                                {{-- <paystack-payment :user="{{auth()->user()}}" :product="{{$order}}" transaction="{{route('transaction', $order->user_id)}}"></paystack-payment> --}}
                                 <!-- flutterwave inline -->
                                 {{-- <flutterwave-payment :user="{{auth()->user()}}" :product="{{$order}}" tx_ref="{{ Str::random(45) }}" callback={{route('payment.status', [$order->id])}}></flutterwave-payment> --}}
                             </span>
                             <span>
                                 <!-- paystack standard -->
-                                {{-- <form style="display:inline" method="POST" action="{{ route('paystack.checkout', [$order->id]) }}">
+                                <form style="display:inline" method="POST" action="{{ route('paystack.checkout', [$order->id]) }}">
                                         <button type="submit" class="btn btn-raised btn-primary btn-sm">
                                             checkout
                                         </button>
                                     @csrf
-                                </form>     --}}
+                                </form>    
                             </span>
                         </div>
                     </div>

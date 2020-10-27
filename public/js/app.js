@@ -2726,7 +2726,7 @@ __webpack_require__.r(__webpack_exports__);
     saveTransaction: function saveTransaction(response) {
       var _this2 = this;
 
-      var link = "/user/payment_success/".concat(this.product.id, "?reference=").concat(response.reference, "&transaction=").concat(response.transaction);
+      var link = "/user/payment_success/".concat(this.product.id, "?reference=").concat(response.reference);
       axios.get(link).then(function (res) {
         console.log(res.data);
         window.location = _this2.transaction;

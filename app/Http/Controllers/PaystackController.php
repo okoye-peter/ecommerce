@@ -90,7 +90,6 @@ class PaystackController extends Controller
                 'type' => "Paystack",
                 'order_ref' => bin2hex(Str::random(15)),
                 'gateway_ref' => $request->reference,
-                'gateway_transaction' => $request->transaction,
                 'price' => $order->price,
                 'quantity' => $order->quantity,
                 'status' => $tranx->status,

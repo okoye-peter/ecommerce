@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class TransactionController extends Controller
 {    
     public function transaction(User $user){
-        $transactions =  $user->transactions;
+        $transactions =  Transaction::where('user_id', $user->id)->with('product')->get();
         return view('transaction', compact('transactions'));
     }
 }

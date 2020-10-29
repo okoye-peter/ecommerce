@@ -5,8 +5,7 @@
 @endsection
 @section('content')
     <div class="wrapper">
-        {{dd($transactions)}}
-        <div class="container-fluid">
+        {{-- <div class="container-fluid">
             <div class="card card-info shadow-sm">
                 <div class="card-head">
                     <h4>products name</h4>
@@ -46,179 +45,32 @@
                     </div>
                 </div>    
             </div>
-        </div>
+        </div> --}}
         <div class="grid_wrapper">
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
+            @foreach ($transactions as $transaction)
+                <div class="grid">
+                    <div class="wrapper">
+                        @php
+                            $imgSrc = $transaction->product->image->first()->url;
+                        @endphp
+                        <img src='{{ asset("$imgSrc") }}' alt="">
+                        <div class="content">
+                            <p>Name: <span>{{ $transaction->product->name }}</span></p>
+                            <p>Quantity: <span>{{ $transaction->quantity }}</span></p>
+                            <p>Price: <span>${{ $transaction->price }}</span></p>
+                            <p>Trans_ref: <span>{{ $transaction->gateway_ref }}</span></p>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <div>
+                            <small class="text-muted">status:</small> <strong>success</strong>
+                        </div>
+                        <div>
+                            <small class="text-muted">date:</small> <strong>{{date("y-M-d, H:i:s", strtotime($transaction->created_at))}}</strong>
+                        </div>
                     </div>
                 </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="wrapper">
-                    <img src="{{ asset('image/products/mouse_computer_green_82454_1280x720.jpg') }}" alt="">
-                    <div class="content">
-                        <p>Name: <span>Product Name</span></p>
-                        <p>Quantity: <span>2</span></p>
-                        <p>Price: <span>$29.9</span></p>
-                        <p>Trans_ref: <span>hlgyukgroik'p[5iu8yw8epyrjpowqxdk090804762498934y3[ilc;jfmheuwybcvi4ob</span></p>
-                    </div>
-                </div>
-                <div class="footer">
-                    <div>
-                        <small class="text-muted">status:</small> <strong>success</strong>
-                    </div>
-                    <div>
-                        <small class="text-muted">date:</small> <strong>Jan 07, 2020.</strong>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 @endsection

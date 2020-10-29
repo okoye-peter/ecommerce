@@ -11,9 +11,15 @@
 |
 */
 
+
 Route::get('/', 'HomeController@index')->name('start');
 
 Auth::routes(['verify' => true]);
+// google authentication routes 
+Route::middleware('guest')->group(function(){
+    Route::get('/sign-in/google', 'GoogleAuthenticationController@google')->name('google.login');
+    Route::get('/sign-in/google/redirect', 'GoogleAuthenticationController@googleRedirect');
+});
 
 // users route
 Route::middleware(['auth', 'verified'])->prefix('user')->group(function(){

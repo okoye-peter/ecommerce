@@ -85,8 +85,8 @@ class RegisterController extends Controller
             $user =  User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'verification_token' => Str::random(65),
                 'password' => Hash::make($data['password']),
+                'verification_token' => Str::random(45),
             ]);
 
             if ($image_url) {

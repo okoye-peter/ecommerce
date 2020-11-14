@@ -1971,6 +1971,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
 //
 //
 //
@@ -1978,6 +1979,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     authuser: {
@@ -2002,14 +2004,8 @@ __webpack_require__.r(__webpack_exports__);
       user: null
     };
   },
-  created: function created() {
-    this.$on('updateResetCount', function ($event) {
-      console.log($event);
-    });
-  },
-  methods: {
-    updateActiveUser: function updateActiveUser(user) {}
-  }
+  created: function created() {},
+  methods: {}
 });
 
 /***/ }),
@@ -2024,6 +2020,10 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../app */ "./resources/js/app.js");
+//
+//
+//
+//
 //
 //
 //
@@ -2084,21 +2084,28 @@ __webpack_require__.r(__webpack_exports__);
       invalid: false,
       message: '',
       typing: false,
-      typingTimer: false
+      typingTimer: false,
+      defaultAvatar: null
     };
   },
   created: function created() {
     var _this = this;
 
+    this.defaultAvatar = this.loadDefaultAvatar();
+    Echo.join('admin').here(function (user) {}).joining(function (user) {// console.log(`${user.name} is in admin channel`);
+    }).listen('MessageEvent', function (e) {
+      if (_this.user == null || _this.user.id !== e.message.user_id) {
+        _this.handleIncomingMessages(e.message);
+      }
+    });
     _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$on('user', function (user) {
       if (_this.user != null) {
         Echo.leave("chat." + _this.user.id);
       }
 
       _this.user = user;
-      Echo.join("chat." + _this.user.id).here(function (user) {
-        console.log('here');
-      }).listen('MessageEvent', function (event) {
+      console.log(_this.user);
+      Echo.join("chat." + _this.user.id).here(function (users) {}).listen('MessageEvent', function (event) {
         _this.handleIncomingMessages(event.message);
       }).listenForWhisper('typing', function (response) {
         _this.typing = true;
@@ -2110,17 +2117,51 @@ __webpack_require__.r(__webpack_exports__);
         _this.typingTimer = setTimeout(function () {
           _this.typing = false;
         }, 3000);
+      }).joining(function (user) {
+        if (user.isadmin == 0) {
+          _this.user = user;
+        }
       });
 
       _this.fetchMessages(_this.user.id);
     });
   },
+  computed: {
+    displayUser: function displayUser() {
+      var default_img = document.querySelector("img[class='default_avatar']");
+      var user_img = document.querySelector("img[class='default_avatar']"); // if (this.user.image) {
+      //     user_img.src = this.user.image.url;
+      //     default_img.style.display = 'none';
+      // }else{
+      //     default_img.src = this.loadDefaultAvatar();
+      //     user_img.style.display = 'none';
+      // }
+
+      console.log('default', default_img);
+      console.log('user', user_img); // document.querySelector('#name').innerHTML = this.user.name;
+
+      console.log(document.querySelector('.header'));
+    }
+  },
   methods: {
+    loadDefaultAvatar: function loadDefaultAvatar() {
+      return window.location.origin + '/image/download.jpeg';
+    },
     fetchMessages: function fetchMessages(id) {
       var _this2 = this;
 
       axios.get("".concat(this.fetch_message, "?id=").concat(id)).then(function (response) {
+        _this2.markAsRead(id);
+
         _this2.conversations = response.data;
+      })["catch"](function (err) {
+        console.log(err);
+      });
+    },
+    markAsRead: function markAsRead(id) {
+      var url = window.location.origin + "/chats/".concat(id, "/markAsRead");
+      axios.get(url).then(function (res) {
+        console.log(res.data);
       })["catch"](function (err) {
         console.log(err);
       });
@@ -2156,15 +2197,23 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     handleIncomingMessages: function handleIncomingMessages(message) {
-      if (this.user && this.user.id == message.user.id) {
+      if (this.user && this.user.id == message.user_id) {
         this.conversations.push(message);
+        this.markAsRead(this.user.id);
         return;
       }
 
-      this.$emit('updateResetCount', {
+      _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$emit('updateResetCount', {
         user: message.user,
         reset: false
       });
+    }
+  },
+  watch: {
+    user: function user() {
+      if (this.user != null) {
+        this.displayUser;
+      }
     }
   }
 });
@@ -2377,8 +2426,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {// console.log("user chat componnet loaded");
   },
@@ -2404,31 +2451,49 @@ __webpack_require__.r(__webpack_exports__);
       message: '',
       users: [],
       typing: false,
-      typingTimer: false
+      typingTimer: false,
+      defaultAvatar: null,
+      admin: null
     };
+  },
+  computed: {
+    displayAdmin: function displayAdmin() {
+      var default_img = document.querySelector('#default_image');
+      var user_img = document.querySelector('#user_image');
+      this.admin = this.users.find(function (user) {
+        return user.isadmin == 1;
+      });
+
+      if (this.admin.image) {
+        user_img.src = this.admin.image.url;
+        default_img.style.display = 'none';
+      } else {
+        default_img.src = this.loadDefaultAvatar();
+        user_img.style.display = 'none';
+      }
+
+      document.querySelector('#name').innerHTML = this.admin.name;
+    }
   },
   created: function created() {
     var _this = this;
 
     this.fetchMessages();
-    Echo.join("chat.".concat(this.authuser.id)).here(function (user) {
-      console.log('here');
-      _this.users = user.filter(function (u) {
+    this.defaultAvatar = this.loadDefaultAvatar();
+    Echo.join("chat.".concat(this.authuser.id)).here(function (users) {
+      _this.users = users.filter(function (u) {
         return u.id != _this.authuser.id;
       });
     }).joining(function (user) {
-      console.log('joining');
-
-      _this.users.push(user);
+      if (_this.users.length <= 1) {
+        _this.users.push(user);
+      }
     }).leaving(function (user) {
-      console.log('leaving');
       _this.users = _this.users.filter(function (u) {
         u.id != user.id && u.isadmin == 1;
       });
     }).listen('AdminMessageEvent', function (event) {
       _this.chats.push(event.message);
-
-      console.log(event);
     }).listenForWhisper('typing', function (response) {
       _this.typing = true;
 
@@ -2442,6 +2507,9 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
+    loadDefaultAvatar: function loadDefaultAvatar() {
+      return window.location.origin + '/image/download.jpeg';
+    },
     validate: function validate() {
       var validity = document.chat.message;
 
@@ -2479,6 +2547,13 @@ __webpack_require__.r(__webpack_exports__);
     sendTypingEvent: function sendTypingEvent() {
       Echo.join("chat.".concat(this.authuser.id)).whisper('typing', this.authuser);
     }
+  },
+  watch: {
+    users: function users() {
+      if (this.users.length > 0 && this.users.length <= 1) {
+        this.displayAdmin;
+      }
+    }
   }
 });
 
@@ -2514,6 +2589,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -2522,53 +2600,83 @@ __webpack_require__.r(__webpack_exports__);
       required: true
     }
   },
+  data: function data() {
+    return {
+      users: [],
+      selectedUser: null,
+      id: null
+    };
+  },
   created: function created() {
     var _this = this;
 
     this.fetchUsers();
-    this.$on('updateResetCount', function ($event) {
-      console.log($event);
+    _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$on('updateResetCount', function (e) {
+      var found = false;
 
-      _this.updateUnreadCount($event.user, $event.reset);
+      _this.users.forEach(function (user) {
+        if (user.id === e.user.id) {
+          found = true;
+        }
+      });
+
+      if (!found) {
+        e.user.unread = 0;
+
+        _this.users.push(e.user);
+      }
+
+      _this.updateUnreadCount(e.user.id, e.reset);
+
+      _this.sortUsers;
     });
   },
   computed: {
     sortUsers: function sortUsers() {
       var _this2 = this;
 
-      return _.sortBy(this.users, [function (user) {
+      this.Check_if_user_is_avalaible;
+      this.users = _.sortBy(this.users, [function (user) {
         if (_this2.selectedUser == user) {
           return Infinity;
         }
 
         return user.unread;
       }]).reverse();
+    },
+    Check_if_user_is_avalaible: function Check_if_user_is_avalaible() {
+      var _this3 = this;
+
+      Echo.join("chat." + this.id).here(function (users) {
+        if (users.length > 2) {
+          Echo.leave("chat." + _this3.id);
+          _this3.selectedUser.avalaible = true;
+        } else {
+          _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$emit("user", _this3.selectedUser);
+        }
+      });
     }
-  },
-  data: function data() {
-    return {
-      users: [],
-      selectedUser: null
-    };
   },
   methods: {
     fetchUsers: function fetchUsers() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get(this.users_list).then(function (response) {
-        _this3.users = response.data;
+        _this4.users = response.data;
       })["catch"](function (err) {
         console.log(err);
       });
     },
     selectUser: function selectUser(user) {
       this.selectedUser = user;
-      this.updateUnreadCount(user, true);
-      _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$emit("user", user);
+      this.updateUnreadCount(this.selectedUser.id, true);
+      this.id = this.selectedUser.id;
+      this.sortUsers;
+      this.Check_if_user_is_avalaible;
     },
-    updateUnreadCount: function updateUnreadCount(contact, reset) {
+    updateUnreadCount: function updateUnreadCount(id, reset) {
       this.users = this.users.map(function (user) {
-        if (user.id != contact.id) {
+        if (user.id != id) {
           return user;
         }
 
@@ -7190,7 +7298,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.wrapper[data-v-79a6e5a3]{\n    border-radius: 0.8em;\n    background-color: white;\n    padding: 0em;\n    position: fixed;\n    bottom: 0;\n    right: 17.4em;\n    width: 260px;\n    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);\n}\n.wrapper .header[data-v-79a6e5a3]{\n    background-color: dodgerblue;\n    border-radius: 0.8em 0.8em 0em 0em;\n    display:flex;\n    justify-content: center;\n    align-items: center;\n    padding: 0.6em 1em;\n}\n.wrapper .header img[data-v-79a6e5a3]{\n    width: 35px;\n    height: 35px;\n    border-radius: 50%;\n    margin-right: 0.7em;\n}\n.wrapper .header p[data-v-79a6e5a3]{\n    margin-bottom: 0em;\n    color: white;\n    font-size: 12px;\n}\n.wrapper .chats[data-v-79a6e5a3]{\n    height: 250px;\n    overflow-y: auto;\n    padding: 0.5em;\n}\n.wrapper .chats div[data-v-79a6e5a3]{\n    display: flex;\n    flex-direction: column;\n    margin-bottom: 0.5em;\n}\n.wrapper .chats div p[data-v-79a6e5a3] {\n    background-color: #e4e4e4;\n    color: #118488;\n    font-size: 12px;\n    display: grid;\n    max-width: 15em;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    margin-bottom: 0em;\n}\n.wrapper .chats div p span[data-v-79a6e5a3] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.wrapper .chats div.sender p[data-v-79a6e5a3]{\n    background-color: #6d95ef;\n    color: white;\n    align-self: flex-end;\n}\nform .invalid[data-v-79a6e5a3]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-79a6e5a3]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n    margin-bottom: 0.5em;\n}\n.invalid-textarea[data-v-79a6e5a3]{\n    border-color: #e01414;\n}\n.loader .loader-inner div[data-v-79a6e5a3]{\n    background-color: #1f80e3;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n}\n", ""]);
+exports.push([module.i, "\n.wrapper[data-v-79a6e5a3]{\n    border-radius: 0.8em;\n    background-color: white;\n    padding: 0em;\n    position: fixed;\n    bottom: 0;\n    right: 17.4em;\n    width: 260px;\n    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);\n}\n.wrapper .header[data-v-79a6e5a3]{\n    background-color: dodgerblue;\n    border-radius: 0.8em 0.8em 0em 0em;\n    display:flex;\n    justify-content: center;\n    align-items: center;\n    padding: 0.6em 1em;\n}\n.wrapper .header img[data-v-79a6e5a3]{\n    width: 35px;\n    height: 35px;\n    /* display: none; */\n    border-radius: 50%;\n    margin-right: 0.7em;\n}\n.wrapper .header p[data-v-79a6e5a3]{\n    margin-bottom: 0em;\n    color: white;\n    font-size: 12px;\n}\n.wrapper .chats[data-v-79a6e5a3]{\n    height: 250px;\n    overflow-y: auto;\n    padding: 0.5em;\n}\n.wrapper .chats div[data-v-79a6e5a3]{\n    display: flex;\n    flex-direction: column;\n    margin-bottom: 0.5em;\n}\n.wrapper .chats div p[data-v-79a6e5a3] {\n    background-color: #e4e4e4;\n    color: #118488;\n    font-size: 12px;\n    display: grid;\n    max-width: 15em;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    margin-bottom: 0em;\n}\n.wrapper .chats div p span[data-v-79a6e5a3] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.wrapper .chats div.sender p[data-v-79a6e5a3]{\n    background-color: #6d95ef;\n    color: white;\n    align-self: flex-end;\n}\nform .invalid[data-v-79a6e5a3]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-79a6e5a3]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n    margin-bottom: 0.5em;\n}\n.invalid-textarea[data-v-79a6e5a3]{\n    border-color: #e01414;\n}\n.loader small[data-v-79a6e5a3]{\n    font-size: 10px;\n    font-style: italic;\n    color: #6ac5d4;\n}\na[data-v-79a6e5a3]{\n    color:darkblue\n}\n\n", ""]);
 
 // exports
 
@@ -7266,7 +7374,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.chat_wrapper[data-v-19fef29f] {\n    position: fixed;\n    bottom: 0.8em;\n    right: 1em;\n    z-index: 999;\n}\n.chat_wrapper .wrapper[data-v-19fef29f] {\n    padding: 0;\n    margin: 0;\n    margin-bottom: 1em;\n    background-color: white;\n    border-radius: 0.4em;\n    width: 260px;\n}\n.chat_wrapper .wrapper .header[data-v-19fef29f] {\n    padding: .3em;\n    border-radius: 0.4em 0.4em 0em 0em;\n    background-color: #1f80e3;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header p[data-v-19fef29f] {\n    color: white;\n    font-size: 12px;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header .row img[data-v-19fef29f] {\n    width: 3em;\n    border-radius: 2em;\n}\n.chat_wrapper .wrapper .header .row.users[data-v-19fef29f] {\n    align-items: center;\n    margin: 0;\n}\n.chat_wrapper .wrapper .header .row small[data-v-19fef29f] {\n    font-weight: 550;\n    color: white;\n    margin-left: 1em;\n}\n.chat_wrapper .wrapper div .chats[data-v-19fef29f] {\n    margin: 0;\n    padding: 0.3em;\n    height: 18.75em;\n    overflow-y: auto;\n}\n.chat_wrapper .wrapper div .chats div[data-v-19fef29f]{\n    margin-bottom: 0em;\n    display: flex;\n    flex-direction: column;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    max-width: 15em;\n    font-size: 14px;\n    margin-bottom: 0.6em;\n}\n.chat_wrapper .wrapper div .chats div p span[data-v-19fef29f] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    background-color: #e4e4e4;\n    color: #118488;\n    display: grid;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    width: 15em;\n    font-size: 12px;\n}\n.chat_wrapper .wrapper div .chats div.sender p[data-v-19fef29f] {\n    background-color: #5296b1;\n    align-self: flex-end;\n    color: white;\n}\nform .invalid[data-v-19fef29f]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-19fef29f]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n}\n.invalid-textarea[data-v-19fef29f]{\n    border-color: #e01414;\n}\n.loader .loader-inner div[data-v-19fef29f]{\n    background-color: #1f80e3;\n    width: 10px;\n    height: 10px;\n    border-radius: 5px;\n}\n.chat_wrapper > button[data-v-19fef29f] {\n    padding: 1em;\n    background-color: #1f80e3;\n    border-radius: 3em;\n    cursor: pointer;\n    border: 0;\n    outline: none;\n    float: right;\n}\nbutton i[data-v-19fef29f] {\n    font-size: 2em;\n    color: white;\n}\n.close[data-v-19fef29f]{\n    background: transparent;\n    margin-left: 90%;\n    border: 0;\n    outline: none;\n    position: absolute;\n    right: 0.5em;\n    top: 4px;\n    font-size: 16px;\n}\n@media screen and (max-width: 425px){\n.chat_wrapper > button[data-v-19fef29f] {\n        padding: 0.7em;\n        border-radius: 50em;\n        width: 3em;\n        height: 3em;\n}\n.chat_wrapper > button i[data-v-19fef29f]{\n        font-size: 22px;\n}\n}\n", ""]);
+exports.push([module.i, "\n.chat_wrapper[data-v-19fef29f] {\n    position: fixed;\n    bottom: 0.8em;\n    right: 1em;\n    z-index: 999;\n}\n.chat_wrapper .wrapper[data-v-19fef29f] {\n    padding: 0;\n    margin: 0;\n    margin-bottom: 1em;\n    background-color: white;\n    border-radius: 0.4em;\n    width: 260px;\n}\n.chat_wrapper .wrapper .header[data-v-19fef29f] {\n    padding: .3em;\n    border-radius: 0.4em 0.4em 0em 0em;\n    background-color: #1f80e3;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header p[data-v-19fef29f] {\n    color: white;\n    font-size: 12px;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header .row img[data-v-19fef29f] {\n    width: 3em;\n    border-radius: 2em;\n}\n.chat_wrapper .wrapper .header .row.users[data-v-19fef29f] {\n    align-items: center;\n    margin: 0;\n}\n.chat_wrapper .wrapper .header .row small[data-v-19fef29f] {\n    font-weight: 550;\n    color: white;\n    margin-left: 1em;\n}\n.chat_wrapper .wrapper div .chats[data-v-19fef29f] {\n    margin: 0;\n    padding: 0.3em;\n    height: 18.75em;\n    overflow-y: auto;\n}\n.chat_wrapper .wrapper div .chats div[data-v-19fef29f]{\n    margin-bottom: 0em;\n    display: flex;\n    flex-direction: column;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    max-width: 15em;\n    font-size: 14px;\n    margin-bottom: 0.6em;\n}\n.chat_wrapper .wrapper div .chats div p span[data-v-19fef29f] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    background-color: #e4e4e4;\n    color: #118488;\n    display: grid;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    width: 15em;\n    font-size: 12px;\n}\n.chat_wrapper .wrapper div .chats div.sender p[data-v-19fef29f] {\n    background-color: #5296b1;\n    align-self: flex-end;\n    color: white;\n}\nform .invalid[data-v-19fef29f]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-19fef29f]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n}\n.invalid-textarea[data-v-19fef29f]{\n    border-color: #e01414;\n}\n.chat_wrapper > button[data-v-19fef29f] {\n    padding: 1em;\n    background-color: #1f80e3;\n    border-radius: 3em;\n    cursor: pointer;\n    border: 0;\n    outline: none;\n    float: right;\n}\nbutton i[data-v-19fef29f] {\n    font-size: 2em;\n    color: white;\n}\n.close[data-v-19fef29f]{\n    background: transparent;\n    margin-left: 90%;\n    border: 0;\n    outline: none;\n    position: absolute;\n    right: 0.5em;\n    top: 4px;\n    font-size: 16px;\n}\nsmall[data-v-19fef29f]{\n    font-size: 10px;\n    font-style: italic;\n    color: #6ac5d4;\n}\n@media screen and (max-width: 425px){\n.chat_wrapper > button[data-v-19fef29f] {\n        padding: 0.7em;\n        border-radius: 50em;\n        width: 3em;\n        height: 3em;\n}\n.chat_wrapper > button i[data-v-19fef29f]{\n        font-size: 22px;\n}\n}\n", ""]);
 
 // exports
 
@@ -7285,7 +7393,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nul[data-v-1a2645eb] {\n    list-style: none;\n    padding-left: 0px;\n    width: 250px;\n    position: fixed;\n    height: 100%;\n    right: 0;\n    border-left: 1px solid lightgrey;\n}\nul li[data-v-1a2645eb] {\n    display: flex;\n    align-items: center;\n    padding: 0.5em 1em;\n}\nul li[data-v-1a2645eb]:hover {\n    cursor: pointer;\n}\nul li.active[data-v-1a2645eb] {\n    background-color: #ddebf9;\n}\nul li[data-v-1a2645eb]:not(:first-child) {\n    border-top: 1px solid rgb(236, 230, 230);\n}\nul li[data-v-1a2645eb]:hover {\n    background-color: rgb(236 236 236 / 50%);\n}\nul li img[data-v-1a2645eb] {\n    height: 35px;\n    width: 35px;\n    border-radius: 25px;\n    margin-right: 1em;\n}\nul li p[data-v-1a2645eb] {\n    display: flex;\n    flex-direction: column;\n    align-content: space-between;\n    margin-bottom: 0em;\n    font-size: 11px;\n}\nul li p span[data-v-1a2645eb]:first-child {\n    font-weight: 600;\n}\nul li p > span[data-v-1a2645eb] {\n    width: 130px;\n    overflow-x: hidden;\n    text-overflow: ellipsis;\n}\nul li > div[data-v-1a2645eb] {\n    position: absolute;\n    font-family: monospace;\n    right: 1em;\n    background-color: #26c639;\n    color: white;\n    font-weight: 600;\n    border-radius: 50%;\n    height: 15px;\n    width: 15px;\n    font-size: 10px;\n    text-align: center;\n    padding-bottom: 1.5em;\n}\n", ""]);
+exports.push([module.i, "\nul[data-v-1a2645eb] {\n    list-style: none;\n    padding-left: 0px;\n    width: 250px;\n    position: fixed;\n    height: 100%;\n    right: 0;\n    border-left: 1px solid lightgrey;\n}\nul li[data-v-1a2645eb] {\n    padding: 0.5em 1em;\n}\nul li[data-v-1a2645eb]:hover {\n    cursor: pointer;\n}\nul li.active[data-v-1a2645eb] {\n    background-color: #ddebf9;\n}\nul li[data-v-1a2645eb]:not(:first-child) {\n    border-top: 1px solid rgb(236, 230, 230);\n}\nul li[data-v-1a2645eb]:hover {\n    background-color: rgb(236 236 236 / 50%);\n}\nul li img[data-v-1a2645eb] {\n    height: 35px;\n    width: 35px;\n    border-radius: 25px;\n    margin-right: 1em;\n}\nul li div[data-v-1a2645eb] {\n    display: flex;\n    flex-direction: column;\n    align-content: space-between;\n    margin-bottom: 0em;\n    font-size: 11px;\n}\nul li div span[data-v-1a2645eb]:first-child {\n    font-weight: 600;\n}\nul li div .flex[data-v-1a2645eb]{\n    display: flex;\n    justify-content: space-between;\n    margin-top: 0.7em;\n    margin-bottom: 0;\n}\nul li div .flex > span[data-v-1a2645eb] {\n    width: 130px;\n    overflow-x: hidden;\n    text-overflow: ellipsis;\n}\nul li > div[data-v-1a2645eb]:nth-child(2) {\n    position: relative;\n    left: 93%;\n    top: -4.2em;\n    font-family: monospace;\n    background-color: #26c639;\n    color: white;\n    font-weight: 600;\n    border-radius: 50%;\n    height: 15px;\n    width: 15px;\n    font-size: 10px;\n    text-align: center;\n    padding-bottom: 1.5em;\n}\n", ""]);
 
 // exports
 
@@ -45609,13 +45717,7 @@ var render = function() {
   return _c("div", [
     _vm.user
       ? _c("div", { staticClass: "wrapper" }, [
-          _c("div", { staticClass: "header" }, [
-            _vm.user.image
-              ? _c("img", { attrs: { src: _vm.user.image.url, alt: "" } })
-              : _vm._e(),
-            _vm._v(" "),
-            _c("p", [_vm._v(_vm._s(_vm.user.name))])
-          ]),
+          _vm._m(0),
           _vm._v(" "),
           _c(
             "div",
@@ -45655,7 +45757,7 @@ var render = function() {
               ],
               staticClass: "loader ml-3"
             },
-            [_vm._m(0)]
+            [_c("small", [_vm._v(_vm._s(_vm.user.name) + " is typing...")])]
           ),
           _vm._v(" "),
           _c("form", { attrs: { action: "", name: "chat" } }, [
@@ -45723,12 +45825,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "loader-inner ball-beat" }, [
-      _c("div"),
+    return _c("div", { staticClass: "header" }, [
+      _c("span", [
+        _c("a", { attrs: { href: "javascript:void(0)" } }, [_vm._v("_")]),
+        _vm._v(" "),
+        _c("a", { attrs: { href: "javascript:void(0)" } }, [_vm._v("x")])
+      ]),
       _vm._v(" "),
-      _c("div"),
+      _c("img", { staticClass: "user_avatar", attrs: { src: "", alt: "" } }),
       _vm._v(" "),
-      _c("div")
+      _c("img", { staticClass: "default_avatar", attrs: { src: "", alt: "" } }),
+      _vm._v(" "),
+      _c("small", { attrs: { id: "name" } })
     ])
   }
 ]
@@ -45939,59 +46047,62 @@ var render = function() {
         staticClass: "wrapper shadow-sm pb-2"
       },
       [
-        _c(
-          "div",
-          { staticClass: "header" },
-          [
-            _c(
-              "button",
-              {
-                staticClass: "close",
-                on: {
-                  click: function($event) {
-                    _vm.display = false
-                  }
+        _c("div", { staticClass: "header" }, [
+          _c(
+            "button",
+            {
+              staticClass: "close",
+              on: {
+                click: function($event) {
+                  _vm.display = false
                 }
-              },
-              [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-            ),
-            _vm._v(" "),
-            _c(
-              "p",
-              {
-                directives: [
-                  {
-                    name: "show",
-                    rawName: "v-show",
-                    value: _vm.users.length == 0,
-                    expression: "users.length == 0"
-                  }
-                ],
-                staticClass: "text-center px-3 py-1"
-              },
-              [
-                _vm._v(
-                  "\n                Please fill out the form below to start chatting with the\n                next available agent.\n            "
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _vm._l(_vm.users, function(user, index) {
-              return _c(
-                "div",
-                { key: index, staticClass: "row justify-content-center users" },
-                [
-                  user.image
-                    ? _c("img", { attrs: { src: user.image.url, alt: "" } })
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("small", [_vm._v(_vm._s(user.name))])
-                ]
+              }
+            },
+            [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+          ),
+          _vm._v(" "),
+          _c(
+            "p",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.users.length == 0,
+                  expression: "users.length == 0"
+                }
+              ],
+              staticClass: "text-center px-3 py-1"
+            },
+            [
+              _vm._v(
+                "\n                Please fill out the form below to start chatting with the\n                next available agent.\n            "
               )
-            })
-          ],
-          2
-        ),
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.users.length > 0 && _vm.users.length < 2,
+                  expression: "users.length > 0 && users.length < 2"
+                }
+              ],
+              staticClass: "row justify-content-center users"
+            },
+            [
+              _c("img", { attrs: { src: "", alt: "", id: "user_image" } }),
+              _vm._v(" "),
+              _c("img", { attrs: { src: "", alt: "", id: "default_image" } }),
+              _vm._v(" "),
+              _c("small", { attrs: { id: "name" } })
+            ]
+          )
+        ]),
         _vm._v(" "),
         _c("div", [
           _c(
@@ -46019,21 +46130,11 @@ var render = function() {
             0
           ),
           _vm._v(" "),
-          _c(
-            "div",
-            {
-              directives: [
-                {
-                  name: "show",
-                  rawName: "v-show",
-                  value: _vm.typing,
-                  expression: "typing"
-                }
-              ],
-              staticClass: "loader ml-3"
-            },
-            [_vm._m(0)]
-          ),
+          _vm.typing
+            ? _c("div", { staticClass: "loader ml-3" }, [
+                _c("small", [_vm._v(_vm._s(_vm.admin.name) + " is typing...")])
+              ])
+            : _vm._e(),
           _vm._v(" "),
           _c("form", { attrs: { action: "", method: "post", name: "chat" } }, [
             _c(
@@ -46108,20 +46209,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "loader-inner ball-beat" }, [
-      _c("div"),
-      _vm._v(" "),
-      _c("div"),
-      _vm._v(" "),
-      _c("div")
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -46146,7 +46234,7 @@ var render = function() {
   return _c("div", [
     _c(
       "ul",
-      _vm._l(_vm.sortUsers, function(user, index) {
+      _vm._l(this.users, function(user, index) {
         return _c(
           "li",
           {
@@ -46163,11 +46251,28 @@ var render = function() {
               ? _c("img", { attrs: { src: user.image.url, alt: "" } })
               : _vm._e(),
             _vm._v(" "),
-            _c("p", [
+            _c("div", [
               _c("span", [_vm._v(_vm._s(user.name))]),
               _vm._v(" "),
-              _c("span", { staticClass: "text-muted" }, [
-                _vm._v(_vm._s(user.email))
+              _c("p", { staticClass: "flex" }, [
+                _c("span", { staticClass: "text-muted" }, [
+                  _vm._v(_vm._s(user.email))
+                ]),
+                _vm._v(" "),
+                _c(
+                  "small",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: user.avalaible,
+                        expression: "user.avalaible"
+                      }
+                    ]
+                  },
+                  [_vm._v("N/A")]
+                )
               ])
             ]),
             _vm._v(" "),

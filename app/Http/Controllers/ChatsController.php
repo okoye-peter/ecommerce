@@ -26,12 +26,22 @@ class ChatsController extends Controller
         $request->validate([
             'message' => 'required|string'
         ]);
+        
         $message = auth()->user()->chats()->create([
             'message' => $request->message,
             'receiver_id' => $request->receiver_id
         ]);
         broadcast(new MessageEvent($message->load('user')))->toOthers();
         return ['status' => 'success'];
+    }
+
+    public function updateReadMessages($id)
+    {
+        if (auth()->user()->isadmin == 1) {
+            Chat::where('user_id', $id)->where('read_at', null)->update(['read_at' => now(), 'receiver_id' => auth()->id()]);
+        }else{
+            Chat::where('receiver_id', $id)->where('read_at', null)->update(['read_at' => now()]);
+        }
     }
     
 }

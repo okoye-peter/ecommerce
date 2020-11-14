@@ -58,17 +58,15 @@ aside#sidebar {
     border: none;
     text-align: left;
     outline: none;
-    font-size: x-small;
-    font-weight: bold;
-    font-family: sans-serif;
+    font-size: 8px;
+    font-family: 'Times New Roman', Times, serif;
     transition: 0.4s;
     background-color: #0b285d;
 }
 
 .panel .subcat {
-    font-size: x-small;
-    font-weight: 600;
-    font-family: sans-serif;
+    font-size: 8px;
+    font-family: 'Times New Roman', Times, serif;
     border: 0;
 }
 

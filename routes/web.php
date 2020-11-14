@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ChatsController;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -53,6 +56,7 @@ Route::name('admin.')->middleware(['auth', 'verified','isadmin'])->prefix('admin
 // live chat route
 Route::post('/chats/create', 'ChatsController@sendMessage')->name('chats.create');
 Route::get('/chats', 'ChatsController@fetchChats')->name('chat');
+Route::get('/chats/{id}/markAsRead', 'ChatsController@updateReadMessages')->name('chat.update.read');
 
 Route::any('{anything}', 'AdminController@getUser')->where(['anything' => '[A-Za-z]+']);
 

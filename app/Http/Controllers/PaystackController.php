@@ -100,7 +100,7 @@ class PaystackController extends Controller
                     'status' => 'success'
                 ]);
             }
-            return redirect("/user/transactions/".$request->id());
+            return redirect("/user/transactions/".auth()->id());
         }
     }
 

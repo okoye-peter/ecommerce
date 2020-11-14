@@ -24,7 +24,8 @@ class AdminController extends Controller{
         // \DB::listen(function($q){
         //     dump($q->sql);
         // });
-        $users = User::where('isadmin', 0)->with('image')->get();
+        $ids = Chat::whereBetween('created_at', [Carbon::today(), Carbon::tomorrow()])->pluck('user_id');
+        $users = User::whereIn('id', $ids)->where('isadmin', 0)->with('image')->get();
         $unreadIds = Chat::select(\DB::raw('`user_id` as sender, count(`user_id`) as messages_count'))
         ->where(function($q){
             $q->where(function($q){

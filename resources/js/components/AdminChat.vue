@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import Echo from 'laravel-echo';
 export default {
   props:{
     authuser:{
@@ -31,14 +32,8 @@ export default {
     }
   },
   created(){
-    this.$on('updateResetCount', ($event) => {
-      console.log($event);
-    })
   },
   methods:{
-    updateActiveUser(user){
-
-    }
   },
 
 }

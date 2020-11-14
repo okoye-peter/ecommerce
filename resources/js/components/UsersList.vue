@@ -2,16 +2,19 @@
     <div>
         <ul>
             <li
-                v-for="(user, index) in sortUsers"
+                v-for="(user, index) in this.users"
                 :key="index"
                 :class="{ active: selectedUser == user }"
                 @click="selectUser(user)"
             >
                 <img v-if="user.image" :src="user.image.url" alt="" />
-                <p>
+                <div>
                     <span>{{ user.name }}</span>
-                    <span class="text-muted">{{ user.email }}</span>
-                </p>
+                    <p class="flex">
+                        <span class="text-muted">{{ user.email }}</span>
+                        <small v-show="user.avalaible">N/A</small>
+                    </p>
+                </div>
                 <div v-if="user.unread">{{ user.unread }}</div>
             </li>
         </ul>
@@ -27,29 +30,54 @@ export default {
             required: true
         }
     },
+
+    data() {
+        return {
+            users: [],
+            selectedUser: null,
+            id: null,
+        };
+    },
     created() {
         this.fetchUsers();
-        this.$on('updateResetCount', ($event) => {
-            console.log($event);
-            this.updateUnreadCount($event.user, $event.reset);
+        bus.$on('updateResetCount', e => {
+            let found = false;
+            this.users.forEach(user => {
+                if (user.id === e.user.id) {
+                    found = true;
+                }    
+            }); 
+            if (!found){
+                e.user.unread = 0;
+                this.users.push(e.user);
+            }
+            this.updateUnreadCount(e.user.id, e.reset);
+            this.sortUsers;
+
         });
     },
     computed: {
         sortUsers(){
-            return _.sortBy(this.users, [(user)=> {
+            this.Check_if_user_is_avalaible;
+            this.users =  _.sortBy(this.users, [(user)=> {
                     if (this.selectedUser == user) {
                         return Infinity;
                     }
                     return user.unread;
                 }
             ]).reverse();
+        },
+        Check_if_user_is_avalaible(){
+            Echo.join(`chat.`+this.id)
+            .here(users => {
+                if (users.length > 2) {
+                    Echo.leave(`chat.`+this.id);
+                    this.selectedUser.avalaible = true;
+                }else{
+                    bus.$emit("user", this.selectedUser);
+                }
+            });
         }
-    },
-    data() {
-        return {
-            users: [],
-            selectedUser: null,
-        };
     },
 
     methods: {
@@ -58,19 +86,24 @@ export default {
                 .get(this.users_list)
                 .then(response => {
                     this.users = response.data;
+        
                 })
                 .catch(err => {
                     console.log(err);
                 });
         },
+
         selectUser(user) {
             this.selectedUser = user;
-            this.updateUnreadCount(user, true)
-            bus.$emit("user", user);
+            this.updateUnreadCount(this.selectedUser.id, true)            
+            this.id = this.selectedUser.id;
+            this.sortUsers;
+            this.Check_if_user_is_avalaible;
         },
-        updateUnreadCount(contact,reset){
+
+        updateUnreadCount(id,reset){
             this.users = this.users.map((user)=>{
-                if (user.id != contact.id) {
+                if (user.id != id) {
                     return user;
                 }
                 if(reset){
@@ -80,8 +113,8 @@ export default {
                 }
                 return user;
             });
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -97,8 +130,6 @@ export default {
     }
 
     ul li {
-        display: flex;
-        align-items: center;
         padding: 0.5em 1em;
     }
     ul li:hover {
@@ -122,7 +153,7 @@ export default {
         margin-right: 1em;
     }
 
-    ul li p {
+    ul li div {
         display: flex;
         flex-direction: column;
         align-content: space-between;
@@ -130,20 +161,27 @@ export default {
         font-size: 11px;
     }
 
-    ul li p span:first-child {
+    ul li div span:first-child {
         font-weight: 600;
     }
+    ul li div .flex{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.7em;
+        margin-bottom: 0;
+    }
 
-    ul li p > span {
+    ul li div .flex > span {
         width: 130px;
         overflow-x: hidden;
         text-overflow: ellipsis;
     }
 
-    ul li > div {
-        position: absolute;
+    ul li > div:nth-child(2) {
+        position: relative;
+        left: 93%;
+        top: -4.2em;
         font-family: monospace;
-        right: 1em;
         background-color: #26c639;
         color: white;
         font-weight: 600;

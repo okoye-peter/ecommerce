@@ -9,8 +9,10 @@
                     Please fill out the form below to start chatting with the
                     next available agent.
                 </p>
-                <div class="row justify-content-center users" v-for="(user, index) in users" :key="index">
-                    <img v-if="user.image" :src="user.image.url" alt="" /> <small>{{user.name}}</small>
+                <div class="row justify-content-center users" v-show="users.length > 0 && users.length < 2">        
+                    <img src="" alt="" id="user_image"/>
+                    <img src="" alt="" id="default_image"/>
+                    <small id="name"></small>
                 </div>
             </div>
             <div>
@@ -26,12 +28,8 @@
                         </p>
                     </div>
                 </div>
-                <div class="loader ml-3" v-show="typing">
-                    <div class="loader-inner ball-beat">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
+                <div class="loader ml-3" v-if="typing">
+                    <small>{{admin.name}} is typing...</small>
                 </div>
                 <form action="" method="post" name="chat">
                     <div class="invalid" v-show="invalid">Please fill out this field.</div>
@@ -72,32 +70,49 @@ export default {
             chats: [],
             invalid: false,
             message: '',
-            users: [],
+            users:[],
             typing: false,
-            typingTimer: false
+            typingTimer: false,
+            defaultAvatar: null,
+            admin: null
         };
+    },
+    computed:{
+        displayAdmin(){
+            let default_img = document.querySelector('#default_image');
+                let user_img = document.querySelector('#user_image');
+                this.admin = this.users.find(user=>user.isadmin == 1);
+                if (this.admin.image) {
+                    user_img.src = this.admin.image.url;
+                    default_img.style.display = 'none';
+                }else{
+                    default_img.src = this.loadDefaultAvatar();
+                    user_img.style.display = 'none';
+                }
+                document.querySelector('#name').innerHTML = this.admin.name;
+        }
     },
 
     created(){
         this.fetchMessages();
+        this.defaultAvatar = this.loadDefaultAvatar();
+        
         Echo.join(`chat.${this.authuser.id}`)
-            .here(user => {
-                console.log('here');
-                this.users = user.filter(u=>u.id != this.authuser.id);
+            .here(users => {
+                this.users = users.filter(u=>u.id != this.authuser.id);
             })
             .joining(user => {
-                console.log('joining');
-                this.users.push(user);
+                if(this.users.length <=1){
+                    this.users.push(user);
+                }
             })
             .leaving(user => {
-                console.log('leaving');
                 this.users = this.users.filter(u=>{
                     u.id !=user.id &&  u.isadmin == 1
-                    })
+                })
             })
             .listen('AdminMessageEvent', (event)=>{
                 this.chats.push(event.message);
-                console.log(event);
             })
             .listenForWhisper('typing', response =>{ 
                 this.typing = true;
@@ -111,6 +126,9 @@ export default {
     },
 
     methods: {
+        loadDefaultAvatar(){
+            return window.location.origin + '/image/download.jpeg';
+        },
         validate: function () {
             let validity = document.chat.message;
             if (validity.value.trim() == '') {
@@ -145,6 +163,13 @@ export default {
         sendTypingEvent: function () {
             Echo.join(`chat.${this.authuser.id}`)
                 .whisper('typing', this.authuser)
+        }
+    },
+    watch:{
+        users(){
+            if(this.users.length >0 && this.users.length <= 1){
+                this.displayAdmin;
+            }
         }
     }
 };
@@ -253,12 +278,6 @@ form .d-flex textarea{
     border-color: #e01414;
 }
 
-.loader .loader-inner div{
-    background-color: #1f80e3;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
-}
 
 .chat_wrapper > button {
     padding: 1em;
@@ -284,6 +303,11 @@ button i {
     right: 0.5em;
     top: 4px;
     font-size: 16px;
+}
+small{
+    font-size: 10px;
+    font-style: italic;
+    color: #6ac5d4;
 }
 
 @media screen and (max-width: 425px){

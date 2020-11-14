@@ -34,7 +34,7 @@ class MessageEvent implements ShouldBroadcast
     public function broadcastOn()
     {
         $this->message->load('user');
-        return new PresenceChannel('chat.' . auth()->id());
+        return [new PresenceChannel('chat.' . auth()->id()), new PresenceChannel('admin')];
     }
 
 }

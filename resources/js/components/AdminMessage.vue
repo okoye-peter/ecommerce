@@ -2,8 +2,16 @@
     <div>
         <div class="wrapper"  v-if="user">
             <div class="header">
-                <img  v-if="user.image" :src="user.image.url" alt="" />
-                <p>{{user.name}}</p>
+                <span>
+                    <a href="javascript:void(0)">_</a>
+                    <a href="javascript:void(0)">x</a>
+                </span>
+                <img src="" alt="" class="user_avatar"/>
+                <img src="" alt="" class="default_avatar"/>
+                <small id="name"></small>
+                <!-- <img  v-if="user.image" :src="user.image.url" alt="" />
+                <img v-if="!user.image" :src="defaultAvatar" alt="" />
+                <p>{{user.name}}</p> -->
             </div>
             <div class="chats" v-chat-scroll>
                 <div
@@ -18,11 +26,7 @@
                 </div>
             </div>
             <div class="loader ml-3" v-show="typing">
-                <div class="loader-inner ball-beat">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+                <small>{{user.name}} is typing...</small>
             </div>
             <form action="" name="chat">
                 <div class="invalid" v-show="invalid">Please fill out this field.</div>
@@ -59,18 +63,33 @@ export default {
             invalid: false,
             message: '',
             typing: false,
-            typingTimer: false
+            typingTimer: false,
+            defaultAvatar: null
         }
     },
     created(){
+        this.defaultAvatar = this.loadDefaultAvatar();
+        Echo.join('admin')
+        .here((user)=>{})
+        .joining(user=>{
+            // console.log(`${user.name} is in admin channel`);
+        })
+        .listen('MessageEvent', e=>{
+            if (this.user == null || this.user.id !== e.message.user_id) {
+                this.handleIncomingMessages(e.message);
+            }
+        });
+
+
         bus.$on('user', user=>{
             if (this.user != null) {
                 Echo.leave(`chat.`+this.user.id);
             }
             this.user = user;
+            console.log(this.user);
             Echo.join(`chat.`+this.user.id)
-            .here(user => {
-                console.log('here');
+            .here(users => {
+                
             })
             .listen('MessageEvent', (event)=>{
                 this.handleIncomingMessages(event.message);
@@ -83,19 +102,62 @@ export default {
                 this.typingTimer = setTimeout(()=>{
                     this.typing = false
                 }, 3000)
-            });
+            })
+            .joining(user=>{
+                if (user.isadmin == 0) {
+                    this.user= user
+                }
+            })
             this.fetchMessages(this.user.id)
+
+
         })
     },
+
+    computed:{
+        displayUser(){
+            let default_img = document.querySelector("img[class='default_avatar']");
+            
+            let user_img = document.querySelector("img[class='default_avatar']");
+                // if (this.user.image) {
+                //     user_img.src = this.user.image.url;
+                //     default_img.style.display = 'none';
+                // }else{
+                //     default_img.src = this.loadDefaultAvatar();
+                //     user_img.style.display = 'none';
+                // }
+                console.log('default', default_img);
+                console.log('user', user_img);
+                // document.querySelector('#name').innerHTML = this.user.name;
+                console.log(document.querySelector('.header')); 
+        }
+    },
+
     methods:{
+        loadDefaultAvatar(){
+            return window.location.origin + '/image/download.jpeg';
+        },
+
         fetchMessages(id){
             axios.get(`${this.fetch_message}?id=${id}`)
             .then(response=>{
+                this.markAsRead(id);
                 this.conversations = response.data;
             })
             .catch(err=>{
                 console.log(err);
             })
+        },
+        
+        markAsRead(id){
+            let url = window.location.origin + `/chats/${id}/markAsRead`;
+            axios
+            .get(url).then(res=>{
+                console.log(res.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            });
         },
         sendTypingEvent: function () {
             Echo.join(`chat.${this.user.id}`)
@@ -128,14 +190,20 @@ export default {
             });
         },
         handleIncomingMessages(message){
-            if(this.user && this.user.id == message.user.id){
+            if(this.user && this.user.id == message.user_id){
                 this.conversations.push(message);
+                this.markAsRead(this.user.id);
                 return;
             }
-            this.$emit('updateResetCount', {user: message.user, reset:false});
-        },
-
-        
+            bus.$emit('updateResetCount', {user: message.user, reset:false});
+        },        
+    },
+    watch:{
+        user(){
+            if (this.user != null) {
+                this.displayUser;
+            }
+        }
     }
 }
 </script>
@@ -162,6 +230,7 @@ export default {
     .wrapper .header img{
         width: 35px;
         height: 35px;
+        /* display: none; */
         border-radius: 50%;
         margin-right: 0.7em;
     }
@@ -221,10 +290,13 @@ export default {
     .invalid-textarea{
         border-color: #e01414;
     }
-    .loader .loader-inner div{
-        background-color: #1f80e3;
-        width: 10px;
-        height: 10px;
-        border-radius: 5px;
+    .loader small{
+        font-size: 10px;
+        font-style: italic;
+        color: #6ac5d4;
     }
+    a{
+        color:darkblue
+    }
+
 </style>

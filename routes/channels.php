@@ -22,9 +22,15 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 //     Auth::check();
 //     return $user->only(['id','name','image']);
 // });
+
 Broadcast::channel('chat.{id}', function ($user, $id) {
     $admins = User::where('isadmin', 1)->pluck('id');
     if ((int) $user->id === (int) $id || in_array($user->id, $admins->toArray())) {
-        return $user->only(['id', 'name', 'image']);
+        return $user->only(['id', 'name', 'image', 'isadmin']);
     }
+});
+
+Broadcast::channel('admin', function ($user) {
+    Auth::check();
+    return $user->only(['id', 'name', 'image']);
 });

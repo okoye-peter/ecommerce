@@ -71,7 +71,7 @@
 
 .wrapper .grid_wrapper {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 0.9em;
     margin: 1em 0em;
 }
@@ -113,23 +113,22 @@
     word-wrap: break-word;
 }
 
-.grid_wrapper .grid .footer {
+.grid_wrapper .grid .wrapper .content .footer {
     display: grid;
     justify-content: end;
     padding: 0.3em 0.8em;
-    background-color: ghostwhite;
 }
 
-.grid_wrapper .grid .footer div small,
-.grid_wrapper .grid .footer div strong {
+.grid_wrapper .grid .wrapper .content .footer div small,
+.grid_wrapper .grid .wrapper .content .footer div strong {
     font-size: 12px;
 }
 
-.grid_wrapper .grid .footer div:first-child strong {
+.grid_wrapper .grid .wrapper .content .footer div:first-child strong {
     color: #8acaa5;
 }
 
-.grid_wrapper .grid .footer div:nth-child(2) strong {
+.grid_wrapper .grid .wrapper .content .footer div:nth-child(2) strong {
     color: lightsteelblue;
 }
 

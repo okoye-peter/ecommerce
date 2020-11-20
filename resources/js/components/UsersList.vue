@@ -11,8 +11,8 @@
                 <div>
                     <span>{{ user.name }}</span>
                     <p class="flex">
-                        <span class="text-muted">{{ user.email }}</span>
-                        <small v-show="user.avalaible">N/A</small>
+                        <span class="text-muted">{{ user.name }}</span>
+                        <small :id="setId(user)">N/A</small>
                     </p>
                 </div>
                 <div v-if="user.unread">{{ user.unread }}</div>
@@ -72,7 +72,7 @@ export default {
             .here(users => {
                 if (users.length > 2) {
                     Echo.leave(`chat.`+this.id);
-                    this.selectedUser.avalaible = true;
+                    document.querySelector(`#${this.setId(this.selectedUser)}`).style.display ='inline';
                 }else{
                     bus.$emit("user", this.selectedUser);
                 }
@@ -114,7 +114,11 @@ export default {
                 return user;
             });
         },
+        setId(user){
+            return user.name.substr(0, user.name.lastIndexOf(' '))+ "_"+user.id;
+        }
     },
+
 };
 </script>
 
@@ -191,5 +195,8 @@ export default {
         font-size: 10px;
         text-align: center;
         padding-bottom: 1.5em;
+    }
+    small{
+        display: none;
     }
 </style>

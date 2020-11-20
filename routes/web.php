@@ -59,4 +59,3 @@ Route::get('/chats', 'ChatsController@fetchChats')->name('chat');
 Route::get('/chats/{id}/markAsRead', 'ChatsController@updateReadMessages')->name('chat.update.read');
 
 Route::any('{anything}', 'AdminController@getUser')->where(['anything' => '[A-Za-z]+']);
-

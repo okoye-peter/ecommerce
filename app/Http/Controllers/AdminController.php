@@ -20,10 +20,6 @@ class AdminController extends Controller{
     
     public function users()
     {
-
-        // \DB::listen(function($q){
-        //     dump($q->sql);
-        // });
         $ids = Chat::whereBetween('created_at', [Carbon::today(), Carbon::tomorrow()])->pluck('user_id');
         $users = User::whereIn('id', $ids)->where('isadmin', 0)->with('image')->get();
         $unreadIds = Chat::select(\DB::raw('`user_id` as sender, count(`user_id`) as messages_count'))
@@ -42,7 +38,7 @@ class AdminController extends Controller{
         // dd($unreadIds);
         $users = $users->map(function($user) use ($unreadIds){
             $userUnread = $unreadIds->where('sender', $user->id)->first();
-            $user->unread = $userUnread ? $userUnread->messages_count : 0; 
+            $user->unread = $userUnread ? $userUnread->messages_count : 0;
             return $user;
         });
         return response()->json($users);

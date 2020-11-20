@@ -1,5 +1,5 @@
 @foreach ($products as $product)
-    <div class="grid wow bounceInDown">
+    <div class="grid wow fadeInUp">
         <div class="card mr-0 shadow">
             <div class="card-body">
                 <a href="{{ route('display.product',$product->id) }}">

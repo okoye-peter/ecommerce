@@ -59,14 +59,14 @@
                             <p>Quantity: <span>{{ $transaction->quantity }}</span></p>
                             <p>Price: <span>${{ $transaction->price }}</span></p>
                             <p>Trans_ref: <span>{{ $transaction->gateway_ref }}</span></p>
-                        </div>
-                    </div>
-                    <div class="footer">
-                        <div>
-                            <small class="text-muted">status:</small> <strong>success</strong>
-                        </div>
-                        <div>
-                            <small class="text-muted">date:</small> <strong>{{date("y-M-d, H:i:s", strtotime($transaction->created_at))}}</strong>
+                            <div class="footer">
+                                <div>
+                                    <small class="text-muted">status:</small> <strong>success</strong>
+                                </div>
+                                <div>
+                                    <small class="text-muted">date:</small> <strong>{{date("y-M-d, H:i:s", strtotime($transaction->created_at))}}</strong>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -3,11 +3,11 @@
         <div class="wrapper"  v-if="user">
             <div class="header">
                 <span>
-                    <a href="javascript:void(0)">_</a>
+                    <a href="javascript:void(0)" v-on:click="toggle()">_</a>
                     <a href="javascript:void(0)">x</a>
                 </span>
-                <img src="" alt="" class="user_avatar"/>
-                <img src="" alt="" class="default_avatar"/>
+                <img src="" alt="user" class="user_avatar"/>
+                <img src="" alt="default" class="default_avatar"/>
                 <small id="name"></small>
                 <!-- <img  v-if="user.image" :src="user.image.url" alt="" />
                 <img v-if="!user.image" :src="defaultAvatar" alt="" />
@@ -117,25 +117,25 @@ export default {
     computed:{
         displayUser(){
             let default_img = document.querySelector("img[class='default_avatar']");
-            
-            let user_img = document.querySelector("img[class='default_avatar']");
-                // if (this.user.image) {
-                //     user_img.src = this.user.image.url;
-                //     default_img.style.display = 'none';
-                // }else{
-                //     default_img.src = this.loadDefaultAvatar();
-                //     user_img.style.display = 'none';
-                // }
-                console.log('default', default_img);
-                console.log('user', user_img);
-                // document.querySelector('#name').innerHTML = this.user.name;
-                console.log(document.querySelector('.header')); 
+            let user_img = document.querySelector("img[class='user_avatar']");
+                if (this.user.image) {
+                    user_img.src = this.user.image.url;
+                    default_img.style.display = 'none';
+                }else{
+                    default_img.src = this.loadDefaultAvatar();
+                    user_img.style.display = 'none';
+                }
+                document.querySelector('#name').innerHTML = this.user.name;
         }
     },
 
     methods:{
         loadDefaultAvatar(){
             return window.location.origin + '/image/download.jpeg';
+        },
+        toggle(){
+            let wrapper = document.querySelector('.wrapper');
+            wrapper.classList.toggle('hide');
         },
 
         fetchMessages(id){
@@ -201,7 +201,9 @@ export default {
     watch:{
         user(){
             if (this.user != null) {
-                this.displayUser;
+                setInterval(() => {
+                    this.displayUser;
+                }, 50);
             }
         }
     }
@@ -218,6 +220,10 @@ export default {
         right: 17.4em;
         width: 260px;
         box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+        transition: bottom 0.5s ease;
+    }
+    .wrapper.hide{
+        bottom: -21em;
     }
     .wrapper .header{
         background-color: dodgerblue;
@@ -227,17 +233,23 @@ export default {
         align-items: center;
         padding: 0.6em 1em;
     }
+
+    .wrapper .header span{
+            position: absolute;
+        top: -0.2em;
+        left: 16.2em;
+        margin-bottom: 0.5em;
+    }
     .wrapper .header img{
         width: 35px;
         height: 35px;
-        /* display: none; */
         border-radius: 50%;
         margin-right: 0.7em;
     }
-    .wrapper .header p{
+    .wrapper .header small{
         margin-bottom: 0em;
         color: white;
-        font-size: 12px;
+        font-size: 10px;
     }
     .wrapper .chats{
         height: 250px;
@@ -296,7 +308,11 @@ export default {
         color: #6ac5d4;
     }
     a{
-        color:darkblue
+        color:darkblue;
+        text-decoration: none;
+    }
+    a:first-child{
+        margin-right: 0.3em;
     }
 
 </style>

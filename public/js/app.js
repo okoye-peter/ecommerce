@@ -2129,23 +2129,26 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     displayUser: function displayUser() {
       var default_img = document.querySelector("img[class='default_avatar']");
-      var user_img = document.querySelector("img[class='default_avatar']"); // if (this.user.image) {
-      //     user_img.src = this.user.image.url;
-      //     default_img.style.display = 'none';
-      // }else{
-      //     default_img.src = this.loadDefaultAvatar();
-      //     user_img.style.display = 'none';
-      // }
+      var user_img = document.querySelector("img[class='user_avatar']");
 
-      console.log('default', default_img);
-      console.log('user', user_img); // document.querySelector('#name').innerHTML = this.user.name;
+      if (this.user.image) {
+        user_img.src = this.user.image.url;
+        default_img.style.display = 'none';
+      } else {
+        default_img.src = this.loadDefaultAvatar();
+        user_img.style.display = 'none';
+      }
 
-      console.log(document.querySelector('.header'));
+      document.querySelector('#name').innerHTML = this.user.name;
     }
   },
   methods: {
     loadDefaultAvatar: function loadDefaultAvatar() {
       return window.location.origin + '/image/download.jpeg';
+    },
+    toggle: function toggle() {
+      var wrapper = document.querySelector('.wrapper');
+      wrapper.classList.toggle('hide');
     },
     fetchMessages: function fetchMessages(id) {
       var _this2 = this;
@@ -2211,8 +2214,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     user: function user() {
+      var _this3 = this;
+
       if (this.user != null) {
-        this.displayUser;
+        setInterval(function () {
+          _this3.displayUser;
+        }, 50);
       }
     }
   }
@@ -2426,6 +2433,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {// console.log("user chat componnet loaded");
   },
@@ -2453,7 +2461,8 @@ __webpack_require__.r(__webpack_exports__);
       typing: false,
       typingTimer: false,
       defaultAvatar: null,
-      admin: null
+      admin: null,
+      unread: 0
     };
   },
   computed: {
@@ -2493,7 +2502,7 @@ __webpack_require__.r(__webpack_exports__);
         u.id != user.id && u.isadmin == 1;
       });
     }).listen('AdminMessageEvent', function (event) {
-      _this.chats.push(event.message);
+      _this.handleIncomingMessages(event.message);
     }).listenForWhisper('typing', function (response) {
       _this.typing = true;
 
@@ -2522,6 +2531,16 @@ __webpack_require__.r(__webpack_exports__);
         validity.value = '';
       }
     },
+    handleIncomingMessages: function handleIncomingMessages(message, markAsRead) {
+      if (!this.display) {
+        this.unread += 1;
+      } else {
+        this.unread = 0;
+        this.markAsRead();
+      }
+
+      this.chats.push(message);
+    },
     sendMessage: function sendMessage() {
       var id = this.users.length > 0 ? this.users[0].id : undefined;
       this.chats.push({
@@ -2542,16 +2561,28 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get(this.fetch_chat).then(function (response) {
         _this2.chats = response.data;
+        _this2.unread = _this2.chats.filter(function (chat) {
+          return chat.read_at == null;
+        }).length;
       });
     },
     sendTypingEvent: function sendTypingEvent() {
       Echo.join("chat.".concat(this.authuser.id)).whisper('typing', this.authuser);
+    },
+    markAsRead: function markAsRead() {
+      axios.get(window.location.origin + "/chats/".concat(this.authuser.id, "/markAsRead"));
     }
   },
   watch: {
     users: function users() {
       if (this.users.length > 0 && this.users.length <= 1) {
         this.displayAdmin;
+      }
+    },
+    display: function display() {
+      if (this.display) {
+        this.unread = 0;
+        this.markAsRead();
       }
     }
   }
@@ -2650,7 +2681,7 @@ __webpack_require__.r(__webpack_exports__);
       Echo.join("chat." + this.id).here(function (users) {
         if (users.length > 2) {
           Echo.leave("chat." + _this3.id);
-          _this3.selectedUser.avalaible = true;
+          document.querySelector("#".concat(_this3.setId(_this3.selectedUser))).style.display = 'inline';
         } else {
           _app__WEBPACK_IMPORTED_MODULE_0__["bus"].$emit("user", _this3.selectedUser);
         }
@@ -2688,6 +2719,9 @@ __webpack_require__.r(__webpack_exports__);
 
         return user;
       });
+    },
+    setId: function setId(user) {
+      return user.name.substr(0, user.name.lastIndexOf(' ')) + "_" + user.id;
     }
   }
 });
@@ -7298,7 +7332,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.wrapper[data-v-79a6e5a3]{\n    border-radius: 0.8em;\n    background-color: white;\n    padding: 0em;\n    position: fixed;\n    bottom: 0;\n    right: 17.4em;\n    width: 260px;\n    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);\n}\n.wrapper .header[data-v-79a6e5a3]{\n    background-color: dodgerblue;\n    border-radius: 0.8em 0.8em 0em 0em;\n    display:flex;\n    justify-content: center;\n    align-items: center;\n    padding: 0.6em 1em;\n}\n.wrapper .header img[data-v-79a6e5a3]{\n    width: 35px;\n    height: 35px;\n    /* display: none; */\n    border-radius: 50%;\n    margin-right: 0.7em;\n}\n.wrapper .header p[data-v-79a6e5a3]{\n    margin-bottom: 0em;\n    color: white;\n    font-size: 12px;\n}\n.wrapper .chats[data-v-79a6e5a3]{\n    height: 250px;\n    overflow-y: auto;\n    padding: 0.5em;\n}\n.wrapper .chats div[data-v-79a6e5a3]{\n    display: flex;\n    flex-direction: column;\n    margin-bottom: 0.5em;\n}\n.wrapper .chats div p[data-v-79a6e5a3] {\n    background-color: #e4e4e4;\n    color: #118488;\n    font-size: 12px;\n    display: grid;\n    max-width: 15em;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    margin-bottom: 0em;\n}\n.wrapper .chats div p span[data-v-79a6e5a3] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.wrapper .chats div.sender p[data-v-79a6e5a3]{\n    background-color: #6d95ef;\n    color: white;\n    align-self: flex-end;\n}\nform .invalid[data-v-79a6e5a3]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-79a6e5a3]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n    margin-bottom: 0.5em;\n}\n.invalid-textarea[data-v-79a6e5a3]{\n    border-color: #e01414;\n}\n.loader small[data-v-79a6e5a3]{\n    font-size: 10px;\n    font-style: italic;\n    color: #6ac5d4;\n}\na[data-v-79a6e5a3]{\n    color:darkblue\n}\n\n", ""]);
+exports.push([module.i, "\n.wrapper[data-v-79a6e5a3]{\n    border-radius: 0.8em;\n    background-color: white;\n    padding: 0em;\n    position: fixed;\n    bottom: 0;\n    right: 17.4em;\n    width: 260px;\n    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);\n    transition: bottom 0.5s ease;\n}\n.wrapper.hide[data-v-79a6e5a3]{\n    bottom: -21em;\n}\n.wrapper .header[data-v-79a6e5a3]{\n    background-color: dodgerblue;\n    border-radius: 0.8em 0.8em 0em 0em;\n    display:flex;\n    justify-content: center;\n    align-items: center;\n    padding: 0.6em 1em;\n}\n.wrapper .header span[data-v-79a6e5a3]{\n        position: absolute;\n    top: -0.2em;\n    left: 16.2em;\n    margin-bottom: 0.5em;\n}\n.wrapper .header img[data-v-79a6e5a3]{\n    width: 35px;\n    height: 35px;\n    border-radius: 50%;\n    margin-right: 0.7em;\n}\n.wrapper .header small[data-v-79a6e5a3]{\n    margin-bottom: 0em;\n    color: white;\n    font-size: 10px;\n}\n.wrapper .chats[data-v-79a6e5a3]{\n    height: 250px;\n    overflow-y: auto;\n    padding: 0.5em;\n}\n.wrapper .chats div[data-v-79a6e5a3]{\n    display: flex;\n    flex-direction: column;\n    margin-bottom: 0.5em;\n}\n.wrapper .chats div p[data-v-79a6e5a3] {\n    background-color: #e4e4e4;\n    color: #118488;\n    font-size: 12px;\n    display: grid;\n    max-width: 15em;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    margin-bottom: 0em;\n}\n.wrapper .chats div p span[data-v-79a6e5a3] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.wrapper .chats div.sender p[data-v-79a6e5a3]{\n    background-color: #6d95ef;\n    color: white;\n    align-self: flex-end;\n}\nform .invalid[data-v-79a6e5a3]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-79a6e5a3]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n    margin-bottom: 0.5em;\n}\n.invalid-textarea[data-v-79a6e5a3]{\n    border-color: #e01414;\n}\n.loader small[data-v-79a6e5a3]{\n    font-size: 10px;\n    font-style: italic;\n    color: #6ac5d4;\n}\na[data-v-79a6e5a3]{\n    color:darkblue;\n    text-decoration: none;\n}\na[data-v-79a6e5a3]:first-child{\n    margin-right: 0.3em;\n}\n\n", ""]);
 
 // exports
 
@@ -7374,7 +7408,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.chat_wrapper[data-v-19fef29f] {\n    position: fixed;\n    bottom: 0.8em;\n    right: 1em;\n    z-index: 999;\n}\n.chat_wrapper .wrapper[data-v-19fef29f] {\n    padding: 0;\n    margin: 0;\n    margin-bottom: 1em;\n    background-color: white;\n    border-radius: 0.4em;\n    width: 260px;\n}\n.chat_wrapper .wrapper .header[data-v-19fef29f] {\n    padding: .3em;\n    border-radius: 0.4em 0.4em 0em 0em;\n    background-color: #1f80e3;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header p[data-v-19fef29f] {\n    color: white;\n    font-size: 12px;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header .row img[data-v-19fef29f] {\n    width: 3em;\n    border-radius: 2em;\n}\n.chat_wrapper .wrapper .header .row.users[data-v-19fef29f] {\n    align-items: center;\n    margin: 0;\n}\n.chat_wrapper .wrapper .header .row small[data-v-19fef29f] {\n    font-weight: 550;\n    color: white;\n    margin-left: 1em;\n}\n.chat_wrapper .wrapper div .chats[data-v-19fef29f] {\n    margin: 0;\n    padding: 0.3em;\n    height: 18.75em;\n    overflow-y: auto;\n}\n.chat_wrapper .wrapper div .chats div[data-v-19fef29f]{\n    margin-bottom: 0em;\n    display: flex;\n    flex-direction: column;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    max-width: 15em;\n    font-size: 14px;\n    margin-bottom: 0.6em;\n}\n.chat_wrapper .wrapper div .chats div p span[data-v-19fef29f] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    background-color: #e4e4e4;\n    color: #118488;\n    display: grid;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    width: 15em;\n    font-size: 12px;\n}\n.chat_wrapper .wrapper div .chats div.sender p[data-v-19fef29f] {\n    background-color: #5296b1;\n    align-self: flex-end;\n    color: white;\n}\nform .invalid[data-v-19fef29f]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-19fef29f]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n}\n.invalid-textarea[data-v-19fef29f]{\n    border-color: #e01414;\n}\n.chat_wrapper > button[data-v-19fef29f] {\n    padding: 1em;\n    background-color: #1f80e3;\n    border-radius: 3em;\n    cursor: pointer;\n    border: 0;\n    outline: none;\n    float: right;\n}\nbutton i[data-v-19fef29f] {\n    font-size: 2em;\n    color: white;\n}\n.close[data-v-19fef29f]{\n    background: transparent;\n    margin-left: 90%;\n    border: 0;\n    outline: none;\n    position: absolute;\n    right: 0.5em;\n    top: 4px;\n    font-size: 16px;\n}\nsmall[data-v-19fef29f]{\n    font-size: 10px;\n    font-style: italic;\n    color: #6ac5d4;\n}\n@media screen and (max-width: 425px){\n.chat_wrapper > button[data-v-19fef29f] {\n        padding: 0.7em;\n        border-radius: 50em;\n        width: 3em;\n        height: 3em;\n}\n.chat_wrapper > button i[data-v-19fef29f]{\n        font-size: 22px;\n}\n}\n", ""]);
+exports.push([module.i, "\n.chat_wrapper[data-v-19fef29f] {\n    position: fixed;\n    bottom: 0.8em;\n    right: 1em;\n    z-index: 999;\n}\n.chat_wrapper .wrapper[data-v-19fef29f] {\n    padding: 0;\n    margin: 0;\n    margin-bottom: 1em;\n    background-color: white;\n    border-radius: 0.4em;\n    width: 260px;\n}\n.chat_wrapper .wrapper .header[data-v-19fef29f] {\n    padding: .3em;\n    border-radius: 0.4em 0.4em 0em 0em;\n    background-color: #1f80e3;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header p[data-v-19fef29f] {\n    color: white;\n    font-size: 12px;\n    margin-bottom: 0;\n}\n.chat_wrapper .wrapper .header .row img[data-v-19fef29f] {\n    width: 3em;\n    border-radius: 2em;\n}\n.chat_wrapper .wrapper .header .row.users[data-v-19fef29f] {\n    align-items: center;\n    margin: 0;\n}\n.chat_wrapper .wrapper .header .row small[data-v-19fef29f] {\n    font-weight: 550;\n    color: white;\n    margin-left: 1em;\n}\n.chat_wrapper .wrapper div .chats[data-v-19fef29f] {\n    margin: 0;\n    padding: 0.3em;\n    height: 18.75em;\n    overflow-y: auto;\n}\n.chat_wrapper .wrapper div .chats div[data-v-19fef29f]{\n    margin-bottom: 0em;\n    display: flex;\n    flex-direction: column;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    max-width: 15em;\n    font-size: 14px;\n    margin-bottom: 0.6em;\n}\n.chat_wrapper .wrapper div .chats div p span[data-v-19fef29f] {\n    margin-bottom: 0;\n    text-align: justify;\n    font-size: 12px;\n    overflow-wrap: anywhere;\n}\n.chat_wrapper .wrapper div .chats div p[data-v-19fef29f] {\n    background-color: #e4e4e4;\n    color: #118488;\n    display: grid;\n    padding: 0.6em;\n    border-radius: 0.5em;\n    width: 15em;\n    font-size: 12px;\n}\n.chat_wrapper .wrapper div .chats div.sender p[data-v-19fef29f] {\n    background-color: #5296b1;\n    align-self: flex-end;\n    color: white;\n}\nform .invalid[data-v-19fef29f]{\n    margin-left: 1.2em;\n    color: red;\n    font-style: italic;\n    font-size: 11px;\n    margin-bottom: 0.4em;\n}\nform .d-flex textarea[data-v-19fef29f]{\n    outline: none;\n    resize: none;\n    border-radius: 0.4em;\n    font-size: 12px;\n    width: 100%;\n}\n.invalid-textarea[data-v-19fef29f]{\n    border-color: #e01414;\n}\n.chat_wrapper > button[data-v-19fef29f] {\n    padding: 1em;\n    background-color: #1f80e3;\n    border-radius: 3em;\n    cursor: pointer;\n    border: 0;\n    outline: none;\n    float: right;\n}\nbutton i[data-v-19fef29f] {\n    font-size: 2em;\n    color: white;\n}\n.close[data-v-19fef29f]{\n    background: transparent;\n    margin-left: 90%;\n    border: 0;\n    outline: none;\n    position: absolute;\n    right: 0.5em;\n    top: 4px;\n    font-size: 16px;\n}\nsmall[data-v-19fef29f]{\n    font-size: 10px;\n    font-style: italic;\n    color: #6ac5d4;\n}\n.unread[data-v-19fef29f]{\n    display: inline-block;\n    width: 16px;\n    height: 16px;\n    background: red;\n    text-align: center;\n    font-size: 10px;\n    color: white;\n    font-weight: 600;\n    border-radius: 8px;\n    margin: 0;\n    position: absolute;\n    top: -1em;\n    left: 1.7em;\n}\n@media screen and (max-width: 425px){\n.chat_wrapper > button[data-v-19fef29f] {\n        padding: 0.7em;\n        border-radius: 50em;\n        width: 3em;\n        height: 3em;\n}\n.chat_wrapper > button i[data-v-19fef29f]{\n        font-size: 22px;\n}\n.unread[data-v-19fef29f]{\n        top: -0.9em;\n        left: 2.7em;\n}\n}\n", ""]);
 
 // exports
 
@@ -7393,7 +7427,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nul[data-v-1a2645eb] {\n    list-style: none;\n    padding-left: 0px;\n    width: 250px;\n    position: fixed;\n    height: 100%;\n    right: 0;\n    border-left: 1px solid lightgrey;\n}\nul li[data-v-1a2645eb] {\n    padding: 0.5em 1em;\n}\nul li[data-v-1a2645eb]:hover {\n    cursor: pointer;\n}\nul li.active[data-v-1a2645eb] {\n    background-color: #ddebf9;\n}\nul li[data-v-1a2645eb]:not(:first-child) {\n    border-top: 1px solid rgb(236, 230, 230);\n}\nul li[data-v-1a2645eb]:hover {\n    background-color: rgb(236 236 236 / 50%);\n}\nul li img[data-v-1a2645eb] {\n    height: 35px;\n    width: 35px;\n    border-radius: 25px;\n    margin-right: 1em;\n}\nul li div[data-v-1a2645eb] {\n    display: flex;\n    flex-direction: column;\n    align-content: space-between;\n    margin-bottom: 0em;\n    font-size: 11px;\n}\nul li div span[data-v-1a2645eb]:first-child {\n    font-weight: 600;\n}\nul li div .flex[data-v-1a2645eb]{\n    display: flex;\n    justify-content: space-between;\n    margin-top: 0.7em;\n    margin-bottom: 0;\n}\nul li div .flex > span[data-v-1a2645eb] {\n    width: 130px;\n    overflow-x: hidden;\n    text-overflow: ellipsis;\n}\nul li > div[data-v-1a2645eb]:nth-child(2) {\n    position: relative;\n    left: 93%;\n    top: -4.2em;\n    font-family: monospace;\n    background-color: #26c639;\n    color: white;\n    font-weight: 600;\n    border-radius: 50%;\n    height: 15px;\n    width: 15px;\n    font-size: 10px;\n    text-align: center;\n    padding-bottom: 1.5em;\n}\n", ""]);
+exports.push([module.i, "\nul[data-v-1a2645eb] {\n    list-style: none;\n    padding-left: 0px;\n    width: 250px;\n    position: fixed;\n    height: 100%;\n    right: 0;\n    border-left: 1px solid lightgrey;\n}\nul li[data-v-1a2645eb] {\n    padding: 0.5em 1em;\n}\nul li[data-v-1a2645eb]:hover {\n    cursor: pointer;\n}\nul li.active[data-v-1a2645eb] {\n    background-color: #ddebf9;\n}\nul li[data-v-1a2645eb]:not(:first-child) {\n    border-top: 1px solid rgb(236, 230, 230);\n}\nul li[data-v-1a2645eb]:hover {\n    background-color: rgb(236 236 236 / 50%);\n}\nul li img[data-v-1a2645eb] {\n    height: 35px;\n    width: 35px;\n    border-radius: 25px;\n    margin-right: 1em;\n}\nul li div[data-v-1a2645eb] {\n    display: flex;\n    flex-direction: column;\n    align-content: space-between;\n    margin-bottom: 0em;\n    font-size: 11px;\n}\nul li div span[data-v-1a2645eb]:first-child {\n    font-weight: 600;\n}\nul li div .flex[data-v-1a2645eb]{\n    display: flex;\n    justify-content: space-between;\n    margin-top: 0.7em;\n    margin-bottom: 0;\n}\nul li div .flex > span[data-v-1a2645eb] {\n    width: 130px;\n    overflow-x: hidden;\n    text-overflow: ellipsis;\n}\nul li > div[data-v-1a2645eb]:nth-child(2) {\n    position: relative;\n    left: 93%;\n    top: -4.2em;\n    font-family: monospace;\n    background-color: #26c639;\n    color: white;\n    font-weight: 600;\n    border-radius: 50%;\n    height: 15px;\n    width: 15px;\n    font-size: 10px;\n    text-align: center;\n    padding-bottom: 1.5em;\n}\nsmall[data-v-1a2645eb]{\n    display: none;\n}\n", ""]);
 
 // exports
 
@@ -45717,7 +45751,36 @@ var render = function() {
   return _c("div", [
     _vm.user
       ? _c("div", { staticClass: "wrapper" }, [
-          _vm._m(0),
+          _c("div", { staticClass: "header" }, [
+            _c("span", [
+              _c(
+                "a",
+                {
+                  attrs: { href: "javascript:void(0)" },
+                  on: {
+                    click: function($event) {
+                      return _vm.toggle()
+                    }
+                  }
+                },
+                [_vm._v("_")]
+              ),
+              _vm._v(" "),
+              _c("a", { attrs: { href: "javascript:void(0)" } }, [_vm._v("x")])
+            ]),
+            _vm._v(" "),
+            _c("img", {
+              staticClass: "user_avatar",
+              attrs: { src: "", alt: "user" }
+            }),
+            _vm._v(" "),
+            _c("img", {
+              staticClass: "default_avatar",
+              attrs: { src: "", alt: "default" }
+            }),
+            _vm._v(" "),
+            _c("small", { attrs: { id: "name" } })
+          ]),
           _vm._v(" "),
           _c(
             "div",
@@ -45820,26 +45883,7 @@ var render = function() {
       : _vm._e()
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "header" }, [
-      _c("span", [
-        _c("a", { attrs: { href: "javascript:void(0)" } }, [_vm._v("_")]),
-        _vm._v(" "),
-        _c("a", { attrs: { href: "javascript:void(0)" } }, [_vm._v("x")])
-      ]),
-      _vm._v(" "),
-      _c("img", { staticClass: "user_avatar", attrs: { src: "", alt: "" } }),
-      _vm._v(" "),
-      _c("img", { staticClass: "default_avatar", attrs: { src: "", alt: "" } }),
-      _vm._v(" "),
-      _c("small", { attrs: { id: "name" } })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -46205,7 +46249,25 @@ var render = function() {
           }
         }
       },
-      [_c("i", { staticClass: "fa fa-comment fa-2x" })]
+      [
+        _c(
+          "p",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.display && _vm.unread > 0,
+                expression: "!display && unread > 0"
+              }
+            ],
+            staticClass: "unread"
+          },
+          [_vm._v(_vm._s(_vm.unread))]
+        ),
+        _vm._v(" "),
+        _c("i", { staticClass: "fa fa-comment fa-2x" })
+      ]
     )
   ])
 }
@@ -46256,23 +46318,10 @@ var render = function() {
               _vm._v(" "),
               _c("p", { staticClass: "flex" }, [
                 _c("span", { staticClass: "text-muted" }, [
-                  _vm._v(_vm._s(user.email))
+                  _vm._v(_vm._s(user.name))
                 ]),
                 _vm._v(" "),
-                _c(
-                  "small",
-                  {
-                    directives: [
-                      {
-                        name: "show",
-                        rawName: "v-show",
-                        value: user.avalaible,
-                        expression: "user.avalaible"
-                      }
-                    ]
-                  },
-                  [_vm._v("N/A")]
-                )
+                _c("small", { attrs: { id: _vm.setId(user) } }, [_vm._v("N/A")])
               ])
             ]),
             _vm._v(" "),

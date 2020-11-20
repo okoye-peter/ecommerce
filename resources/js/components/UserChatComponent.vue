@@ -40,6 +40,7 @@
             </div>
         </div>
         <button @click="display = !display">
+            <p class="unread" v-show="!display && unread > 0">{{unread}}</p>
             <i class="fa fa-comment fa-2x"></i>
         </button>
     </div>
@@ -74,7 +75,8 @@ export default {
             typing: false,
             typingTimer: false,
             defaultAvatar: null,
-            admin: null
+            admin: null,
+            unread: 0
         };
     },
     computed:{
@@ -112,7 +114,7 @@ export default {
                 })
             })
             .listen('AdminMessageEvent', (event)=>{
-                this.chats.push(event.message);
+                this.handleIncomingMessages(event.message);
             })
             .listenForWhisper('typing', response =>{ 
                 this.typing = true;
@@ -140,6 +142,15 @@ export default {
                 validity.value= '';
             }
         },
+        handleIncomingMessages(message, markAsRead){
+            if (!this.display) {
+                this.unread += 1;
+            }else{
+                this.unread = 0;
+                this.markAsRead();
+            }
+            this.chats.push(message);
+        },
         sendMessage: function(){
             let id  = this.users.length > 0 ? this.users[0].id : undefined;
             this.chats.push({
@@ -158,17 +169,27 @@ export default {
         fetchMessages: function(){
             axios.get(this.fetch_chat).then((response)=>{
                 this.chats = response.data;
+                this.unread = this.chats.filter(chat=>chat.read_at == null).length;
             });
         },
         sendTypingEvent: function () {
             Echo.join(`chat.${this.authuser.id}`)
                 .whisper('typing', this.authuser)
+        },
+        markAsRead(){
+            axios.get(window.location.origin +`/chats/${this.authuser.id}/markAsRead`);
         }
     },
     watch:{
         users(){
             if(this.users.length >0 && this.users.length <= 1){
                 this.displayAdmin;
+            }
+        },
+        display(){
+            if (this.display) {
+                this.unread = 0;
+                this.markAsRead();
             }
         }
     }
@@ -309,6 +330,21 @@ small{
     font-style: italic;
     color: #6ac5d4;
 }
+.unread{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: red;
+    text-align: center;
+    font-size: 10px;
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    margin: 0;
+    position: absolute;
+    top: -1em;
+    left: 1.7em;
+}
 
 @media screen and (max-width: 425px){
     .chat_wrapper > button {
@@ -320,6 +356,10 @@ small{
 
     .chat_wrapper > button i{
         font-size: 22px;
+    }
+    .unread{
+        top: -0.9em;
+        left: 2.7em;
     }
 }
 </style>

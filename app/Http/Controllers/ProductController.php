@@ -21,7 +21,11 @@ class ProductController extends Controller
 
     static public function category()
     {
-        $products = \DB::table("products")->select('category','subcategory')->where('quantity', '>=', 1)->distinct('subcategory')->orderBy('category', "ASC")->get();
+        $products = \DB::table("products")
+                        ->select('category','subcategory')
+                        ->where('quantity', '>=', 1)
+                        ->distinct('subcategory')
+                        ->orderBy('category', "ASC")->get();
         return $products;
     }
 
@@ -93,7 +97,12 @@ class ProductController extends Controller
 
     public function fetchSubcategoryProducts($category, $subcategory)
     {
-        $products = Product::where('category', 'like', $category)->where('subcategory', 'like', $subcategory)->where("quantity", '>' , 0)->inRandomOrder()->paginate(18);
+        $products = Product::where('category', 'like', $category)
+                            ->where('subcategory', 'like', $subcategory)
+                            ->where("quantity", '>' , 0)
+                            ->inRandomOrder()
+                            ->paginate(18);
+
         if (request()->ajax()) {
             $view = view('data', compact('products'))->render();
             return response()->json(['html' => $view]);

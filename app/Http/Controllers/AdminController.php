@@ -28,10 +28,10 @@ class AdminController extends Controller{
         ->where(function($q){
             $q->where(function($q){
                 $q->where('receiver_id', auth()->id())
-                ->where('read_at', null);
+                ->whereNull('read_at');
             })->orWhere(function ($q) {
-                $q->where('receiver_id', null)
-                ->where('read_at', null);
+                $q->whereNull('receiver_id')
+                ->whereNull('read_at');
             });
         })
         ->groupBy('user_id')
@@ -58,7 +58,7 @@ class AdminController extends Controller{
                 $query->where('user_id', auth()->id())->where('receiver_id', $request->id);
             })
             ->orWhere(function ($q) use ($request) {
-                $q->where('user_id', $request->id)->where('receiver_id', null)->where('read_at', null);
+                $q->where('user_id', $request->id)->whereNull('receiver_id')->whereNull('read_at');
             });
         })
         ->with('user')->get();

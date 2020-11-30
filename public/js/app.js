@@ -2531,7 +2531,6 @@ __webpack_require__.r(__webpack_exports__);
         this.markAsRead();
       }
 
-      console.log(message);
       this.chats.push(message);
     },
     sendMessage: function sendMessage() {
@@ -2543,8 +2542,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.post(this.send_message, {
         message: this.message,
         receiver_id: id
-      }).then(function (response) {
-        console.log(response.data);
+      }).then(function (response) {// console.log(response.data);
       })["catch"](function (err) {
         console.log(err);
       });

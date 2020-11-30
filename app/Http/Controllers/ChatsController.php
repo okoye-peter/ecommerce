@@ -38,9 +38,9 @@ class ChatsController extends Controller
     public function updateReadMessages($id)
     {
         if (auth()->user()->isadmin == 1) {
-            Chat::where('user_id', $id)->where('read_at', null)->update(['read_at' => now(), 'receiver_id' => auth()->id()]);
+            Chat::where('user_id', $id)->whereNull('read_at')->update(['read_at' => now(), 'receiver_id' => auth()->id()]);
         }else{
-            Chat::where('receiver_id', $id)->where('read_at', null)->update(['read_at' => now()]);
+            Chat::where('receiver_id', $id)->whereNull('read_at')->update(['read_at' => now()]);
         }
     }
     

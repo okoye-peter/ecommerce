@@ -150,7 +150,6 @@ export default {
                 this.unread = 0;
                 this.markAsRead();
             }
-            console.log(message);
             this.chats.push(message);
         },
         sendMessage: function(){
@@ -163,7 +162,7 @@ export default {
                 message: this.message,
                 receiver_id: id
             }).then(function (response) {
-                console.log(response.data);
+                // console.log(response.data);
             }).catch((err)=>{
                 console.log(err);
             });

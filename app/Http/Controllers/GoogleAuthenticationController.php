@@ -20,7 +20,7 @@ class GoogleAuthenticationController extends Controller
             $user = Socialite::driver('google')->stateless()->user();
             
             $user = User::firstOrCreate([
-                    'email' => $user->email
+                'email' => $user->email
             ],[
                 'name' => $user->name,
                 'password' => Hash::make(Str::random(10)),

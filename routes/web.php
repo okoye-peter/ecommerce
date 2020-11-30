@@ -47,7 +47,7 @@ Route::get('/search', 'ProductController@search')->name('search');
 
 // admin Routes
 Route::name('admin.')->middleware(['auth', 'verified','isadmin'])->prefix('admin')->group(function () {
-    Route::middleware('signed')->get('/', 'AdminController@page')->name('layout');
+    Route::get('/', 'AdminController@page')->name('layout');
     Route::get('/users', 'AdminController@users')->name('users');
     Route::get('/user', 'AdminController@getUserConversation')->name('user');
     Route::post('/chat', 'AdminController@sendMessage')->name('chat');

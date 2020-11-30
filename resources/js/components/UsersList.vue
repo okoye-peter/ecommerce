@@ -4,18 +4,21 @@
             <li
                 v-for="(user, index) in this.users"
                 :key="index"
-                :class="{ active: selectedUser == user }"
+                :class="{ active: (selectedUser && selectedUser.id == user.id) }"
                 @click="selectUser(user)"
             >
                 <img v-if="user.image" :src="user.image.url" alt="" />
+                <img v-else :src="load_default_image" alt="" />
                 <div>
-                    <span>{{ user.name }}</span>
-                    <p class="flex">
-                        <span class="text-muted">{{ user.name }}</span>
-                        <small :id="setId(user)">N/A</small>
-                    </p>
+                    <div>
+                        <span>{{ user.name }}</span>
+                        <p class="flex">
+                            <span class="text-muted">{{ user.email }}</span>
+                            <small :id="setId(user)">N/A</small>
+                        </p>
+                    </div>
                 </div>
-                <div v-if="user.unread">{{ user.unread }}</div>
+                <aside v-if="user.unread">{{ user.unread }}</aside>
             </li>
         </ul>
     </div>
@@ -57,8 +60,10 @@ export default {
         });
     },
     computed: {
+        load_default_image(){
+            return window.location.origin + '/image/download.jpeg';
+        },
         sortUsers(){
-            this.Check_if_user_is_avalaible;
             this.users =  _.sortBy(this.users, [(user)=> {
                     if (this.selectedUser == user) {
                         return Infinity;
@@ -67,17 +72,6 @@ export default {
                 }
             ]).reverse();
         },
-        Check_if_user_is_avalaible(){
-            Echo.join(`chat.`+this.id)
-            .here(users => {
-                if (users.length > 2) {
-                    Echo.leave(`chat.`+this.id);
-                    document.querySelector(`#${this.setId(this.selectedUser)}`).style.display ='inline';
-                }else{
-                    bus.$emit("user", this.selectedUser);
-                }
-            });
-        }
     },
 
     methods: {
@@ -92,13 +86,26 @@ export default {
                     console.log(err);
                 });
         },
+        Check_if_user_is_avalaible(){
+            Echo.join(`chat.`+this.id)
+            .here(users => {
+                if (users.length > 2) {
+                    Echo.leave(`chat.`+this.id);
+                    document.querySelector(`#${this.setId(this.selectedUser)}`).style.display ='inline';
+                }else{
+                    if(this.selectedUser){
+                        bus.$emit("user", this.selectedUser);
+                    }
+                }
+            });
+        },
 
         selectUser(user) {
             this.selectedUser = user;
             this.updateUnreadCount(this.selectedUser.id, true)            
             this.id = this.selectedUser.id;
             this.sortUsers;
-            this.Check_if_user_is_avalaible;
+            this.Check_if_user_is_avalaible()
         },
 
         updateUnreadCount(id,reset){
@@ -135,6 +142,8 @@ export default {
 
     ul li {
         padding: 0.5em 1em;
+        display: flex;
+        align-items: center;
     }
     ul li:hover {
         cursor: pointer;
@@ -156,8 +165,9 @@ export default {
         border-radius: 25px;
         margin-right: 1em;
     }
+    ul li div{flex: 9;}
 
-    ul li div {
+    ul li div div {
         display: flex;
         flex-direction: column;
         align-content: space-between;
@@ -181,10 +191,10 @@ export default {
         text-overflow: ellipsis;
     }
 
-    ul li > div:nth-child(2) {
+    ul li > aside:nth-child(3) {
         position: relative;
-        left: 93%;
-        top: -4.2em;
+        /* left: 93%; */
+        top: -1.2em;
         font-family: monospace;
         background-color: #26c639;
         color: white;

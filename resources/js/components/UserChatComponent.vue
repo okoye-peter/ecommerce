@@ -41,7 +41,7 @@
         </div>
         <button @click="display = !display">
             <p class="unread" v-show="!display && unread > 0">{{unread}}</p>
-            <i class="fa fa-comment fa-2x"></i>
+            <i class="fa fa-comment-o fa-2x"></i>
         </button>
     </div>
 </template>
@@ -111,7 +111,8 @@ export default {
             .leaving(user => {
                 this.users = this.users.filter(u=>{
                     u.id !=user.id &&  u.isadmin == 1
-                })
+                });
+                // this.chats.push(message);    
             })
             .listen('AdminMessageEvent', (event)=>{
                 this.handleIncomingMessages(event.message);
@@ -149,6 +150,7 @@ export default {
                 this.unread = 0;
                 this.markAsRead();
             }
+            console.log(message);
             this.chats.push(message);
         },
         sendMessage: function(){
@@ -169,7 +171,7 @@ export default {
         fetchMessages: function(){
             axios.get(this.fetch_chat).then((response)=>{
                 this.chats = response.data;
-                this.unread = this.chats.filter(chat=>chat.read_at == null).length;
+                this.unread = this.chats.filter(chat=>{ return chat.read_at == null && chat.receiver_id == this.authuser.id}).length;
             });
         },
         sendTypingEvent: function () {
@@ -342,8 +344,8 @@ small{
     border-radius: 8px;
     margin: 0;
     position: absolute;
-    top: -1em;
-    left: 1.7em;
+    top: -0.6em;
+    left: 3.7em;
 }
 
 @media screen and (max-width: 425px){

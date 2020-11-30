@@ -1,17 +1,14 @@
 <template>
     <div>
-        <div class="wrapper"  v-if="user">
+        <div class="chat_wrapper"  v-if="user">
             <div class="header">
                 <span>
                     <a href="javascript:void(0)" v-on:click="toggle()">_</a>
-                    <a href="javascript:void(0)">x</a>
+                    <a href="javascript:void(0)" v-on:click.self="close_chat()">x</a>
                 </span>
-                <img src="" alt="user" class="user_avatar"/>
-                <img src="" alt="default" class="default_avatar"/>
-                <small id="name"></small>
-                <!-- <img  v-if="user.image" :src="user.image.url" alt="" />
-                <img v-if="!user.image" :src="defaultAvatar" alt="" />
-                <p>{{user.name}}</p> -->
+                <img v-if="user && user.image" :src="loadDefaultAvatar" alt="user" class="avatar"/>
+                <img v-else-if="user && user.image == null" :src="loadDefaultAvatar" alt="default" class="avatar"/>
+                <small id="name" v-text="load_name"></small>
             </div>
             <div class="chats" v-chat-scroll>
                 <div
@@ -63,12 +60,10 @@ export default {
             invalid: false,
             message: '',
             typing: false,
-            typingTimer: false,
-            defaultAvatar: null
+            typingTimer: false
         }
     },
     created(){
-        this.defaultAvatar = this.loadDefaultAvatar();
         Echo.join('admin')
         .here((user)=>{})
         .joining(user=>{
@@ -86,7 +81,6 @@ export default {
                 Echo.leave(`chat.`+this.user.id);
             }
             this.user = user;
-            console.log(this.user);
             Echo.join(`chat.`+this.user.id)
             .here(users => {
                 
@@ -115,27 +109,24 @@ export default {
     },
 
     computed:{
-        displayUser(){
-            let default_img = document.querySelector("img[class='default_avatar']");
-            let user_img = document.querySelector("img[class='user_avatar']");
-                if (this.user.image) {
-                    user_img.src = this.user.image.url;
-                    default_img.style.display = 'none';
-                }else{
-                    default_img.src = this.loadDefaultAvatar();
-                    user_img.style.display = 'none';
-                }
-                document.querySelector('#name').innerHTML = this.user.name;
+        loadDefaultAvatar(){
+            if (this.user && this.user.image) {
+                console.log(window.location.origin + this.user.image.url);
+                return window.location.origin +'/'+ this.user.image.url;    
+            }
+            return window.location.origin + '/image/download.jpeg';
+        },
+        load_name(){
+            if (this.user) {
+                return this.user.name;
+            }
         }
     },
 
     methods:{
-        loadDefaultAvatar(){
-            return window.location.origin + '/image/download.jpeg';
-        },
         toggle(){
-            let wrapper = document.querySelector('.wrapper');
-            wrapper.classList.toggle('hide');
+            let chat_wrapper = document.querySelector('.chat_wrapper');
+            chat_wrapper.classList.toggle('hide');
         },
 
         fetchMessages(id){
@@ -190,19 +181,25 @@ export default {
             });
         },
         handleIncomingMessages(message){
-            if(this.user && this.user.id == message.user_id){
+            if(this.user != null && this.user.id == message.user_id){
                 this.conversations.push(message);
                 this.markAsRead(this.user.id);
                 return;
             }
             bus.$emit('updateResetCount', {user: message.user, reset:false});
-        },        
+        },
+        close_chat(){
+            if (this.user) {
+                Echo.leave(`chat.${this.user.id}`);
+                this.user = null;
+            }
+        }        
     },
     watch:{
         user(){
             if (this.user != null) {
-                setInterval(() => {
-                    this.displayUser;
+                setTimeout(() => {
+                    this.loadDefaultAvatar
                 }, 50);
             }
         }
@@ -211,7 +208,7 @@ export default {
 </script>
 
 <style scoped>
-    .wrapper{
+    .chat_wrapper{
         border-radius: 0.8em;
         background-color: white;
         padding: 0em;
@@ -222,10 +219,10 @@ export default {
         box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
         transition: bottom 0.5s ease;
     }
-    .wrapper.hide{
+    .chat_wrapper.hide{
         bottom: -21em;
     }
-    .wrapper .header{
+    .chat_wrapper .header{
         background-color: dodgerblue;
         border-radius: 0.8em 0.8em 0em 0em;
         display:flex;
@@ -234,34 +231,34 @@ export default {
         padding: 0.6em 1em;
     }
 
-    .wrapper .header span{
-            position: absolute;
+    .chat_wrapper .header span{
+        position: absolute;
         top: -0.2em;
-        left: 16.2em;
+        left: 15.8em;
         margin-bottom: 0.5em;
     }
-    .wrapper .header img{
+    .chat_wrapper .header img{
         width: 35px;
         height: 35px;
         border-radius: 50%;
         margin-right: 0.7em;
     }
-    .wrapper .header small{
+    .chat_wrapper .header small{
         margin-bottom: 0em;
         color: white;
         font-size: 10px;
     }
-    .wrapper .chats{
+    .chat_wrapper .chats{
         height: 250px;
         overflow-y: auto;
         padding: 0.5em;
     }
-    .wrapper .chats div{
+    .chat_wrapper .chats div{
         display: flex;
         flex-direction: column;
         margin-bottom: 0.5em;
     }
-    .wrapper .chats div p {
+    .chat_wrapper .chats div p {
         background-color: #e4e4e4;
         color: #118488;
         font-size: 12px;
@@ -271,13 +268,13 @@ export default {
         border-radius: 0.5em;
         margin-bottom: 0em;
     }
-    .wrapper .chats div p span {
+    .chat_wrapper .chats div p span {
         margin-bottom: 0;
         text-align: justify;
         font-size: 12px;
         overflow-wrap: anywhere;
     }
-    .wrapper .chats div.sender p{
+    .chat_wrapper .chats div.sender p{
         background-color: #6d95ef;
         color: white;
         align-self: flex-end;
@@ -308,7 +305,7 @@ export default {
         color: #6ac5d4;
     }
     a{
-        color:darkblue;
+        color:white;
         text-decoration: none;
     }
     a:first-child{

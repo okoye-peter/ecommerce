@@ -15,7 +15,9 @@ class AdminController extends Controller{
     }
 
     public function page(){
-        return view('admin');
+        $user = auth()->user();
+        $user->image = $user->image;
+        return view('admin.home',compact('user'));
     }
     
     public function users()

@@ -1,0 +1,108 @@
+.wrapper .top_nav {
+    padding: 0.6em;
+    background-color: #03122e;
+    display: flex;
+}
+
+.wrapper .top_nav .logo_wrapper {
+    /* display: flex; */
+    align-items: center;
+    text-decoration: none;
+}
+
+.wrapper .top_nav .logo_wrapper img {
+    width: 3em;
+    height: 3em;
+    border-radius: 1.5em;
+    margin-right: 1em;
+}
+
+.wrapper .top_nav .logo_wrapper .site_name {
+    font-size: 16px;
+    color: white;
+    font-family: 'SimSun';
+}
+
+.wrapper .top_nav .logo_wrapper .site_name .arrow {
+    cursor: pointer;
+    transition: transform 0.4s;
+    font-size: 16px;
+    transform-origin: center;
+}
+
+.wrapper .top_nav ul {
+    margin-bottom: 0;
+    flex-grow: 9;
+    display: inline-flex;
+    justify-content: flex-end;
+    padding: 0em 1em 0em 0em;
+    align-items: center;
+}
+
+.wrapper .top_nav ul li {
+    display: inline;
+    color: white;
+    padding: 0em 0.6em;
+}
+
+.wrapper .top_nav ul li img {
+    width: 3em;
+    height: 3em;
+    border-radius: 1.5em;
+    padding: 0.17em;
+    background: white;
+}
+
+.wrapper .section-body .sidebar {
+    position: fixed;
+    width: 206px;
+    background-color: #03122e;
+    height: 0px;
+    overflow: hidden;
+    transition: all 0.4s;
+}
+
+.wrapper .section-body .sidebar.active {
+    height: 100%;
+}
+
+.wrapper .section-body .sidebar ul {
+    padding: 0;
+    list-style: none;
+}
+
+.wrapper .section-body .sidebar ul li {
+    margin: 0em;
+}
+
+.wrapper .section-body .sidebar ul li:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.wrapper .section-body .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-size: 12px;
+    display: block;
+    padding: 1em;
+    padding-left: 2em;
+}
+
+.wrapper .section-body .sidebar ul li a:hover {
+    transform: scale(1.2, 1.2);
+    background-color: #042055;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.wrapper .section-body .content_wrapper {
+    display: flex;
+}
+
+.wrapper .section-body .content_wrapper .content {
+    flex: 8;
+}
+
+.wrapper .section-body .content_wrapper .livechat {
+    flex: 2;
+}

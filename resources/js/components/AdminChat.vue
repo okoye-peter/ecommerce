@@ -28,13 +28,9 @@ export default {
   },
   data(){
     return{
-      user: null
+      
     }
-  },
-  created(){
-  },
-  methods:{
-  },
+  }
 
 }
 </script>

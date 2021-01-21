@@ -31,6 +31,7 @@ Vue.component('flutterwave-payment', require('./components/flutterwave.vue').def
 Vue.component('admin-chat', require('./components/AdminChat.vue').default);
 Vue.component('admin-message', require('./components/AdminMessage.vue').default);
 Vue.component('user-list', require('./components/UsersList.vue').default);
+Vue.component('drop-zone', require('./components/DropComponent.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

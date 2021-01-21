@@ -124,21 +124,21 @@
                                 @endif
                             @else
                                 <li class="nav-item">
-                                    <a href="{{ route('cart',auth()->user()->id) }}" class="nav-link">
+                                    <a href="{{ route('cart', $user->id) }}" class="nav-link">
                                         <span class="mr-4 d-flex align-content-center" id="cart">
-                                            <i class="fa fa-shopping-cart" style="font-size: 1.2rem"></i><sup class="badge" id="vue-cart-products-count"> {{ count(auth()->user()->orderQueue) }}</sup>
+                                            <i class="fa fa-shopping-cart" style="font-size: 1.2rem"></i><sup class="badge" id="vue-cart-products-count"> {{ count($user->orderQueue) }}</sup>
                                         </span>
                                     </a>
                                 </li>
 
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        <img alt="image" src='@if(Auth::user()->image) {{asset(Auth::user()->image->first()->url) }} @else {{ asset("image/download.jpeg") }} @endif' class="user-img-radious-style">
-                                        {{ Auth::user()->name }} <span class="caret"></span>
+                                        <img alt="image" src='@if($user->image) {{asset($user->image->first()->url) }} @else {{ asset("image/download.jpeg") }} @endif' class="user-img-radious-style">
+                                        {{ $user->name }} <span class="caret"></span>
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('transaction', [auth()->user()->id]) }}"
+                                        <a class="dropdown-item" href="{{ route('transaction', [$user->id]) }}"
                                            >
                                             Transactions
                                         </a>
@@ -162,8 +162,8 @@
             </main>
         </div>
         
-        @if(Auth::user())
-            <user-chat :authuser="{{collect(auth()->user()->only(['id','name','image']))}}" send_message={{route('chats.create')}} fetch_chat= {{route('chat')}}></user-chat>  
+        @if($user)
+            <user-chat :authuser="{{collect($user->only(['id','name','image']))}}" send_message={{route('chats.create')}} fetch_chat= {{route('chat')}}></user-chat>  
         @endif
 
         

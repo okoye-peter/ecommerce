@@ -30,6 +30,9 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     @yield('css')
     <link rel="stylesheet" href="{{asset('css/adminLayout.css')}}">
+    @if (request()->routeIs('admin.uploads'))
+        <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
+    @endif
 </head>
 
 <body>
@@ -40,8 +43,23 @@
                 <span class="site_name">SITE NAME <i class="fa fa-caret-up arrow"></i></span>
             </a>
             <ul>
-                <li><img src="@if(Auth::user()->image) {{asset(Auth::user()->image->first()->url) }} @else {{ asset('image/download.jpeg') }} @endif" alt="" class="user_avatar"></li>
-                <li>{{$user->name}}</li>
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link text-white dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre >
+                        <img src="@if($user->image) {{asset($user->image->first()->url) }} @else {{ asset('image/download.jpeg') }} @endif" alt="" class="user_avatar">
+                        {{ $user->name }} <span class="caret"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
             </ul>
         </div>
         <div class="section-body">
@@ -66,8 +84,8 @@
                     @yield('content')
                 </main>
                 <aside class="livechat">
-                    @if (Auth::user() && Auth::user()->isadmin == 1)
-                        <admin-chat :authuser="{{collect(auth()->user()->only(['id','name','image']))}}" list_users="{{route('admin.users')}}" fetch_user_message={{ route('admin.user') }} send_message="{{ route('admin.chat') }}"></admin-chat>
+                    @if ($user && $user->isadmin == 1)
+                        <admin-chat :authuser="{{collect($user->only(['id','name','image']))}}" list_users="{{route('admin.users')}}" fetch_user_message={{ route('admin.user') }} send_message="{{ route('admin.chat') }}"></admin-chat>
                     @endif
                 </aside>
             </div>

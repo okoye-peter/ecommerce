@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ChatsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@index')->name('start');
 
 Auth::routes(['verify' => true]);
+
 // google authentication routes 
 Route::middleware('guest')->group(function(){
     Route::get('/sign-in/google', 'GoogleAuthenticationController@google')->name('google.login');
@@ -36,6 +36,7 @@ Route::middleware(['auth', 'verified'])->prefix('user')->group(function(){
     Route::patch('/cart/{order}', 'OrderController@setProductOrderQuantity')->name('set.product.quantity');
     Route::post('/carts/{order}', 'OrderController@destroy')->name('remove.from.cart');
 });
+
 // email verification
 Route::get('/verify', 'EmailVerifiedController@verify')->name('email.verify');
 
@@ -45,12 +46,18 @@ Route::get('/products/{product}', 'ProductController@show')->name('display.produ
 Route::get('/products/{category}/{subcategory}', 'ProductController@fetchSubcategoryProducts')->name('subcategory.products');
 Route::get('/search', 'ProductController@search')->name('search');
 
+
 // admin Routes
 Route::name('admin.')->middleware(['auth', 'verified','isadmin'])->prefix('admin')->group(function () {
     Route::get('/', 'AdminController@page')->name('layout');
     Route::get('/users', 'AdminController@users')->name('users');
     Route::get('/user', 'AdminController@getUserConversation')->name('user');
     Route::post('/chat', 'AdminController@sendMessage')->name('chat');
+    Route::get('/uploads', 'ProductController@create')->name('uploads');
+    Route::post('/products/images', 'ProductController@saveImage')->name('product.save');
+    Route::post('/products/delete', 'ProductController@delete')->name('product.delete');
+    Route::get('/products/description', 'ProductController@setDescription')->name('product.description');
+    Route::post('/products', 'ProductController@store')->name('product.store');
 });
 
 // live chat route

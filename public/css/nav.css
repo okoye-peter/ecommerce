@@ -53,15 +53,20 @@ aside#sidebar {
 .category_wrapper .accordion {
     color: #fff;
     cursor: pointer;
-    padding: 18px;
+    padding: 15px;
     width: 100%;
     border: none;
     text-align: left;
     outline: none;
-    font-size: 8px;
     font-family: 'Times New Roman', Times, serif;
     transition: 0.4s;
-    background-color: #0b285d;
+    background-color: inherit;
+    font-size: 8.5px;
+    text-indent: 15px;
+}
+
+.category_wrapper .accordion:not(:last-child) {
+    border-bottom: 1px solid rgba(125, 125, 125, 0.5);
 }
 
 .panel .subcat {
@@ -72,21 +77,21 @@ aside#sidebar {
 
 .panel .subcat .subcat-item {
     border: 0;
-    background-color: #4f6a9b;
+    background-color: #03122edb;
 }
 
 .panel .subcat .subcat-item a {
     color: inherit;
-    position: relative;
     transition: all 0.5s;
-    padding: 0.75rem 1.25rem;
+    padding: 1rem 0rem;
     display: block;
+    font-size: 8.5px;
+    text-indent: 25px;
 }
 
 .panel .subcat .subcat-item a:hover {
     text-decoration: none;
-    color: aqua;
-    margin-left: 10px;
+    text-indent: 35px;
 }
 
 .panel .subcat .subcat-item a:before {
@@ -96,9 +101,13 @@ aside#sidebar {
     color: #868e96;
 }
 
-.actives,
+
+/* .actives, */
+
 .accordion:hover {
-    background-color: #236ca0;
+    /* background-color: #236ca0; */
+    transform: scale(1.15, 1.15);
+    border-bottom: 1px solid white;
 }
 
 .accordion:after {

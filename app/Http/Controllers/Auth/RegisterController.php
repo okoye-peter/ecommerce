@@ -79,7 +79,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $image_url = request()->hasFile('avatar') ? PictureUpload::uploadImages($data) : null;
+        $image_url = request()->hasFile('avatar') ? PictureUpload::uploadImages($data['avatar']) : null;
         
         return DB::transaction(function() use($data,$image_url){
             $user =  User::create([

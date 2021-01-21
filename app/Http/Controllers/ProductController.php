@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\PictureUpload;
 
 class ProductController extends Controller
 {
@@ -13,6 +17,8 @@ class ProductController extends Controller
      * @return array
      */
 
+     public $name = '';
+
     public function index()
     {
         $products = Product::where("quantity", '>', 0)->inRandomOrder()->paginate(20);
@@ -21,7 +27,7 @@ class ProductController extends Controller
 
     static public function category()
     {
-        $products = \DB::table("products")
+        $products = DB::table("products")
                         ->select('category','subcategory')
                         ->where('quantity', '>=', 1)
                         ->distinct('subcategory')
@@ -36,7 +42,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-
+        return view('admin.productUpload');
     }
 
     /**
@@ -47,7 +53,21 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->front);
+        // $product= Product::creat([]);
+        
+    }
+
+    public function saveImage(Request $request)
+    {
+        $imgs = Collection::wrap($request->file('images'));
+
+        $imgs->each(function ($img){
+            $name = PictureUpload::uploadImages($img);
+            DB::insert('insert into product_images (user_id,images,created_at,updated_at) values(?,?,?,?)', [auth()->id(), $name, now(), now()]);
+            $this->name = $name;
+        });
+        return $this->name;
     }
 
     /**
@@ -117,5 +137,23 @@ class ProductController extends Controller
             return response()->json(['html' => $view]);
         }
         return view('start', compact('products'));
+    }
+
+    public function delete(Request $request)
+    {
+
+        $public_id = Str::beforeLast(Str::afterLast($request->images, '/'), '.');
+        $record = DB::table("product_images")->where('images', 'like', "%$request->images%")->where("user_id", '=', auth()->id())->first();
+        if(DB::table("product_images")->where('images','like',"%$request->images%")->where("user_id",'=',$request->user()->id)->delete()){
+            // File::delete(public_path('/image/products/'.$record->images));
+            PictureUpload::deleteImage($public_id);
+            return response()->json(['success' => 'File deleted successfully']);
+        }
+    }
+
+    public function setDescription()
+    {
+        $products = DB::table("product_images")->where("user_id", '=', auth()->id())->get();
+        return view('admin.set_product_details', compact('products'));
     }
 }

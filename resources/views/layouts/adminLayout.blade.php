@@ -45,7 +45,7 @@
             <ul>
                 <li class="nav-item dropdown">
                     <a id="navbarDropdown" class="nav-link text-white dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre >
-                        <img src="@if($user->image) {{asset($user->image->first()->url) }} @else {{ asset('image/download.jpeg') }} @endif" alt="" class="user_avatar">
+                        <img src="@if($user->image) {{asset($user->image->first()->url) }} @else {{ asset('image/download.jpeg') }} @endif" alt="" class="user_avatar mr-3">
                         {{ $user->name }} <span class="caret"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

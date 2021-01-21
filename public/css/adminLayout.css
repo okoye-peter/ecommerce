@@ -60,6 +60,7 @@
     height: 0px;
     overflow: hidden;
     transition: all 0.4s;
+    z-index: 999;
 }
 
 .wrapper .section-body .sidebar.active {

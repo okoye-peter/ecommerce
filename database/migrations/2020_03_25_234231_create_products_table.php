@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->string('subcategory');
             $table->float('price',12,2);
             $table->integer("quantity");
-            $table->string("description");
+            $table->text("description");
             $table->timestamps();
         });
     }

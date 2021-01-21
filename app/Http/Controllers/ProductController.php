@@ -53,8 +53,28 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->front);
-        // $product= Product::creat([]);
+        $data = $request->validate([
+            'front' => 'required|string',
+            'name' => 'required|string',
+            'price' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'category' => 'required|string',
+            'subcategory' => 'required|string',
+            'description' => 'required|string'
+        ]);
+        $images = DB::table("product_images")->where('images', '!=', $data['front'])->where("user_id", '=', $request->user()->id)->get();
+        $product = Product::create([
+            'name' => $data['name'],
+            'category' => $data['category'],
+            'subcategory' => $data['subcategory'],
+            'price' => $data['price'],
+            'quantity' => $data['quantity'],
+            'description' => $data['description'],
+        ]);
+
+        $product->image()->create(['url'=> json_encode(['front' => $data['front'], 'side' => $images->pluck('images')->toArray()])]);
+        DB::table("product_images")->where("user_id", '=', $request->user()->id)->delete();
+        return redirect('/admin');
         
     }
 
@@ -141,10 +161,8 @@ class ProductController extends Controller
 
     public function delete(Request $request)
     {
-
         $public_id = Str::beforeLast(Str::afterLast($request->images, '/'), '.');
-        $record = DB::table("product_images")->where('images', 'like', "%$request->images%")->where("user_id", '=', auth()->id())->first();
-        if(DB::table("product_images")->where('images','like',"%$request->images%")->where("user_id",'=',$request->user()->id)->delete()){
+        if(DB::table("product_images")->where('images',$request->images)->where("user_id",'=',$request->user()->id)->delete()){
             // File::delete(public_path('/image/products/'.$record->images));
             PictureUpload::deleteImage($public_id);
             return response()->json(['success' => 'File deleted successfully']);

@@ -106,7 +106,7 @@
                         <!-- Left Side Of Navbar -->
                         <ul class="navbar-nav mr-2 justify-content-center">
                             <li class="nav-item">
-                                <a href="{{ URL::signedRoute('admin.layout') }}" class="nav-link">User</a>
+                                <a href="{{ URL::signedRoute('admin.home') }}" class="nav-link">User</a>
                             </li>
                         </ul>
 

@@ -10,7 +10,7 @@
             <div class="row">
                 @foreach ($products as $key => $product)
                     <div class="col-3">
-                        <img src='{{ asset("image/products/$product->images") }}' alt="product" class="product-img rounded shadow">
+                        <img src="{{$product->images}}" alt="product" class="product-img rounded shadow">
                         <div class="d-flex justify-content-center align-items-center">
                             <input type="radio" name="front" value="{{ $product->images }}"> <span class="ml-3">front side</span>
                         </div>
@@ -30,7 +30,7 @@
                         
                     </div>
                     <div class="form-group input_wrapper">
-                        <label for="name">Product Price:</label>
+                        <label for="price">Product Price:</label>
                         <input type="text" class="form-control form-control-sm" name="price">
                         @error('price')
                             <span></span>
@@ -38,7 +38,7 @@
                         @enderror
                     </div>
                     <div class="form-group input_wrapper">
-                        <label for="name">Product Quantity:</label>
+                        <label for="quantity">Product Quantity:</label>
                         <input type="number" class="form-control form-control-sm" name="quantity">
                         @error('quantity')
                             <span></span>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="col-6">
                     <div class="form-group input_wrapper">
-                        <label for="name">Product Category:</label>
+                        <label for="category">Product Category:</label>
                         <input type="text" class="form-control form-control-sm" name="category">
                         @error('category')
                             <span></span>
@@ -56,7 +56,7 @@
                         @enderror
                     </div>
                     <div class="form-group input_wrapper">
-                        <label for="name">Product Sub-category:</label>
+                        <label for="subcategory">Product Sub-category:</label>
                         <input type="text" class="form-control form-control-sm" name="subcategory">
                         @error('subcategory')
                             <span></span>
@@ -64,7 +64,7 @@
                         @enderror
                     </div>
                     <div class="form-group input_wrapper">
-                        <label for="name">Product Description:</label>
+                        <label for="description">Product Description:</label>
                         <textarea type="text" class="form-control" name="description"></textarea>
                         @error('description')
                             <span></span>

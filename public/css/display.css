@@ -1,111 +1,323 @@
-div#display{
-    
+div.display {
     width: 690px;
-    background: white !important;
+    background: white;
 }
 
-img#active{
+.mySlides img {
     width: 100%;
     height: 420px;
 }
 
-.mySlides img{
+div.display div.row .description_wrapper {
     width: 100%;
-    height: 420px;
 }
 
-div#display div.row div.col-4{
-    width: 100% !important;
-}
-
-div#display div.row div.col-4 div{
-    height: 416px !important;
-    overflow: auto !important;
+div.display div.row .description_wrapper .description {
+    height: 416px;
+    overflow: auto;
     font-size: 12px;
 }
-  
+
+
 /* Position the image container (needed to position the left and right arrows) */
+
 .container {
-  position: relative;
+    position: relative;
 }
-  
+
+
 /* Hide the images by default */
+
 .mySlides {
-  display: none;
+    display: none;
 }
-  
+
+
 /* Add a pointer when hovering over the thumbnail images */
+
 .cursor {
-  cursor: pointer;
+    cursor: pointer;
 }
-  
+
+
 /* Next & previous buttons */
-.prev, .next {
-  cursor: pointer;
-  position: absolute;
-  top: 40%;
-  width: auto;
-  padding: 14px;
-  margin-top: -20px;
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
-  border-radius: 0 3px 3px 0;
-  user-select: none;
-  -webkit-user-select: none;
-}
-  
-/* Position the "next button" to the right */
+
+.prev,
 .next {
-  right: 4px;
-  border-radius: 3px 0 0 3px;
+    cursor: pointer;
+    position: absolute;
+    top: 40%;
+    width: auto;
+    padding: 14px;
+    margin-top: -20px;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    -webkit-user-select: none;
 }
+
+
+/* Position the "next button" to the right */
+
+.next {
+    right: 4px;
+    border-radius: 3px 0 0 3px;
+}
+
 
 /* Position the "prev button" to the right */
+
 .prev {
-  left: 4px;
-  border-radius: 3px 0 0 3px;
-}
-  
-/* On hover, add a black background color with a little bit see-through */
-.prev:hover, .next:hover {
-  background-color: rgba(0, 0, 0, 0.6);
+    left: 4px;
+    border-radius: 3px 0 0 3px;
 }
 
+
+/* On hover, add a black background color with a little bit see-through */
+
+.prev:hover,
+.next:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+
 /* Number text (1/3 etc) */
+
 .numbertext {
-  color: #f2f2f2;
-  font-size: 12px;
-  padding: 8px 12px;
-  position: absolute;
-  top: 0;
+    color: #f2f2f2;
+    font-size: 12px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
 }
-  
+
+
 /* Container for image text */
+
 .caption-container {
-  text-align: center;
-  background-color: #222;
-  padding: 2px 16px;
-  color: white;
+    text-align: center;
+    background-color: #222;
+    padding: 2px 16px;
+    color: white;
 }
-  
+
 .selection:after {
-  content: "";
-  display: table;
-  clear: both;
+    content: "";
+    display: table;
+    clear: both;
 }
-  
+
+
 /* Six columns side by side */
+
 .column {
-  float: left;
-  width: 16.66%;
+    float: left;
+    width: 16.66%;
 }
-  
+
+
 /* Add a transparency effect for thumnbail images */
+
 .demo {
-  opacity: 0.6;
+    opacity: 0.6;
 }
-  
-.active, .demo:hover {
-  opacity: 1;
+
+.active,
+.demo:hover {
+    opacity: 1;
+}
+
+.img_wrapper {
+    padding: 1em;
+}
+
+.img_wrapper .img_display {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.img_wrapper .img_display img {
+    width: 100%;
+    height: 24em;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.img_wrapper .img_display i,
+.modal-content i {
+    cursor: pointer;
+}
+
+.img_wrapper .img_display i:last-child,
+.modal-content i:last-child {
+    justify-self: end;
+}
+
+.img_wrapper .grid_block {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 2em;
+    grid-gap: 1em;
+}
+
+.img_wrapper .grid_block img {
+    height: 10em;
+    width: 100%;
+    filter: grayscale(85%);
+    cursor: pointer;
+}
+
+.img_wrapper .grid_block img.active {
+    filter: grayscale(0%);
+}
+
+.product-details {
+    border-left: 1px solid lightgray;
+}
+
+.product-details .grids {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    font-family: 'Times New Roman', Times, serif;
+    grid-gap: 0.6em;
+    font-size: 16px;
+}
+
+
+/* modal styles */
+
+
+/* The Modal (background) */
+
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 10000;
+    /* Sit on top */
+    padding: 4em 1em;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Black w/ opacity */
+}
+
+.modal.active.animation {
+    transition: opacity 0.5s ease;
+    opacity: 0;
+}
+
+.modal.active {
+    display: block;
+}
+
+
+/* Modal Content (image) */
+
+.modal-content {
+    margin: auto;
+    display: grid;
+    grid-template-columns: 10% 80% 10%;
+    height: 100%;
+    background-color: transparent;
+    align-items: center;
+}
+
+
+/* modal image */
+
+.modal-content .modal-image {
+    width: 70%;
+    height: 100%;
+    margin: auto;
+}
+
+
+/* Caption of Modal Image */
+
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+
+/* Add Animation */
+
+.modal-content,
+#caption {
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@-webkit-keyframes zoom {
+    from {
+        -webkit-transform: scale(0)
+    }
+    to {
+        -webkit-transform: scale(1)
+    }
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(0)
+    }
+    to {
+        transform: scale(1)
+    }
+}
+
+
+/* The Close Button */
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/* 100% Image Width on Smaller Screens */
+
+@media only screen and (max-width: 700px) {
+    .modal-content {
+        width: 100%;
+    }
+}
+
+
+}
+
 }

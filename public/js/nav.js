@@ -55,10 +55,10 @@ function createAlert(name) {
     alert_div.appendChild(timer_div);
     let wrapper = document.querySelector('.add_to_cart_alert');
     wrapper.appendChild(alert_div);
-    toggleAllert(alert_div, wrapper);
+    toggleAlert(alert_div, wrapper);
 }
 
-function toggleAllert(div, wrapper) {
+function toggleAlert(div, wrapper) {
     setTimeout(() => {
         div.classList.add('active');
     }, 500);

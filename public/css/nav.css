@@ -11,7 +11,7 @@ main {
     background-color: #fff;
 }
 
-aside#sidebar {
+aside.sidebar {
     position: fixed;
     width: 15em;
     height: 100%;
@@ -26,7 +26,7 @@ aside#sidebar {
     z-index: 3;
 }
 
-#sidebar a.closebtn {
+.sidebar a.closebtn {
     display: none;
     position: absolute;
     right: 0;
@@ -36,7 +36,7 @@ aside#sidebar {
     text-decoration: none;
 }
 
-#sidebar a.navbar-brand {
+.sidebar a.navbar-brand {
     color: white;
     text-decoration: none;
     background-color: transparent;
@@ -135,11 +135,11 @@ aside#sidebar {
     transition: max-height 0.2s ease-out;
 }
 
-#sidebar a.navbar-brand img.header-logo {
+.sidebar a.navbar-brand img.header-logo {
     height: 30px;
 }
 
-#sidebar h6.text-center {
+.sidebar h6.text-center {
     font-size: x-small;
     line-height: 15px;
     letter-spacing: 15px;
@@ -195,7 +195,7 @@ nav.navbar.navbar-expand-md.navbar-light.bg-white.shadow #cart {
     left: -5px;
 }
 
-a#navbarDropdown {
+a.navbarDropdown {
     font-size: 12px;
     letter-spacing: 4px;
     text-decoration: uppercase;
@@ -257,7 +257,7 @@ div.content {
     .navbar-toggler-icon {
         display: inline-block;
     }
-    aside#sidebar {
+    aside.sidebar {
         height: 100%;
         width: 0px;
         position: fixed;

@@ -39,11 +39,11 @@
 <body>
 
     <div id="app">
-        <aside id="sidebar">
+        <aside class="sidebar" id="sidebar">
             <a class="navbar-brand mb-5" href="{{ url('/') }}">
                 <img alt="image" src="{{ asset('image/logo.png') }}" class="header-logo"> <span class="logo-name">Otika</span>
             </a>
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav(this)"><i class="fa fa-arrow-left"></i></a>
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav(this)"><i class="fa fa-arrow-left" style="font-size: small"></i></a>
             <h6 class="text-center mb-3">MAIN</h6>
 
             <ul class="list-group list-group-flush category_wrapper">
@@ -59,7 +59,7 @@
                         <ul class="list-group subcat list-group-flush">
                             @foreach ($subcategory as $cat => $sub)
                                 <li class="list-group-item subcat-item p-0">
-                                    <a href="{{ route('subcategory.products',[$category, $sub->subcategory]) }}" id=""><i class="fa fa-angle-right"></i> {{ $sub->subcategory }}</a>
+                                    <a href="{{ route('subcategory.products',[$category, $sub->subcategory]) }}"><i class="fa fa-angle-right"></i> {{ $sub->subcategory }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -132,7 +132,7 @@
                                 </li>
 
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <a id="navbarDropdown" class="nav-link dropdown-toggle navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         <img alt="image" src='@if($user->image) {{asset($user->image->first()->url) }} @else {{ asset("image/download.jpeg") }} @endif' class="user-img-radious-style">
                                         {{ $user->name }} <span class="caret"></span>
                                     </a>
@@ -170,40 +170,40 @@
     </div>
     <script src="{{ asset('js/nav.js') }}"></script>
     @if (request()->routeIs('start') || request()->routeIs('home') || request()->routeIs('subcategory.products') || request()->routeIs('search'))
-    <script>
-        wow = new WOW(
-            {
-                animateClass: 'animated',
-                offset:       100,
-                callback:     function(box) {
+        <script>
+            wow = new WOW(
+                {
+                    animateClass: 'animated',
+                    offset:       100,
+                    callback:     function(box) {
 
+                    }
                 }
+            );
+            wow.init();
+            function add_to_cart(form) {
+                let action = form.getAttribute('action');
+                let token = form._token;
+                $.ajax({
+                    url: action,
+                    method: 'post',
+                    data:{_token: token.value}
+
+                })
+                .done(function(data){
+                    document.querySelector("#vue-cart-products-count").innerHTML = data;
+                    createAlert(form.parentNode.previousElementSibling.firstChild.children[1].textContent);
+                })
+                .fail(function(jqXHR, ajaxOptions, thrownError){
+                    if (jqXHR.status == 401) {
+                        window.location.assign("/login");
+                    }
+                    console.log('jqXHR', jqXHR);
+                    console.log('ajaxOptions', ajaxOptions);
+                    console.log('thrownError', thrownError);
+                })
             }
-        );
-        wow.init();
-        function add_to_cart(form) {
-            let action = form.getAttribute('action');
-            let token = form._token;
-            $.ajax({
-                url: action,
-                method: 'post',
-                data:{_token: token.value}
-
-            })
-            .done(function(data){
-                document.querySelector("#vue-cart-products-count").innerHTML = data;
-                createAlert(form.parentNode.previousElementSibling.firstChild.children[1].textContent);
-            })
-            .fail(function(jqXHR, ajaxOptions, thrownError){
-                if (jqXHR.status == 401) {
-                    window.location.assign("/login");
-                }
-                console.log('jqXHR', jqXHR);
-                console.log('ajaxOptions', ajaxOptions);
-                console.log('thrownError', thrownError);
-            })
-        }
-    </script>
+        </script>
     @endif
     @yield('script')
 </body>
